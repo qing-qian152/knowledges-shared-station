@@ -1,0 +1,43 @@
+MIT License (code) + CC BY 4.0 (content)
+
+Copyright (c) 2026 Daily Learn contributors
+
+This project uses two licenses, split by what a file is:
+
+1. Code — MIT
+   Applies to: assets/app.js, assets/style.css, index.html,
+   scripts/, .github/
+
+   Permission is hereby granted, free of charge, to any person obtaining a copy
+   of this software and associated documentation files (the "Software"), to deal
+   in the Software without restriction, including without limitation the rights
+   to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+   copies of the Software, and to permit persons to whom the Software is
+   furnished to do so, subject to the following conditions:
+
+   The above copyright notice and this permission notice shall be included in all
+   copies or substantial portions of the Software.
+
+   THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+   IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+   FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+   AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+   LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+   OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+   SOFTWARE.
+
+2. Content — CC BY 4.0
+   Applies to: data/, topics.json, and the reading materials inside data/
+
+   You are free to share (copy and redistribute in any medium or format) and
+   adapt (remix, transform, build upon) the content for any purpose, even
+   commercially, provided you give appropriate credit to the original project
+   ("每日一学 / Daily Learn") and indicate if changes were made.
+
+   Full license text: https://creativecommons.org/licenses/by/4.0/legalcode
+
+Note on third-party material: reading passages in data/ are either public domain
+works (authors deceased before 1949, or pre-modern classical texts) or original
+texts generated for this project. Listening sections only link to external pages
+and do not include their audio or transcripts. External pages remain under their
+own terms.
