@@ -75,12 +75,19 @@ function buildPrompt(topic) {
 
 {
   "theme": "当日主题，8-14 字的短句",
+  "quote": {
+    "text": "一句名言原文（中文或英文，英文不用翻译）",
+    "author": "真实作者名",
+    "source": "出处（没有就写空字符串）"
+  },
   "chinese": {
-    "title": "篇名（节选要标注）",
+    "title": "篇名",
     "author": "作者",
     "tag": "体裁 · 主题，如 现代散文 · 写景",
     "readingTime": "约 N 分钟",
-    "body": ["段落1", "段落2", "段落3"],
+    "image": "插图场景名",
+    "imageCaption": "配图说明，一句话，10-18 字",
+    "body": ["第1段", "第2段", "第3段"],
     "explain": [{ "line": "原句", "note": "讲解，可用 <b></b> 标重点" }],
     "words": [{ "w": "词", "meaning": "释义", "use": "用法点拨" }],
     "expressions": [{ "s": "好句", "why": "妙在哪里" }],
@@ -89,6 +96,8 @@ function buildPrompt(topic) {
   },
   "poem": {
     "title": "诗题", "author": "作者", "dynasty": "朝代", "tag": "体裁",
+    "image": "插图场景名",
+    "imageCaption": "配图说明，一句话",
     "body": ["诗句1，", "诗句2。"],
     "notes": [{ "line": "词", "note": "注释" }],
     "translation": "白话译文，一段",
@@ -97,21 +106,22 @@ function buildPrompt(topic) {
   },
   "english": {
     "title": "英文标题",
-    "level": "CET-6 / IELTS 6.5",
-    "words": 330,
-    "body": ["段落1", "段落2", "段落3", "段落4"],
+    "level": "IELTS 7.0",
+    "words": 520,
+    "body": ["段落1", "段落2", "段落3", "段落4", "段落5"],
     "vocab": [{ "w": "单词", "pos": "n.", "cn": "中文释义", "ex": "英文例句" }],
+    "collocations": [{ "phrase": "地道搭配", "cn": "中文意思", "ex": "英文例句" }],
     "phrases": [{ "p": "短语", "cn": "中文", "ex": "英文例句" }],
     "patterns": [{ "s": "原文句式", "cn": "中文意思", "note": "用法说明" }],
     "grammar": [{ "point": "语法点", "explain": "讲解", "example": "原文例句" }],
-    "summary": "中文摘要，100-150 字",
+    "summary": "中文摘要，120-160 字",
     "questions": [{ "q": "题干（英文）", "options": ["选项A文字", "选项B文字", "选项C文字", "选项D文字"], "answer": 0, "explain": "中文解析" }],
     "output": { "prompt": "输出任务", "tasks": ["要求1", "要求2", "要求3"] }
   },
   "listening": {
-    "title": "听力标题（如 VOA Learning English · 今日音频）",
-    "level": "难度标签，如 慢速英语 / CET-6",
-    "source": "来源站点名，如 VOA Learning English",
+    "title": "听力标题（如 中国日报英语点津 · 今日音频）",
+    "level": "难度标签，如 慢速英语 / 雅思 6.5",
+    "source": "来源站点名，如 中国日报英语点津",
     "url": "当天音频所在页面的 http(s) 链接",
     "note": "一句话使用说明（在这个页面的哪里找音频、怎么配合听）"
   },
@@ -124,28 +134,39 @@ function buildPrompt(topic) {
     "takeaway": "一句话记住它",
     "quiz": { "q": "单选题干", "options": ["A", "B", "C", "D"], "answer": 1, "explain": "中文解析" },
     "next": "明天学什么"
-  }
+  },
+  "checklist": [
+    { "text": "今天要做的一件事（一句话）", "tip": "怎么做的提示（可空字符串）" }
+  ]
 }
 
+插图场景名只能从这个列表里选（按意境匹配，不要硬凑）：
+lotus-moon（荷塘月色）｜autumn-mountain（山间秋意）｜bamboo（竹林清影）｜snow-peak（雪岭）
+｜spring-river（春江）｜rain-window（雨窗）｜dunes（大漠孤烟）｜lamp（灯下）｜paper（素纸）
+
 硬性要求：
-1. 语文：选一篇公版名篇（明清以前，或 1949 年前已故作者）的节选，或你原创；600-900 字，3-5 段，首段最好抓住人。讲解 3-4 条，要具体到字词和节奏，不要说空话。好词 5-8 个，好句 3 句，写作手法 4-5 种，仿写任务要能当天写完。
-2. 古诗文：与今日主题呼应的一首，注释 4-6 条，译文一段，赏析 3-4 段（要讲结构、讲字眼），背诵提示给结构线索。
-3. 英文：你必须原创，300-350 词，分 4 段，CET-6 / IELTS 6.5 难度；句子要有长有短，避免模板腔。生词 10-12 个（含例句），短语 5-6 个，句式 3-4 个，语法点 3 个（都要从本篇原文里举例）。摘要 100-150 字中文。阅读题 5 道单选，answer 用 0 起始的下标，解析用中文说清错项为什么错。输出任务要求读者真正动笔。
-4. 听力：不要编写听写文本。只给出一个真实可访问的英文听力页面链接（优先 VOA Learning English、BBC 6 Minute English 这类每天有更新的栏目），url 必须是 http(s) 开头、能在浏览器打开；note 说明在这个页面上怎么找到当天音频、怎么配合精听。
-5. AI：每天一个概念，从基础往上走（Token、上下文窗口、幻觉、RAG、微调、Agent、Skill、MCP、评测……）。explain 三段要有递进，example 要具体到"你说什么、它做什么"。quiz 四个选项，answer 为下标。
-6. 全部内容使用中文全角标点；字符串内部需要引号时用中文引号“”或「」，不要用 ASCII 双引号。
-7. JSON 必须能被 JSON.parse 直接解析。`;
+1. 引言：一句压得住当日主题的名言，中外皆可，中文 18-36 字、英文不超过 20 词；作者必须真实存在，宁可选常见名句也不要编造；找不到可靠出处的 author 就换一句。source 没有把握就写空字符串。
+2. 语文：必须是**一篇完整的文章**，1200-2000 字，5-9 段，不许只给节选或片段。选公版名篇（1949 年前已故作者，如朱自清、鲁迅、郁达夫、老舍、傅雷、胡适、徐志摩、梁实秋、周作人、归有光、范仲淹、苏轼等）就给全文；否则自己写一篇完整的原创散文。首段要抓人，中段要有细节和转折，结尾要收得住。讲解 4-5 条，要具体到字词、节奏、标点，不要说空话。好词 6-8 个，好句 3-4 句，写作手法 4-5 种，仿写任务要能当天写完。
+3. 古诗文：与今日主题呼应的整首（词要整阕），注释 4-6 条，译文一段，赏析 3-4 段（讲结构、讲字眼、讲情感转折），背诵提示给结构线索。
+4. 英文：你必须原创，480-600 词，5-6 段，**雅思 6.5-7.5 水平**：要有抽象概念、解释性从句、让步与对比，避免四六级模板腔和口语化表达。生词 12-15 个（含例句），**地道搭配 8-10 个**（collocations，如 "pose a threat to"、"a growing body of evidence"这种真正能背下来用的），短语 6-8 个，句式 4-5 个，语法点 3-4 个（都要从本篇原文里举例）。摘要 120-160 字中文。阅读题 5-6 道单选，answer 用 0 起始的下标，解析用中文说清错项为什么错。输出任务要求读者真正动笔。
+5. 听力：**必须给中国大陆能直接打开的链接**，优先「中国日报英语点津 language.chinadaily.com.cn」「CGTN」「21世纪英文报 i21st.cn」这类国内站点；不要给 VOA、BBC、YouTube、Spotify（国内常打不开）。url 必须是 http(s) 开头；note 说明在这个页面上怎么找到当天音频、怎么配合精听。
+6. AI：每天一个概念，从基础往上走（Agent、Token、上下文窗口、幻觉、RAG、微调、Skill、MCP、评测……）。explain 三段要有递进，example 要具体到"你说什么、它做什么"。quiz 四个选项，answer 为下标。
+7. 清单：5-6 项，覆盖五个板块，每项一句话、动词开头（读完/背下/做完/听/讲），tip 给一句方法提示，不要空话。
+8. 全部内容使用中文全角标点；字符串内部需要引号时用中文引号“”或「」，不要用 ASCII 双引号。
+9. JSON 必须能被 JSON.parse 直接解析。`;
 }
 
 function stub(topic) {
-  const day = WEEK[new Date().getDay()];
   return {
     theme: topic.theme,
+    quote: { text: '（占位）真正的引言会在配置 API_KEY 后出现在这里。', author: '待生成', source: '' },
     chinese: {
       title: '（占位）' + topic.chinese,
       author: '待生成',
       tag: '占位内容',
       readingTime: '—',
+      image: 'paper',
+      imageCaption: '占位插图',
       body: ['这是占位内容。运行 `node scripts/generate.mjs --force` 并配置 API_KEY 后，这里会变成当天真正的文章。'],
       explain: [{ line: '占位', note: '配置好 API Key 后重新生成即可。' }],
       words: [{ w: '占位', meaning: '—', use: '—' }],
@@ -155,13 +176,15 @@ function stub(topic) {
     },
     poem: {
       title: '（占位）' + topic.poem, author: '—', dynasty: '—', tag: '—',
+      image: 'paper', imageCaption: '占位插图',
       body: ['占位'], notes: [{ line: '—', note: '—' }], translation: '—',
       appreciation: ['—'], recite: '—',
     },
     english: {
-      title: 'Placeholder: ' + topic.english, level: 'CET-6', words: 0,
+      title: 'Placeholder: ' + topic.english, level: 'IELTS 7.0', words: 0,
       body: ['Placeholder content. Configure API_KEY and re-run the generator.'],
       vocab: [{ w: 'placeholder', pos: 'n.', cn: '占位', ex: 'This is a placeholder.' }],
+      collocations: [{ phrase: 'placeholder', cn: '占位', ex: 'This is a placeholder.' }],
       phrases: [{ p: '—', cn: '—', ex: '—' }],
       patterns: [{ s: '—', cn: '—', note: '—' }],
       grammar: [{ point: '—', explain: '—', example: '—' }],
@@ -170,8 +193,8 @@ function stub(topic) {
       output: { prompt: '—', tasks: ['—'] },
     },
     listening: {
-      title: '（占位）' + topic.listening, level: '—', source: 'VOA Learning English',
-      url: 'https://learningenglish.voanews.com/', note: '占位。',
+      title: '（占位）' + topic.listening, level: '—', source: '中国日报英语点津',
+      url: 'https://language.chinadaily.com.cn/', note: '占位。',
     },
     ai: {
       term: '（占位）' + topic.ai, oneLiner: '占位。',
@@ -179,6 +202,7 @@ function stub(topic) {
       quiz: { q: '占位？', options: ['A', 'B', 'C', 'D'], answer: 0, explain: '占位。' },
       next: '—',
     },
+    checklist: [{ text: '读完今天的晨读文章', tip: '出声读一遍' }],
   };
 }
 
@@ -223,6 +247,25 @@ function validate(day) {
   const l = day.listening || {};
   if (!l.title) throw new Error('listening.title 缺失');
   if (!/^https?:\/\//.test(String(l.url || ''))) throw new Error('listening.url 必须是 http(s) 链接');
+
+  // 插图只认内置场景，写错了退成素纸，不要让页面报错
+  const ART = new Set(['lotus-moon', 'autumn-mountain', 'bamboo', 'snow-peak',
+    'spring-river', 'rain-window', 'dunes', 'lamp', 'paper']);
+  for (const k of ['chinese', 'poem']) {
+    const sec = day[k];
+    if (sec.image && !ART.has(sec.image)) {
+      console.warn(`⚠ ${k}.image「${sec.image}」不在内置场景里，改用 paper`);
+      sec.image = 'paper';
+    }
+  }
+
+  if (!day.quote || !String(day.quote.text || '').trim()) {
+    console.warn('⚠ 缺少 quote，页面顶部的每日一句会空着');
+  }
+  if (!Array.isArray(day.checklist) || !day.checklist.length) {
+    console.warn('⚠ 缺少 checklist，页面会用默认的五项清单');
+  }
+
   return day;
 }
 

@@ -9,17 +9,18 @@
 
 ## 它长什么样
 
-一天一页，从上到下五个板块：
+打开先是一句**名言**（大字号、衬线体），再往下是五个板块：
 
 | 板块 | 内容 |
 | --- | --- |
-| **晨读** | 一篇公版名篇节选或原创散文 + 逐句讲解 + 好词好句 + 写作手法 + 当天能写完的仿写任务 |
-| **古诗文** | 一首与当日主题呼应的诗词：注释、白话译文、结构赏析、背诵提示 |
-| **英文精读** | 300–350 词原创文章（CET-6 / IELTS 6.5 难度）+ 生词、短语、句式、语法点 + 中文摘要 + 5 道单选题 + 输出任务 |
-| **英语听力** | 只给一个真实音频页面的外链（VOA Learning English 等）+ 通用精听四步法 |
+| **晨读** | 一篇**完整的**公版名篇（1200–2000 字）+ 应景插画 + 逐句讲解 + 好词好句 + 写作手法 + 当天能写完的仿写任务 |
+| **古诗文** | 一首与当日主题呼应的诗词：应景插画、注释、白话译文、结构赏析、背诵提示 |
+| **英文精读** | 480–600 词原创文章（IELTS 7.0 难度）+ 生词、**地道搭配**、短语、句式、语法点 + 中文摘要 + 6 道单选题 + 输出任务 |
+| **英语听力** | 只给一个**国内可直接打开**的音频/双语页面外链（中国日报英语点津、CGTN 等）+ 通用精听四步法 |
 | **AI 知识** | 每天一个 AI 概念（智能体 → Token → 上下文窗口 → 幻觉 → RAG …），配类比、场景和小测 |
+| **今日清单** | 当天的可勾选任务清单，勾选即保存，全部勾完会提示休息 |
 
-互动部分：选择题答错自动进错题本（带中文解析）、生词卡点击显隐、中文段落朗读、笔记自动保存、板块标记完成、每日打卡与连续天数、深浅色切换、按日期回看历史。
+互动部分：选择题答错自动进错题本（带中文解析）、生词卡点击显隐、英文全文朗读、笔记自动保存、板块标记完成、清单打勾、每日打卡与连续天数、深浅色切换、按日期回看历史。
 
 ---
 
@@ -87,7 +88,8 @@ daily-learn/
 ├── index.html                  # 页面外壳
 ├── assets/
 │   ├── style.css               # 设计系统（纸感暖色 + 深色模式）
-│   └── app.js                  # 全部交互（渲染、答题、打卡、笔记、TTS）
+│   ├── art.js                  # 9 幅代码生成的水墨插画（无外部图片）
+│   └── app.js                  # 全部交互（渲染、答题、清单、打卡、笔记、TTS）
 ├── data/
 │   └── days/
 │       ├── index.js            # 日期索引（脚本自动维护）
@@ -105,20 +107,45 @@ daily-learn/
 
 ## 内容数据结构
 
-`data/days/<日期>.js` 里是一个对象，五个板块 + 元信息：
+`data/days/<日期>.js` 里是一个对象，五个板块 + 名言 + 清单：
 
 ```js
 window.LEARN_DAY = {
   date: "2026-10-27", weekday: "周二", theme: "当日主题",
-  chinese:   { title, author, tag, readingTime, body[], explain[], words[], expressions[], techniques[], imitation{} },
-  poem:      { title, author, dynasty, tag, body[], notes[], translation, appreciation[], recite },
-  english:   { title, level, body[], vocab[], phrases[], patterns[], grammar[], summary, questions[], output{} },
-  listening: { title, level, source, url, note },
-  ai:        { term, oneLiner, explain[], analogy, example, takeaway, quiz{}, next }
+  quote:     { text, author, source },                      // 首屏每日一句
+  chinese:   { title, author, tag, readingTime, image, imageCaption,
+               body[], explain[], words[], expressions[], techniques[], imitation{} },
+  poem:      { title, author, dynasty, tag, image, imageCaption,
+               body[], notes[], translation, appreciation[], recite },
+  english:   { title, level, words, body[], vocab[], collocations[], phrases[], patterns[], grammar[],
+               summary, questions[], output{} },
+  listening: { title, level, source, url, note },            // url 必须是 http(s) 外链
+  ai:        { term, oneLiner, explain[], analogy, example, takeaway, quiz{}, next },
+  checklist: [{ text, tip }]                                 // 今日任务清单
 }
 ```
 
-`questions[].answer` 是 **0 起始的下标**（0 = A）。生成脚本会校验题量和下标合法性，不合法直接报错而不是写出坏数据。
+`questions[].answer` 是 **0 起始的下标**（0 = A）。生成脚本会校验题量与下标合法性，不合法直接报错而不是写出坏数据；`image` 不认识时自动退回 `paper`（素纸）。
+
+---
+
+## 配图
+
+`assets/art.js` 里内置 9 幅**代码生成的水墨插画**，不引用任何外部图片，离线可用、无版权问题，并且同一个场景名每次画出来都一样。数据里只写场景名：
+
+| 场景名 | 画面 |
+| --- | --- |
+| `lotus-moon` | 荷塘月色 |
+| `autumn-mountain` | 空山新雨 |
+| `bamboo` | 竹影 |
+| `snow-peak` | 雪岭 |
+| `spring-river` | 春江 |
+| `rain-window` | 雨窗 |
+| `dunes` | 沙丘 |
+| `lamp` | 灯下 |
+| `paper` | 素纸（兜底） |
+
+要加新画面：在 `art.js` 的 `SCENES` 里加一个 `{ label, draw() }`，`draw()` 返回 SVG 片段即可。
 
 ---
 
@@ -133,7 +160,7 @@ window.LEARN_DAY = {
   "poem": "诗词方向，如「王维《山居秋暝》」",
   "english": "英文题材，如「科技与生活 · 讨论 AI 助手」",
   "ai": "当天要讲的 AI 概念",
-  "listening": "听力方向，如「VOA 慢速英语 · 日常对话」"
+  "listening": "听力方向，如「中国日报英语点津 · 双语新闻」"
 }
 ```
 
@@ -148,7 +175,9 @@ window.LEARN_DAY = {
 - **语文**：只用公版作品（明清以前，或 1949 年前已故作者），或由模型原创。
 - **古诗文**：公版。
 - **英文精读**：模型原创，不搬运他人文章。
-- **听力**：只给外部链接（VOA Learning English 等公开栏目），不复制其音频或文稿。
+- **听力**：只给外部链接（中国日报英语点津、CGTN 等国内可直接访问的公开栏目），不复制其音频或文稿。
+- **配图**：`assets/art.js` 用代码画的水墨插画，无第三方素材。
+- **名言**：中外名人语句，均为公版内容并标注作者与出处。
 - **AI 知识**：原创讲解。
 
 模型生成的内容**可能有事实或表述错误**，尤其古诗文注释和语法讲解，请以自己的判断为准；发现问题欢迎提 Issue 或 PR 修正。

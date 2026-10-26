@@ -28,6 +28,16 @@
   const wrongs   = Store.get('dl.wrong', []);      // [{ date, q, opts, ans, chosen, explain }]
   const meta     = Store.get('dl.meta', { theme: 'light', checkin: {} });
   if (!meta.checkin) meta.checkin = {};
+  const tasks    = Store.get('dl.tasks', {});      // { date: { "0": 1, "2": 1 } }
+
+  /* 数据里没写清单时用的默认五项 */
+  const DEFAULT_TASKS = [
+    { text: '把晨读文章读完一遍', tip: '出声读，读到能复述大意' },
+    { text: '背下今天的古诗文', tip: '先理解再背，比死记快十倍' },
+    { text: '做完英文阅读题', tip: '错题会自动进错题本' },
+    { text: '听今天的听力材料', tip: '先盲听两遍再看文本' },
+    { text: '学一个 AI 概念', tip: '能用一句话讲给别人听才算会' },
+  ];
 
   /* ---------------- 小工具 ---------------- */
 
@@ -164,16 +174,37 @@
     const main = $('#main');
     main.innerHTML = '';
 
+    main.append(renderQuote(d.quote));
     main.append(renderHero(d));
     main.append(renderChinese(d.chinese));
     main.append(renderPoem(d.poem));
     main.append(renderEnglish(d.english));
     main.append(renderListening(d.listening));
     main.append(renderAI(d.ai));
+    main.append(renderChecklist(d.checklist));
 
     renderFooter(d);
     observeSections();
     refreshProgress();
+  }
+
+  /* ---- 00 每日一句 ---- */
+  function renderQuote(q) {
+    if (!q || !q.text) return h('div');
+    const isEn = !/[\u4e00-\u9fa5]/.test(q.text);
+    const by = q.author ? (q.source ? `${q.author}《${q.source}》` : q.author) : '';
+    return h('div', { class: 'quote' },
+      h('div', { class: 'quote-text' + (isEn ? ' en' : '') }, q.text),
+      by ? h('div', { class: 'quote-author' }, by) : null);
+  }
+
+  /* 数据里写场景名（如 "lotus-moon"），这里渲染内置水墨插图 */
+  function artFigure(key, caption) {
+    const art = window.LEARN_ART;
+    if (!key || !art) return null;
+    return h('figure', { class: 'art' },
+      h('div', { class: 'art-frame', html: art.svg(key) }),
+      h('figcaption', null, caption || art.label(key)));
   }
 
   function renderHero(d) {
@@ -209,8 +240,12 @@
     const { card, body } = sectionCard(SECTIONS[0]);
     body.append(
       h('h2', null, c.title),
-      h('div', { class: 'byline' }, `${c.author || ''}${c.author && c.tag ? ' · ' : ''}${c.tag || ''}${c.readingTime ? ' · ' + c.readingTime : ''}`),
-      h('div', { class: 'prose' }, c.body.map((p) => h('p', null, p))));
+      h('div', { class: 'byline' }, `${c.author || ''}${c.author && c.tag ? ' · ' : ''}${c.tag || ''}${c.readingTime ? ' · ' + c.readingTime : ''}`));
+
+    const fig = artFigure(c.image, c.imageCaption);
+    if (fig) body.append(fig);
+
+    body.append(h('div', { class: 'prose' }, c.body.map((p) => h('p', null, p))));
 
     if (c.explain?.length) {
       body.append(block('逐句讲解',
@@ -257,8 +292,12 @@
     const { card, body } = sectionCard(SECTIONS[1]);
     body.append(
       h('h2', null, p.title),
-      h('div', { class: 'byline' }, `${p.dynasty || ''} · ${p.author || ''}${p.tag ? ' · ' + p.tag : ''}`),
-      h('div', { class: 'poem-body' }, p.body.map((line) => h('p', null, line))));
+      h('div', { class: 'byline' }, `${p.dynasty || ''} · ${p.author || ''}${p.tag ? ' · ' + p.tag : ''}`));
+
+    const fig = artFigure(p.image, p.imageCaption);
+    if (fig) body.append(fig);
+
+    body.append(h('div', { class: 'poem-body' }, p.body.map((line) => h('p', null, line))));
 
     if (p.notes?.length) {
       body.append(block('注释', h('ul', { class: 'note-list' },
@@ -299,6 +338,15 @@
     if (e.vocab?.length) {
       body.append(block('重点词汇 · 点击卡片自测',
         h('div', { class: 'vocab-grid' }, e.vocab.map((v) => vocabCard(v)))));
+    }
+
+    if (e.collocations?.length) {
+      body.append(block('地道搭配 · 背下来就能用',
+        e.collocations.map((x) => h('div', { class: 'item' },
+          h('div', { class: 'item-q' },
+            h('span', { class: 'tag-word' }, x.phrase || x.p),
+            h('span', null, ' ' + (x.cn || ''))),
+          x.ex ? h('div', { class: 'item-a', style: 'font-family:var(--ff-en)' }, x.ex) : null))));
     }
 
     if (e.phrases?.length) {
@@ -364,7 +412,7 @@
       h('div', { class: 'listen-box' },
         h('a', {
           class: 'listen-btn',
-          href: url || 'https://learningenglish.voanews.com/',
+          href: url || 'https://language.chinadaily.com.cn/',
           target: '_blank',
           rel: 'noopener noreferrer',
         },
@@ -405,6 +453,56 @@
 
     if (a.next) body.append(h('div', { class: 'save-hint', style: 'margin-top:14px' }, '明天：' + a.next));
 
+    return card;
+  }
+
+  /* ---- 06 今日清单 ---- */
+  function renderChecklist(list) {
+    const date = state.date;
+    const items = (Array.isArray(list) && list.length ? list : DEFAULT_TASKS)
+      .map((x) => (typeof x === 'string' ? { text: x } : x));
+    const tstore = tasks[date] || (tasks[date] = {});
+
+    const countEl = h('b');
+    const countWrap = h('div', { class: 'task-count' }, countEl, ' / ' + items.length + ' 已完成');
+    const barFill = h('i');
+    const rows = [];
+
+    function sync() {
+      const n = items.filter((_, i) => tstore[i]).length;
+      countEl.textContent = String(n);
+      barFill.style.width = `${(n / items.length) * 100}%`;
+      rows.forEach((row, i) => row.classList.toggle('on', !!tstore[i]));
+      allEl.hidden = n < items.length;
+    }
+
+    items.forEach((it, i) => {
+      const box = h('span', { class: 'task-box' }, '✓');
+      const row = h('div', { class: 'task', 'data-i': i },
+        box,
+        h('div', { class: 'task-label' }, it.text,
+          it.tip ? h('span', { class: 'task-tip' }, it.tip) : null));
+      row.addEventListener('click', () => {
+        if (tstore[i]) delete tstore[i]; else tstore[i] = 1;
+        Store.set('dl.tasks', tasks);
+        sync();
+      });
+      rows.push(row);
+    });
+
+    const allEl = h('div', { class: 'task-all', hidden: true }, '今天的清单全部打勾了，去休息吧 🎉');
+
+    const card = h('section', { class: 'card', id: 'sec-tasks' },
+      h('div', { class: 'card-head' },
+        h('div', { class: 'kicker' }, '06 · 今日清单'),
+        h('div', { class: 'task-count' }, '打勾即保存')),
+      h('h2', null, '今天要做完这些'),
+      countWrap,
+      h('div', { class: 'task-bar' }, barFill),
+      ...rows,
+      allEl);
+
+    sync();
     return card;
   }
 

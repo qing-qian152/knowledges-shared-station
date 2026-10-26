@@ -331,13 +331,124 @@ textarea::placeholder { color: var(--muted); }
 
 .empty { color: var(--muted); font-size: 14px; padding: 20px 0; text-align: center; }
 
+/* ---------- 每日一句 ---------- */
+.quote {
+  position: relative;
+  margin: 2px 0 30px;
+  padding: 32px 16px 24px;
+  text-align: center;
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+}
+.quote::before {
+  content: "\201C";
+  position: absolute; top: -16px; left: 50%; transform: translateX(-50%);
+  font-family: var(--ff-en); font-size: 46px; line-height: 1;
+  color: color-mix(in srgb, var(--accent) 40%, transparent);
+  background: var(--bg); padding: 0 14px;
+}
+.quote-text {
+  margin: 0 auto;
+  max-width: 20em;
+  font-family: "STXingkai", "华文行楷", "Kaiti SC", "STKaiti", "KaiTi", "楷体", var(--ff-serif);
+  font-size: clamp(25px, 6.4vw, 42px);
+  line-height: 1.52;
+  letter-spacing: .04em;
+  font-weight: 400;
+  color: var(--ink);
+}
+.quote-text.en {
+  font-family: var(--ff-en);
+  font-style: italic;
+  font-size: clamp(20px, 4.3vw, 30px);
+  line-height: 1.55;
+  letter-spacing: .01em;
+  max-width: 24em;
+}
+.quote-author {
+  margin-top: 18px;
+  font-size: 12.5px;
+  letter-spacing: .16em;
+  color: var(--muted);
+}
+.quote-author::before { content: "—\00a0"; }
+
+/* ---------- 插图 ---------- */
+:root {
+  --art-sky: #eef0e6;   --art-sky-2: #e3e7da;
+  --art-far: #a3b09d;   --art-near: #6f806d;
+  --art-water: #dfe6dd; --art-moon: #fbf6e4;
+  --art-glow: #f4ecc6;  --art-blossom: #d98b7a;
+  --art-line: #7d8c78;
+}
+:root[data-theme="dark"] {
+  --art-sky: #1b211f;   --art-sky-2: #121715;
+  --art-far: #4d5c54;   --art-near: #303c36;
+  --art-water: #161d1a; --art-moon: #e9e2c6;
+  --art-glow: #6b6242;  --art-blossom: #c07a6a;
+  --art-line: #6d7d73;
+}
+.art { margin: 18px 0 22px; }
+.art-frame {
+  border-radius: 14px; overflow: hidden;
+  border: 1px solid var(--line);
+  background: var(--surface-2);
+  box-shadow: var(--shadow);
+  aspect-ratio: 5 / 2;
+}
+.art-frame svg { display: block; width: 100%; height: 100%; }
+.art figcaption {
+  margin-top: 8px; text-align: right;
+  font-size: 12px; color: var(--muted); letter-spacing: .08em;
+}
+
+/* ---------- 今日清单 ---------- */
+.tasks-head {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 12px; margin: 2px 0 12px;
+}
+.task-count { font-size: 13px; color: var(--muted); white-space: nowrap; }
+.task-count b { color: var(--accent); font-family: var(--ff-serif); font-size: 15.5px; }
+.task-bar {
+  height: 5px; border-radius: 99px; overflow: hidden;
+  background: var(--surface-2); margin-bottom: 16px;
+}
+.task-bar > i {
+  display: block; height: 100%; width: 0;
+  background: linear-gradient(90deg, var(--teal), var(--ok));
+  transition: width .3s ease;
+}
+.task {
+  display: flex; gap: 12px; align-items: flex-start;
+  padding: 12px 14px; margin-bottom: 9px;
+  background: var(--surface-2);
+  border: 1px solid transparent; border-radius: 12px;
+  cursor: pointer; -webkit-user-select: none; user-select: none;
+  transition: border-color .18s, background .18s;
+}
+.task:hover { border-color: var(--line); }
+.task-box {
+  flex: 0 0 19px; width: 19px; height: 19px; margin-top: 2px;
+  display: grid; place-items: center;
+  border: 1.5px solid color-mix(in srgb, var(--muted) 55%, transparent);
+  border-radius: 6px; font-size: 12px; line-height: 1;
+  color: transparent; transition: background .18s, border-color .18s, color .18s;
+}
+.task.on .task-box { background: var(--ok); border-color: var(--ok); color: #fff; }
+.task-label { font-size: 14.5px; line-height: 1.65; color: var(--ink); }
+.task.on .task-label { color: var(--muted); text-decoration: line-through; }
+.task-tip { display: block; font-size: 12px; color: var(--muted); margin-top: 2px; }
+.task-all { margin-top: 14px; font-size: 13.5px; color: var(--ok); }
+
 @media (min-width: 680px) {
   .vocab-grid { grid-template-columns: 1fr 1fr; }
   .card { padding: 30px 32px 26px; }
   .hero-title { font-size: 34px; }
+  .art-frame { aspect-ratio: 2.6 / 1; }
 }
 
 @media print {
   .topbar, .tabs, .done-btn, .audio-row, .footer { display: none; }
   .card { break-inside: avoid; box-shadow: none; }
+  .quote { border-color: #ccc; }
 }
