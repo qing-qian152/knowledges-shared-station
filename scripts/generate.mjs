@@ -206,30 +206,86 @@ function stub(topic) {
   };
 }
 
-async function callModel(prompt) {
-  const body = {
-    model: MODEL,
-    messages: [
-      { role: 'system', content: '你是严谨的中文编辑与英语教师，只输出合法 JSON。' },
-      { role: 'user', content: prompt },
-    ],
-    temperature: 0.85,
-    max_tokens: 8000,
-    response_format: { type: 'json_object' },
-  };
-  const res = await fetch(`${BASE}/chat/completions`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${KEY}` },
-    body: JSON.stringify(body),
-  });
-  if (!res.ok) {
-    const t = await res.text().catch(() => '');
-    throw new Error(`API ${res.status}: ${t.slice(0, 400)}`);
+/* 模型偶尔会在 JSON 后面多写一段话，或者被 max_tokens 截断。
+   这里做三件事：去围栏 → 直接 parse → 失败则按花括号配平截出第一个完整对象。 */
+function extractJson(text) {
+  let s = String(text || '').trim();
+  s = s.replace(/^```[a-zA-Z]*\s*/, '').replace(/```\s*$/, '').trim();
+  if (!s) throw new Error('模型返回为空');
+
+  try { return JSON.parse(s); } catch { /* 继续尝试截取 */ }
+
+  const start = s.indexOf('{');
+  if (start === -1) throw new Error('模型返回里找不到 JSON 对象');
+
+  let depth = 0, inStr = false, esc = false, end = -1;
+  for (let i = start; i < s.length; i++) {
+    const ch = s[i];
+    if (inStr) {
+      if (esc) esc = false;
+      else if (ch === '\\') esc = true;
+      else if (ch === '"') inStr = false;
+      continue;
+    }
+    if (ch === '"') inStr = true;
+    else if (ch === '{') depth++;
+    else if (ch === '}') { depth--; if (depth === 0) { end = i; break; } }
   }
-  const data = await res.json();
-  const raw = data?.choices?.[0]?.message?.content || '';
-  const cleaned = raw.trim().replace(/^```(?:json)?/i, '').replace(/```$/, '').trim();
-  return JSON.parse(cleaned);
+
+  if (end > start) {
+    const slice = s.slice(start, end + 1);
+    try {
+      return JSON.parse(slice);
+    } catch (e) {
+      throw new Error(`截出的 JSON 仍不合法：${e.message}\n开头：${slice.slice(0, 100)}\n结尾：${slice.slice(-100)}`);
+    }
+  }
+  throw new Error(`JSON 没有闭合（疑似被 max_tokens 截断）。已收到 ${s.length} 字符，结尾：${s.slice(-80)}`);
+}
+
+async function callModel(prompt) {
+  let lastErr;
+  for (let attempt = 1; attempt <= 2; attempt++) {
+    const body = {
+      model: MODEL,
+      messages: [
+        { role: 'system', content: '你是严谨的中文编辑与英语教师，只输出一个合法的 JSON 对象，不要输出任何解释、注释或 Markdown 围栏。' },
+        {
+          role: 'user',
+          content: attempt === 1
+            ? prompt
+            : `${prompt}\n\n【重要】上一次你的输出不是完整合法的 JSON。这次请只输出一个 JSON 对象，所有字符串用双引号，不要有尾随内容。`,
+        },
+      ],
+      temperature: attempt === 1 ? 0.85 : 0.3,
+      max_tokens: 8192,
+      response_format: { type: 'json_object' },
+    };
+    const res = await fetch(`${BASE}/chat/completions`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${KEY}` },
+      body: JSON.stringify(body),
+    });
+    if (!res.ok) {
+      const t = await res.text().catch(() => '');
+      throw new Error(`API ${res.status}: ${t.slice(0, 400)}`);
+    }
+    const data = await res.json();
+    const choice = data?.choices?.[0];
+    const raw = choice?.message?.content || '';
+    if (choice?.finish_reason === 'length') {
+      console.log('⚠ 输出被 max_tokens 截断（finish_reason=length），将重试');
+      lastErr = new Error('输出被截断');
+      continue;
+    }
+    try {
+      return extractJson(raw);
+    } catch (e) {
+      lastErr = e;
+      console.log(`⚠ 第 ${attempt} 次解析失败：${e.message.split('\n')[0]}`);
+    }
+  }
+  throw new Error(`两次都没拿到合法 JSON：${lastErr?.message}`);
 }
 
 function validate(day) {
