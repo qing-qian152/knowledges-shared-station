@@ -25,7 +25,7 @@ jobs:
 
       - name: Generate today's lesson
         env:
-          API_KEY: ${{ secrets.DEEPSEEK_API_KEY }}
+          API_KEY: ${{ secrets.DEEPSEEK_KNOWLEDGE_SHARE || secrets.DEEPSEEK_API_KEY }}
           MODEL: deepseek-chat
           TZ: Asia/Shanghai
         run: node scripts/generate.mjs
@@ -38,6 +38,6 @@ jobs:
           if git diff --cached --quiet; then
             echo "今天没有新内容，跳过提交"
           else
-            git commit -m "content: $(date -u +%F)"
+            git commit -m "content: $(TZ=Asia/Shanghai date +%F)"
             git push
           fi
