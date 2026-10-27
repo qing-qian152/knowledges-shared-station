@@ -199,11 +199,11 @@
   }
 
   /* 数据里写场景名（如 "lotus-moon"），这里渲染内置水墨插图 */
-  function artFigure(key, caption) {
+  function artFigure(key, caption, seed) {
     const art = window.LEARN_ART;
     if (!key || !art) return null;
     return h('figure', { class: 'art' },
-      h('div', { class: 'art-frame', html: art.svg(key) }),
+      h('div', { class: 'art-frame', html: art.svg(key, seed) }),
       h('figcaption', null, caption || art.label(key)));
   }
 
@@ -242,7 +242,7 @@
       h('h2', null, c.title),
       h('div', { class: 'byline' }, `${c.author || ''}${c.author && c.tag ? ' · ' : ''}${c.tag || ''}${c.readingTime ? ' · ' + c.readingTime : ''}`));
 
-    const fig = artFigure(c.image, c.imageCaption);
+    const fig = artFigure(c.image, c.imageCaption, state.date + '|c');
     if (fig) body.append(fig);
 
     body.append(h('div', { class: 'prose' }, c.body.map((p) => h('p', null, p))));
@@ -294,7 +294,7 @@
       h('h2', null, p.title),
       h('div', { class: 'byline' }, `${p.dynasty || ''} · ${p.author || ''}${p.tag ? ' · ' + p.tag : ''}`));
 
-    const fig = artFigure(p.image, p.imageCaption);
+    const fig = artFigure(p.image, p.imageCaption, state.date + '|p');
     if (fig) body.append(fig);
 
     body.append(h('div', { class: 'poem-body' }, p.body.map((line) => h('p', null, line))));
@@ -327,13 +327,29 @@
       speakAll(e.body.join(' '), readBtn);
     });
 
+    const trans = Array.isArray(e.translation) ? e.translation : [];
+    const hasTrans = trans.some((t) => t && String(t).trim());
+    const transBtn = h('button', { class: 'btn small ghost toggle-trans', type: 'button' }, '显示译文');
+    transBtn.style.display = hasTrans ? '' : 'none';
+
     body.append(
       h('h2', null, e.title),
       h('div', { class: 'en-meta' },
         h('span', { class: 'pill' }, e.level || 'CET-6'),
         h('span', { class: 'pill' }, `${e.words || ''} words`),
-        readBtn),
-      h('div', { class: 'en-prose' }, (e.body || []).map((p) => h('p', null, p))));
+        readBtn, transBtn),
+      h('div', { class: 'en-prose' }, (e.body || []).map((p, i) => {
+        const para = h('div', { class: 'en-para' }, h('p', null, p));
+        if (hasTrans && trans[i]) para.append(h('div', { class: 'trans' }, trans[i]));
+        return para;
+      })));
+
+    transBtn.addEventListener('click', (ev) => {
+      ev.stopPropagation();
+      const on = body.classList.toggle('show-trans');
+      transBtn.classList.toggle('on', on);
+      transBtn.textContent = on ? '隐藏译文' : '显示译文';
+    });
 
     if (e.vocab?.length) {
       body.append(block('重点词汇 · 点击卡片自测',
@@ -400,31 +416,112 @@
     return card;
   }
 
-  /* ---- 04 听力 ---- */
+  /* ---- 04 听力（自创短文 + 浏览器美音朗读） ---- */
   function renderListening(l) {
     const { card, body } = sectionCard(SECTIONS[3]);
-    const url = l.url || '';
-    const meta = [l.level, l.source ? '来源：' + l.source : ''].filter(Boolean).join(' · ');
+    const lines = (Array.isArray(l.lines) ? l.lines : []).filter((x) => x && x.en);
+    const meta = [l.level || '标准美音', l.words ? l.words + ' words' : '', l.topic || '']
+      .filter(Boolean).join(' · ');
 
     body.append(
       h('h2', null, l.title || '今日听力'),
-      meta ? h('div', { class: 'byline' }, meta) : null,
-      h('div', { class: 'listen-box' },
-        h('a', {
-          class: 'listen-btn',
-          href: url || 'https://language.chinadaily.com.cn/',
-          target: '_blank',
-          rel: 'noopener noreferrer',
-        },
-          h('span', { class: 'listen-ico' }, '▶'),
-          h('span', null, '去听今天的音频'),
-          h('span', { class: 'listen-go' }, '↗')),
-        l.note ? h('div', { class: 'listen-note' }, l.note) : null),
-      block('怎么听（通用四步）', h('ol', { class: 'note-list' },
-        h('li', null, '第一遍不看任何文本，听两遍抓大意：谁在说、发生了什么、态度是什么。'),
-        h('li', null, '第二遍边听边记，只写名词和动词；写不出来的地方就是你的听力盲区。'),
-        h('li', null, '第三遍跟读，模仿连读、弱读和句子重音，不用追求每个词都发对。'),
-        h('li', null, '隔一天再听一遍，检验是真听懂了，还是只是记住了文本。'))));
+      meta ? h('div', { class: 'byline' }, meta) : null);
+
+    if (!lines.length) {
+      body.append(h('div', { class: 'callout' }, l.note || '今天这段听力暂时没有文本。'));
+      return card;
+    }
+
+    const nodes = lines.map((ln) => h('div', { class: 'listen-line' },
+      h('p', { class: 'listen-en' }, ln.en),
+      ln.cn ? h('p', { class: 'listen-trans' }, ln.cn) : null));
+
+    const playBtn = h('button', { class: 'btn small', type: 'button' }, '▶ 播放');
+    const stopBtn = h('button', { class: 'btn small ghost', type: 'button' }, '■ 停止');
+    const transBtn = h('button', { class: 'btn small ghost toggle-trans', type: 'button' }, '显示译文');
+    const rateSel = h('select', { class: 'speed-sel' },
+      h('option', { value: '0.8' }, '0.8× 慢'),
+      h('option', { value: '0.95', selected: 'selected' }, '0.95×'),
+      h('option', { value: '1.1' }, '1.1× 快'));
+
+    body.append(
+      h('div', { class: 'listen-controls' }, playBtn, stopBtn, rateSel, transBtn),
+      h('div', { class: 'listen-lines' }, nodes),
+      l.note ? h('div', { class: 'listen-note' }, l.note) : null,
+      block('怎么听（四步）', h('ol', { class: 'note-list' },
+        h('li', null, '先不看文本，点播放听两遍，抓大意：谁、发生了什么、态度是什么。'),
+        h('li', null, '第三遍盯着文本听，把听不清的地方标出来——那就是你的盲区。'),
+        h('li', null, '跟读一遍，模仿连读、弱读和句子重音，不必每个词都发准。'),
+        h('li', null, '打开译文确认每句都懂；隔一天再盲听一次。'))));
+
+    const synth = window.speechSynthesis;
+    const U = window.SpeechSynthesisUtterance;
+    let voice = null, playing = false;
+
+    function pickVoice() {
+      const vs = (synth && synth.getVoices && synth.getVoices()) || [];
+      const score = (v) => {
+        let s = 0;
+        if (/^en[-_]US/i.test(v.lang)) s += 10;
+        else if (/^en[-_]GB/i.test(v.lang)) s += 6;
+        else if (/^en/i.test(v.lang)) s += 4;
+        if (/natural|neural|aria|jenny|guy|samantha|google us english|zira/i.test(v.name || '')) s += 5;
+        return s;
+      };
+      return vs.slice().sort((a, b) => score(b) - score(a))[0] || null;
+    }
+    voice = pickVoice();
+    if (synth && synth.addEventListener) {
+      synth.addEventListener('voiceschanged', () => { voice = pickVoice(); });
+    }
+
+    function clearHi() { nodes.forEach((n) => n.classList.remove('playing')); }
+
+    function done() {
+      playing = false;
+      clearHi();
+      playBtn.textContent = '▶ 播放';
+    }
+
+    function speakAt(i) {
+      if (!synth || !U) { playBtn.textContent = '此浏览器不支持朗读'; playing = false; return; }
+      if (i >= lines.length) { done(); return; }
+      clearHi();
+      nodes[i].classList.add('playing');
+      try {
+        if (nodes[i].scrollIntoView) nodes[i].scrollIntoView({ block: 'center', behavior: 'smooth' });
+      } catch { /* 有的环境不支持参数 */ }
+      const u = new U(lines[i].en);
+      u.lang = 'en-US';
+      if (voice) u.voice = voice;
+      u.rate = parseFloat(rateSel.value) || 0.95;
+      u.pitch = 1;
+      u.onend = () => { if (playing) speakAt(i + 1); };
+      u.onerror = () => { if (playing) speakAt(i + 1); };
+      synth.speak(u);
+    }
+
+    playBtn.addEventListener('click', (ev) => {
+      ev.stopPropagation();
+      if (!synth) { playBtn.textContent = '此浏览器不支持朗读'; return; }
+      synth.cancel();
+      playing = true;
+      playBtn.textContent = '❚❚ 停止';
+      speakAt(0);
+    });
+
+    stopBtn.addEventListener('click', (ev) => {
+      ev.stopPropagation();
+      if (synth) synth.cancel();
+      done();
+    });
+
+    transBtn.addEventListener('click', (ev) => {
+      ev.stopPropagation();
+      const on = body.classList.toggle('show-trans');
+      transBtn.classList.toggle('on', on);
+      transBtn.textContent = on ? '隐藏译文' : '显示译文';
+    });
 
     return card;
   }
