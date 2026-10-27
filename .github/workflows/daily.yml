@@ -61,7 +61,16 @@ jobs:
           git add data
           if git diff --cached --quiet; then
             echo "今天没有新内容，跳过提交"
-          else
-            git commit -m "content: $(TZ=Asia/Shanghai date +%F)"
-            git push
+            exit 0
           fi
+          git commit -m "content: $(TZ=Asia/Shanghai date +%F)"
+          for i in 1 2 3; do
+            if git pull --rebase --autostash origin "${GITHUB_REF_NAME}" && git push; then
+              echo "✓ 已推送"
+              exit 0
+            fi
+            echo "第 $i 次推送失败，5 秒后重试"
+            sleep 5
+          done
+          echo "✗ 三次推送均失败"
+          exit 1
