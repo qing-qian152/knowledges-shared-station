@@ -478,3 +478,68 @@ textarea::placeholder { color: var(--muted); }
   .card { break-inside: avoid; box-shadow: none; }
   .quote { border-color: #ccc; }
 }
+
+/* ---------- PWA：安装按钮 / iOS 提示 ---------- */
+.pwa-install {
+  position: fixed;
+  right: 16px;
+  bottom: calc(16px + env(safe-area-inset-bottom, 0px));
+  z-index: 80;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 10px 15px;
+  border: 0;
+  border-radius: 999px;
+  background: var(--accent);
+  color: #fff;
+  font-family: var(--ff-sans);
+  font-size: 13px;
+  letter-spacing: .02em;
+  box-shadow: 0 6px 18px rgba(120, 50, 30, .28);
+  cursor: pointer;
+  transition: transform .15s ease, opacity .15s ease;
+}
+.pwa-install:hover { transform: translateY(-1px); }
+.pwa-install:disabled { cursor: default; }
+.pwa-install.is-dim { opacity: .6; }
+.pwa-install-ico { font-size: 15px; line-height: 1; }
+.pwa-install-x {
+  position: absolute;
+  top: -7px;
+  right: -7px;
+  width: 19px;
+  height: 19px;
+  border-radius: 50%;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 17px;
+  text-align: center;
+  box-shadow: var(--shadow);
+}
+.pwa-install-x:hover { color: var(--accent); }
+
+.pwa-hint {
+  position: fixed;
+  left: 12px;
+  right: 12px;
+  bottom: calc(16px + env(safe-area-inset-bottom, 0px));
+  z-index: 80;
+  padding: 12px 14px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--surface);
+  color: var(--ink-2);
+  font-family: var(--ff-sans);
+  font-size: 13px;
+  line-height: 1.55;
+  box-shadow: var(--shadow);
+}
+.pwa-hint b { color: var(--ink); }
+.pwa-hint-x { margin-left: 8px; color: var(--accent); cursor: pointer; }
+
+@media print {
+  .pwa-install, .pwa-hint { display: none; }
+}
