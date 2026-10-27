@@ -11,6 +11,8 @@
     { id: 'english',   name: '英文', icon: '🔤', kicker: '03 · 英文精读' },
     { id: 'listening', name: '听力', icon: '🎧', kicker: '04 · 英语听力' },
     { id: 'ai',        name: 'AI',   icon: '✦',  kicker: '05 · AI 一小时' },
+    { id: 'frontier',  name: '前沿', icon: '⚡', kicker: '06 · AI 前沿' },
+    { id: 'invest',    name: '投资', icon: '📈', kicker: '07 · 投资' },
   ];
 
   const Store = {
@@ -78,9 +80,33 @@
 
   function dayProgress(date) { return progress[date] || (progress[date] = {}); }
 
+  /* 前沿板块存在 data/frontier.js，按日期取；取不到就整块不出现，
+     这样没写前沿的旧日期仍然是 5 个板块，进度分母不会变成 6。 */
+  function frontierFor(date) {
+    const all = window.LEARN_FRONTIER || {};
+    const f = all[date];
+    return f && Array.isArray(f.items) && f.items.length ? f : null;
+  }
+
+  /* 投资板块同理：data/invest.js 里没有当天的行情或消息，就不出现。 */
+  function investFor(date) {
+    const all = window.LEARN_INVEST || {};
+    const v = all[date];
+    if (!v) return null;
+    const hasIdx = Array.isArray(v.indices) && v.indices.length;
+    const hasNews = Array.isArray(v.news) && v.news.length;
+    const hasKnow = v.knowledge && v.knowledge.term;
+    return hasIdx || hasNews || hasKnow ? v : null;
+  }
+
+  function activeSections() {
+    const avail = { frontier: !!frontierFor(state.date), invest: !!investFor(state.date) };
+    return SECTIONS.filter((s) => !(s.id in avail) || avail[s.id]);
+  }
+
   function doneCount(date) {
     const p = progress[date] || {};
-    return SECTIONS.filter((s) => p[s.id]).length;
+    return activeSections().filter((s) => p[s.id]).length;
   }
 
   /* ---------------- 主题 ---------------- */
@@ -135,9 +161,8 @@
   function buildTabs() {
     const nav = $('#tabs');
     nav.innerHTML = '';
-    SECTIONS.forEach((s) => {
+    activeSections().forEach((s) => {
       const a = h('a', { class: 'tab', href: `#sec-${s.id}`, 'data-id': s.id },
-        h('span', { class: 'dot' }),
         h('span', { class: 'tab-name' }, `${s.icon} ${s.name}`));
       a.addEventListener('click', (ev) => {
         ev.preventDefault();
@@ -152,7 +177,7 @@
     state.date = date;
     const sel = $('#dateSel');
     if (sel.value !== date) sel.value = date;
-
+    buildTabs();
     delete window.LEARN_DAY;
     try {
       await loadScript(`data/days/${date}.js`);
@@ -181,6 +206,10 @@
     main.append(renderEnglish(d.english));
     main.append(renderListening(d.listening));
     main.append(renderAI(d.ai));
+    const fr = frontierFor(state.date);
+    if (fr) main.append(renderFrontier(fr));
+    const inv = investFor(state.date);
+    if (inv) main.append(renderInvest(inv));
     main.append(renderChecklist(d.checklist));
 
     renderFooter(d);
@@ -553,7 +582,184 @@
     return card;
   }
 
-  /* ---- 06 今日清单 ---- */
+  /* ---- 06 前沿：AI 前沿速递 + 今日上手任务 ---- */
+  function extLink(url, text, cls) {
+    return h('a', { href: url, target: '_blank', rel: 'noopener noreferrer', class: cls || null }, text);
+  }
+
+  function renderFrontier(f) {
+    const { card, body } = sectionCard(SECTIONS[5]);
+
+    body.append(h('div', { class: 'byline' },
+      f.updated ? `今日速递 · 更新于 ${f.updated}` : '今日速递'));
+
+    if (f.lead) {
+      body.append(h('div', { class: 'callout teal', style: 'margin-bottom:6px' },
+        h('b', null, '今天在发生什么：'), f.lead));
+    }
+
+    (f.items || []).forEach((it) => {
+      const title = it.url ? extLink(it.url, it.title) : h('span', null, it.title);
+      const meta = [it.source, it.meta].filter(Boolean).join(' · ');
+      body.append(h('div', { class: 'item' },
+        h('div', { class: 'item-q' }, title),
+        it.takeaway
+          ? h('div', { class: 'item-a', style: 'margin:8px 0' }, h('b', null, '一句记住：'), it.takeaway)
+          : null,
+        h('div', { class: 'item-a' }, h('b', null, '为什么值得看：'), it.why || ''),
+        it.publishedAt ? h('div', { class: 'byline', style: 'margin:8px 0 0' }, '发布：' + it.publishedAt) : null,
+        meta ? h('div', { class: 'byline', style: 'margin:2px 0 0' }, '来源：' + meta) : null));
+    });
+
+    if ((f.repos || []).length) {
+      body.append(block('🛠 今天可以动手的 GitHub 项目',
+        h('div', { class: 'byline', style: 'margin-bottom:4px' },
+          '星数是抓取那一刻的快照，只说明「很多人看过」；能不能学到东西，取决于你有没有真的跑一次。'),
+        ...f.repos.map((r) => h('div', { class: 'item' },
+          h('div', { class: 'item-q' }, extLink(r.url, r.name),
+            r.stars ? h('span', { class: 'stars' }, `★ ${Number(r.stars).toLocaleString('en-US')}`) : null,
+            r.lang ? h('span', { class: 'pill', style: 'margin-left:8px' }, r.lang) : null),
+          h('div', { class: 'item-a' }, r.what || ''),
+          r.tryThis
+            ? h('div', { class: 'item-a', style: 'margin-top:6px' },
+                h('b', null, `怎么试${r.minutes ? `（约 ${r.minutes} 分钟）` : ''}：`), r.tryThis)
+            : null))));
+    }
+
+    const t = f.task;
+    if (t) {
+      const steps = (t.steps || []).map((s, i) =>
+        h('p', { style: 'text-indent:0;margin:0 0 8px' }, `${i + 1}. ${s}`));
+      body.append(block(`今天上手做这一件${t.time ? `（${t.time}）` : ''}`,
+        h('div', { class: 'callout teal' },
+          h('b', null, t.title || ''),
+          t.goal ? ` —— ${t.goal}` : ''),
+        t.url ? h('div', { class: 'byline', style: 'margin-top:8px' }, '材料：', extLink(t.url, t.url)) : null,
+        steps.length
+          ? h('div', { style: 'font-family:var(--ff-sans);font-size:15px;line-height:1.85;margin-top:12px' }, ...steps)
+          : null,
+        t.done
+          ? h('div', { class: 'callout', style: 'margin-top:8px' }, h('b', null, '做完的标准：'), t.done)
+          : null,
+        t.output
+          ? h('div', { class: 'callout gold', style: 'margin-top:8px' }, h('b', null, '产出：'), t.output)
+          : null,
+        textareaFor('frontier-log', '做完写三行：我做了什么 / 卡在哪 / 下次怎么改…')));
+    }
+
+    if (f.concept && f.concept.term) {
+      body.append(block('顺手补一个概念',
+        h('div', { class: 'item' },
+          h('div', { class: 'item-q' }, f.concept.term),
+          h('div', { class: 'item-a' }, f.concept.line || ''))));
+    }
+
+    if ((f.keywords || []).length) {
+      body.append(block('今天记住这三个词',
+        h('div', null, ...f.keywords.map((k) => h('span', { class: 'pill', style: 'font-size:14px' }, k)))));
+    }
+
+    if (f.note) body.append(h('div', { class: 'save-hint', style: 'margin-top:14px' }, f.note));
+
+    return card;
+  }
+
+  /* ---- 07 投资：一个知识 + 今日行情 + 带来源的消息 ---- */
+
+  function sparkline(series) {
+    const pts = (series || []).filter((p) => Array.isArray(p) && isFinite(Number(p[1])));
+    if (pts.length < 2) return null;
+    const W = 300, H = 64, P = 4;
+    const vals = pts.map((p) => Number(p[1]));
+    const min = Math.min(...vals), max = Math.max(...vals);
+    const span = max - min || 1;
+    const x = (i) => P + (i * (W - P * 2)) / (pts.length - 1);
+    const y = (v) => H - P - ((v - min) / span) * (H - P * 2);
+    const line = vals.map((v, i) => `${i ? 'L' : 'M'}${x(i).toFixed(1)},${y(v).toFixed(1)}`).join(' ');
+    const area = `${line} L${x(vals.length - 1).toFixed(1)},${H - P} L${x(0).toFixed(1)},${H - P} Z`;
+    const color = vals[vals.length - 1] >= vals[0] ? 'var(--accent)' : 'var(--ok)';
+    const label = `${pts[0][0]} 至 ${pts[pts.length - 1][0]}，共 ${pts.length} 个交易日`;
+    return h('div', { class: 'spark', title: label, html:
+      `<svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="none" role="img" aria-label="${label}">` +
+      `<path d="${area}" fill="${color}" opacity="0.1"/>` +
+      `<path d="${line}" fill="none" stroke="${color}" stroke-width="1.6" stroke-linejoin="round" stroke-linecap="round"/>` +
+      `<circle cx="${x(vals.length - 1).toFixed(1)}" cy="${y(vals[vals.length - 1]).toFixed(1)}" r="2.6" fill="${color}"/>` +
+      `</svg>` });
+  }
+
+  function indexCard(x) {
+    const pct = Number(x.pct);
+    const cls = pct > 0 ? 'up' : pct < 0 ? 'down' : '';
+    const sign = pct > 0 ? '+' : '';
+    const vals = (x.series || []).map((p) => Number(p[1])).filter((n) => isFinite(n));
+    const fmt = (n) => Number(n).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    const first = (x.series || [])[0];
+    const last = (x.series || [])[(x.series || []).length - 1];
+
+    return h('div', { class: 'idx' },
+      h('div', { class: 'idx-name' }, x.name + (x.code ? ` · ${x.code}` : '')),
+      h('div', { class: 'idx-val' }, fmt(x.last)),
+      h('div', { class: 'idx-chg ' + cls }, `${sign}${Number(x.chg).toFixed(2)}（${sign}${Number(x.pct).toFixed(2)}%）`),
+      sparkline(x.series),
+      vals.length > 1 && first && last
+        ? h('div', { class: 'idx-range' },
+            h('span', null, `${String(first[0]).slice(5)} – ${String(last[0]).slice(5)}`),
+            h('span', null, `${fmt(Math.min(...vals))} ~ ${fmt(Math.max(...vals))}`))
+        : null,
+      x.asof ? h('div', { class: 'idx-range' }, h('span', null, x.asof)) : null,
+      x.source
+        ? h('div', { class: 'idx-range' }, h('span', null, '来源：'),
+            x.url ? extLink(x.url, x.source) : h('span', null, x.source))
+        : null);
+  }
+
+  function renderInvest(v) {
+    const { card, body } = sectionCard(SECTIONS[6]);
+
+    body.append(h('div', { class: 'byline' },
+      [v.asof ? `数据截至 ${v.asof}` : '', v.updated ? `更新于 ${v.updated}` : ''].filter(Boolean).join(' · ')));
+
+    if (v.brief) {
+      body.append(h('div', { class: 'callout teal', style: 'margin-bottom:6px' },
+        h('b', null, '今天一眼：'), v.brief));
+    }
+
+    const k = v.knowledge;
+    if (k && k.term) {
+      body.append(block('今天一个投资知识',
+        h('div', { class: 'ai-term' }, k.term),
+        k.plain ? h('div', { class: 'item-a', style: 'font-size:15px;margin-bottom:10px' },
+          h('b', null, '说人话：'), k.plain) : null,
+        k.example ? h('div', { class: 'callout', style: 'margin-bottom:8px' },
+          h('b', null, '举个例子：'), k.example) : null,
+        k.pitfall ? h('div', { class: 'callout gold', style: 'margin-bottom:10px' },
+          h('b', null, '最容易踩的坑：'), k.pitfall) : null,
+        k.quiz ? quizCard({ ...k.quiz, _single: true }, 0, 'invest') : null));
+    }
+
+    if ((v.indices || []).length) {
+      body.append(block('今日市场', h('div', { class: 'idx-grid' }, ...v.indices.map(indexCard))));
+    }
+
+    const news = (v.news || []).slice()
+      .sort((a, b) => String(b.time || '').localeCompare(String(a.time || '')));
+    if (news.length) {
+      body.append(block('最近的消息（点标题看原文）',
+        ...news.map((n) => h('div', { class: 'item' },
+          h('div', { class: 'item-q' }, n.url ? extLink(n.url, n.title) : h('span', null, n.title)),
+          h('div', { class: 'byline', style: 'margin:8px 0 0' },
+            [n.time, n.source].filter(Boolean).join(' · ')),
+          n.gist ? h('div', { class: 'item-a', style: 'margin-top:4px' }, n.gist) : null))));
+    }
+
+    if (v.disclaimer) {
+      body.append(h('div', { class: 'save-hint', style: 'margin-top:14px' }, v.disclaimer));
+    }
+
+    return card;
+  }
+
+  /* ---- 07 今日清单 ---- */
   function renderChecklist(list) {
     const date = state.date;
     const items = (Array.isArray(list) && list.length ? list : DEFAULT_TASKS)
@@ -591,7 +797,7 @@
 
     const card = h('section', { class: 'card', id: 'sec-tasks' },
       h('div', { class: 'card-head' },
-        h('div', { class: 'kicker' }, '06 · 今日清单'),
+        h('div', { class: 'kicker' }, `${pad(activeSections().length + 1)} · 今日清单`),
         h('div', { class: 'task-count' }, '打勾即保存')),
       h('h2', null, '今天要做完这些'),
       countWrap,
@@ -698,7 +904,7 @@
 
   function refreshProgress() {
     const n = doneCount(state.date);
-    const total = SECTIONS.length;
+    const total = activeSections().length;
     const txt = $('#progText');
     if (txt) txt.textContent = `${n} / ${total} 已完成`;
     const bar = document.querySelector('.hero-bar > i');
@@ -721,7 +927,7 @@
     f.innerHTML = '';
 
     const n = doneCount(state.date);
-    const total = SECTIONS.length;
+    const total = activeSections().length;
     const checked = !!meta.checkin[state.date];
     const streak = calcStreak();
 

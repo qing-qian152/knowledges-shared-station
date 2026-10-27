@@ -4,7 +4,7 @@
    - 每日内容 data/days/*.js → 网络优先，断网回落到缓存
    每次发布页面外壳有改动时，把 VERSION 改一下即可让旧缓存自动淘汰。 */
 
-const VERSION = 'v1';
+const VERSION = 'v3';
 const SHELL_CACHE = `shell-${VERSION}`;
 const DATA_CACHE = `data-${VERSION}`;
 
@@ -21,7 +21,9 @@ const SHELL = [
   './assets/icon-512.png',
   './assets/icon-maskable-512.png',
   './assets/apple-touch-icon.png',
-  './data/days/index.js'
+  './data/days/index.js',
+  './data/frontier.js',
+  './data/invest.js'
 ];
 
 self.addEventListener('install', (event) => {
@@ -49,8 +51,8 @@ self.addEventListener('fetch', (event) => {
   const url = new URL(req.url);
   if (url.origin !== self.location.origin) return;
 
-  // 每日内容：先要最新的，失败才用缓存
-  if (url.pathname.includes('/data/days/')) {
+  // 数据文件（每日内容 / 前沿 / 投资）：先要最新的，失败才用缓存
+  if (url.pathname.includes('/data/')) {
     event.respondWith((async () => {
       try {
         const fresh = await fetch(req);

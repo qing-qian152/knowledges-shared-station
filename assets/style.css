@@ -182,6 +182,8 @@ main { max-width: 820px; margin: 0 auto; padding: 22px 18px 40px; }
 .item-q { font-family: var(--ff-serif); font-size: 16px; color: var(--ink); margin-bottom: 4px; }
 .item-a { font-size: 14.5px; color: var(--ink-2); line-height: 1.85; }
 .item-a b { color: var(--accent); font-weight: 600; }
+.item-q a { color: inherit; text-decoration: none; border-bottom: 1px solid var(--line); }
+.item-q a:hover { color: var(--accent); border-bottom-color: var(--accent); }
 
 .tag-word {
   display: inline-block; font-family: var(--ff-serif); font-size: 15px;
@@ -540,6 +542,44 @@ textarea::placeholder { color: var(--muted); }
 }
 .pwa-hint b { color: var(--ink); }
 .pwa-hint-x { margin-left: 8px; color: var(--accent); cursor: pointer; }
+
+/* ---- 投资板块：指数卡 + 走势图（纯 CSS/SVG，无第三方依赖） ---- */
+.idx-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+  gap: 12px;
+  margin-top: 10px;
+}
+.idx {
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 12px 14px;
+  background: var(--surface);
+}
+.idx-name { font-size: 12.5px; color: var(--muted); letter-spacing: .02em; }
+.idx-val { font-family: var(--ff-serif); font-size: 21px; color: var(--ink); line-height: 1.4; }
+.idx-chg { font-size: 13px; font-variant-numeric: tabular-nums; color: var(--ink-2); }
+.idx-chg.up { color: var(--accent); }
+.idx-chg.down { color: var(--ok); }
+.idx .spark { display: block; height: 56px; margin: 8px 0 4px; }
+.idx .spark svg { display: block; width: 100%; height: 100%; }
+.idx-range {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  font-size: 11.5px;
+  color: var(--muted);
+  line-height: 1.6;
+}
+.idx-range a { color: inherit; text-decoration: none; border-bottom: 1px solid var(--line); }
+.idx-range a:hover { color: var(--accent); border-bottom-color: var(--accent); }
+.stars {
+  margin-left: 8px;
+  font-size: 12.5px;
+  color: var(--gold);
+  font-variant-numeric: tabular-nums;
+}
+.block .pill { margin: 0 6px 6px 0; }
 
 @media print {
   .pwa-install, .pwa-hint { display: none; }
