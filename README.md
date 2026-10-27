@@ -33,6 +33,7 @@
 - **成本与用户数无关**：每天只在构建时调用一次模型，访客再多也不产生费用。
 - **进度本地化**：答题记录、错题本、打卡天数存 `localStorage`，不上传任何数据。
 - **移动优先**：手机上比例舒服，适合每天通勤看。
+- **6 套配色 + 中英文字体 + 3 档字号**：右上角 ◐ 随时换，存在本机；首次访问跟随系统深浅色。每个板块都自动配水墨插图（21 幅内置、随主题变色），不下载任何图片。
 - **可当 App 用（PWA）**：带 `manifest.json` + Service Worker，手机浏览器里点「安装到桌面 / 添加到主屏幕」后就是独立图标、全屏无地址栏、断网也能打开昨天读过的内容；安卓与桌面 Chrome 会出现「安装到桌面」按钮，iPhone 上是「分享 → 添加到主屏幕」。
 - **自动更新**：GitHub Actions 每天定时生成 → 自动提交 → 静态站点自动重新发布。
 
@@ -90,9 +91,9 @@ node scripts/generate.mjs        # 默认生成今天，自动挑主题池里的
 daily-learn/
 ├── index.html                  # 页面外壳
 ├── assets/
-│   ├── style.css               # 设计系统（纸感暖色 + 深色模式）
-│   ├── art.js                  # 9 幅代码生成的水墨插画（无外部图片）
-│   └── app.js                  # 全部交互（渲染、答题、清单、打卡、笔记、TTS）
+│   ├── style.css               # 设计系统（6 套配色 + 字体 + 字号 + 纸感布局）
+│   ├── art.js                  # 21 幅代码生成的水墨插画（无外部图片）
+│   └── app.js                  # 全部交互（渲染、答题、清单、打卡、笔记、TTS、外观面板）
 ├── data/
 │   ├── frontier.js             # AI 前沿板块（按日期，agent 写，不归生成脚本管）
 │   ├── invest.js               # 投资板块（按日期，agent 写，不归生成脚本管）
@@ -102,7 +103,8 @@ daily-learn/
 ├── scripts/
 │   ├── generate.mjs            # 生成脚本（调用模型 → 校验 → 写文件 → 更新索引）
 │   ├── check-frontier.mjs      # 前沿数据体检（字段、日期对应、链接、真实星数）
-│   └── check-invest.mjs        # 投资数据体检（字段 + 现价/涨跌幅/走势末点是否自洽）
+│   ├── check-invest.mjs        # 投资数据体检（字段 + 现价/涨跌幅/走势末点是否自洽）
+│   └── check-themes.mjs        # 外观体检（每套主题变量是否齐全、字体变量是否只定义一次）
 ├── topics.json                 # 主题池（30 天一轮，可自由增删）
 ├── .github/workflows/daily.yml # 每天自动生成 + 提交
 └── README.md
@@ -191,7 +193,7 @@ window.LEARN_INVEST = {
 
 ## 配图
 
-`assets/art.js` 里内置 16 幅**代码生成的水墨插画**，不引用任何外部图片，离线可用、无版权问题。同一个场景名同一天画出来一样，**换一天构图会重新随机**（seed 取日期），所以每天的配图都不重复。数据里只写场景名：
+`assets/art.js` 里内置 21 幅**代码生成的水墨插画**，不引用任何外部图片，离线可用、无版权问题。同一个场景名同一天画出来一样，**换一天构图会重新随机**（seed 取日期），所以每天的配图都不重复。数据里只写场景名：
 
 | 场景名 | 画面 | 场景名 | 画面 |
 | --- | --- | --- | --- |
@@ -203,8 +205,27 @@ window.LEARN_INVEST = {
 | `tower` | 登高 | `plum` | 寒梅 |
 | `autumn-river` | 秋江芦荻 | `pine-valley` | 松间清泉 |
 | `lamp` | 灯下 | `paper` | 素纸（兜底） |
+| `orbit` | 星轨（AI 用） | `signal` | 数据流（前沿用） |
+| `market` | 市况（投资用） | `desk` | 书桌（听力用） |
+| `bloom` | 花枝（英文用） | | |
+
+不只是语文和古文有图：**每个板块都会自动配一张**——数据里没写 `image` 时，`app.js` 的 `SECTION_ART` 会按「日期 + 板块」稳定地挑一张（同一天刷新多少次都一样），顶部还有一张通栏大图（`.hero-art`）。插图颜色跟着主题走，换主题时画也跟着变色。
 
 要加新画面：在 `art.js` 的 `SCENES` 里加一个 `{ label, draw(r, uid) }`，`draw()` 返回 SVG 片段即可；同时把场景名加进 `scripts/generate.mjs` 的 `ART` 白名单和 prompt 的场景列表。
+
+---
+
+## 外观：配色 / 字体 / 字号
+
+右上角的 ◐ 打开外观面板，三项都可选，选择存在本机（`localStorage` 的 `dl.meta`），下次打开照旧：
+
+- **配色 6 套**：素纸 `light`、竹青 `green`、天青 `sky`、茶褐 `sepia`、墨夜 `ink`、暮色 `dusk`。第一次访问跟随系统深浅色（`prefers-color-scheme`），之后以你的选择为准。旧的 `data-theme="dark"` 仍然有效，等价于 `ink`。
+- **中文字体 3 种**：宋体 `song`、黑体 `hei`、楷体 `kai`——都走系统字体栈（`Songti SC/SimSun`、`PingFang SC/Microsoft YaHei`、`Kaiti SC/KaiTi`），不下载网络字体，离线也不掉字。
+- **英文字体 3 种**：衬线 `serif`、无衬线 `sans`、等宽 `mono`。
+- **字号 3 档**：小 15px / 标准 16px / 大 17.5px（改的是 `--fs`，全局跟着缩放）。
+
+实现方式：面板只做一件事——把选择写到 `<html>` 的 `data-theme / data-zh / data-en / data-size` 上，CSS 用属性选择器换变量（`:root[data-zh="kai"] { --ff-prose: var(--ff-kai); }`）。所以想加新主题，只要在 `style.css` 里补一个 `:root[data-theme="xxx"]{…}`（16 个配色变量 + 9 个 `--art-*` 变量齐全即可），再在 `app.js` 的 `THEMES` 里加一项，最后跑 `node scripts/check-themes.mjs` 体检。
+
 
 ---
 

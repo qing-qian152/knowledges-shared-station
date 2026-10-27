@@ -350,6 +350,108 @@ window.LEARN_ART = (() => {
       ${ripples(r, 292, 6, 'var(--art-line)')}`;
   }
 
+  /* ---- 下面是「非古典」场景：给英文、听力、AI、前沿、投资用 ---- */
+
+  /* 星轨：AI 主题，同心轨道 + 漂浮节点 */
+  function orbit(r, uid) {
+    const cx = 400, cy = 178;
+    let rings = '';
+    for (let i = 1; i <= 4; i++) {
+      const rad = 46 + i * 44;
+      rings += `<ellipse cx="${cx}" cy="${cy}" rx="${rad}" ry="${(rad * (0.28 + r() * 0.16)).toFixed(0)}" fill="none" stroke="var(--art-line)" stroke-width="1.1" opacity="${(0.5 - i * 0.07).toFixed(2)}" transform="rotate(${(-9 + r() * 18).toFixed(1)} ${cx} ${cy})"/>`;
+    }
+    let nodes = '';
+    for (let i = 0; i < 9; i++) {
+      const a = r() * Math.PI * 2, rad = 54 + r() * 200;
+      nodes += `<circle cx="${(cx + Math.cos(a) * rad).toFixed(0)}" cy="${(cy + Math.sin(a) * rad * 0.44).toFixed(0)}" r="${(2 + r() * 3.4).toFixed(1)}" fill="var(--art-far)" opacity="${(0.35 + r() * 0.4).toFixed(2)}"/>`;
+    }
+    return `${grad(uid, 'var(--art-sky-2)', 'var(--art-sky)')}
+      <rect width="${W}" height="${H}" fill="url(#${uid})"/>
+      ${stars(r, 34, H)}
+      ${rings}
+      <circle cx="${cx}" cy="${cy}" r="48" fill="var(--art-glow)" opacity=".26"/>
+      <circle cx="${cx}" cy="${cy}" r="26" fill="var(--art-glow)" opacity=".42"/>
+      <circle cx="${cx}" cy="${cy}" r="13" fill="var(--art-moon)"/>
+      ${nodes}`;
+  }
+
+  /* 数据流：前沿主题，网格 + 三条脉冲 */
+  function signal(r, uid) {
+    let grid = '';
+    for (let i = 0; i < 14; i++) {
+      grid += `<line x1="0" y1="${i * 24}" x2="${W}" y2="${i * 24}" stroke="var(--art-line)" stroke-width=".6" opacity=".14"/>`;
+    }
+    let wave = '';
+    for (let k = 0; k < 3; k++) {
+      let d = `M 0 ${(206 + k * 28).toFixed(0)}`;
+      for (let x = 0; x <= W; x += 22) {
+        const amp = 30 - k * 8;
+        d += ` L ${x} ${(206 + k * 28 - Math.sin(x / 88 + k * 1.7) * amp * (0.42 + r() * 0.58)).toFixed(0)}`;
+      }
+      wave += `<path d="${d}" fill="none" stroke="${k === 0 ? 'var(--art-blossom)' : 'var(--art-line)'}" stroke-width="${(2.1 - k * 0.5).toFixed(1)}" opacity="${(0.7 - k * 0.18).toFixed(2)}" stroke-linecap="round"/>`;
+    }
+    let dots = '';
+    for (let i = 0; i < 26; i++) {
+      dots += `<circle cx="${(r() * W).toFixed(0)}" cy="${(r() * 150).toFixed(0)}" r="${(0.8 + r() * 1.6).toFixed(1)}" fill="var(--art-moon)" opacity="${(0.2 + r() * 0.45).toFixed(2)}"/>`;
+    }
+    return `${grad(uid, 'var(--art-sky)', 'var(--art-sky-2)')}
+      <rect width="${W}" height="${H}" fill="url(#${uid})"/>
+      ${grid}${dots}${wave}
+      <rect x="0" y="286" width="${W}" height="${H - 286}" fill="var(--art-water)" opacity=".7"/>`;
+  }
+
+  /* 市况：投资主题，K 线柱 + 基线 */
+  function market(r, uid) {
+    let bars = '';
+    let y = 176 + r() * 30;
+    for (let i = 0; i < 26; i++) {
+      const x = 26 + i * 29;
+      const close = Math.max(70, Math.min(266, y + (r() - 0.47) * 48));
+      const hi = Math.min(y, close) - 8 - r() * 18;
+      const lo = Math.max(y, close) + 8 + r() * 18;
+      const col = close < y ? 'var(--art-blossom)' : 'var(--art-line)';
+      bars += `<line x1="${x}" y1="${hi.toFixed(0)}" x2="${x}" y2="${lo.toFixed(0)}" stroke="${col}" stroke-width="1" opacity=".5"/>`;
+      bars += `<rect x="${x - 7}" y="${Math.min(y, close).toFixed(0)}" width="14" height="${Math.max(3, Math.abs(close - y)).toFixed(0)}" rx="2" fill="${col}" opacity=".34"/>`;
+      y = close;
+    }
+    return `${grad(uid, 'var(--art-sky)', 'var(--art-sky-2)')}
+      <rect width="${W}" height="${H}" fill="url(#${uid})"/>
+      <path d="${ridge(r, 260, 46, 6, 14)}" fill="var(--art-far)" opacity=".2"/>
+      ${bars}
+      <line x1="0" y1="286" x2="${W}" y2="286" stroke="var(--art-line)" stroke-width="1" opacity=".4"/>`;
+  }
+
+  /* 书桌：笔记本、笔、台灯光圈 */
+  function desk(r, uid) {
+    let lines = '';
+    for (let i = 0; i < 7; i++) {
+      lines += `<line x1="${(268 + r() * 16).toFixed(0)}" y1="${(205 + i * 12).toFixed(0)}" x2="${(452 + r() * 26).toFixed(0)}" y2="${(205 + i * 12).toFixed(0)}" stroke="var(--art-line)" stroke-width="1.3" opacity=".45"/>`;
+    }
+    return `${grad(uid, 'var(--art-sky-2)', 'var(--art-sky)')}
+      <rect width="${W}" height="${H}" fill="url(#${uid})"/>
+      <circle cx="636" cy="74" r="104" fill="var(--art-glow)" opacity=".18"/>
+      <circle cx="636" cy="74" r="24" fill="var(--art-moon)" opacity=".92"/>
+      <rect x="0" y="252" width="${W}" height="${H - 252}" fill="var(--art-near)" opacity=".2"/>
+      <path d="M 232 252 L 268 194 L 480 194 L 516 252 Z" fill="var(--art-moon)" opacity=".5"/>
+      ${lines}
+      <path d="M 548 250 l 92 -34 l 10 20 l -92 34 Z" fill="var(--art-far)" opacity=".42"/>
+      <rect x="112" y="222" width="62" height="30" rx="4" fill="var(--art-far)" opacity=".4"/>
+      <path d="M 174 228 q 20 8 0 18" fill="none" stroke="var(--art-line)" stroke-width="2" opacity=".5"/>`;
+  }
+
+  /* 花枝：英文主题，枝条 + 落花 + 飞鸟 */
+  function bloom(r, uid) {
+    let branches = '';
+    for (let i = 0; i < 3; i++) {
+      branches += `<path d="M ${(W - 20 - i * 26).toFixed(0)} ${(306 - i * 26).toFixed(0)} q -170 ${(-30 - r() * 50).toFixed(0)} -350 ${(-96 - r() * 70).toFixed(0)}" fill="none" stroke="var(--art-near)" stroke-width="${(1.8 + r() * 2.4).toFixed(1)}" opacity=".45"/>`;
+    }
+    return `${grad(uid, 'var(--art-sky)', 'var(--art-sky-2)')}
+      <rect width="${W}" height="${H}" fill="url(#${uid})"/>
+      ${branches}
+      ${blossoms(r, 30, 'var(--art-blossom)', 40, 250, 3.4)}
+      ${birds(r, 4, 62)}`;
+  }
+
   const SCENES = {
     'lotus-moon': { label: '荷塘月色', draw: lotusMoon },
     'autumn-mountain': { label: '空山新雨', draw: autumnMountain },
@@ -367,6 +469,11 @@ window.LEARN_ART = (() => {
     'pine-valley': { label: '松间清泉', draw: pineValley },
     'lamp': { label: '灯下', draw: lamp },
     'paper': { label: '素纸', draw: paper },
+    'orbit': { label: '星轨', draw: orbit },
+    'signal': { label: '数据流', draw: signal },
+    'market': { label: '市况', draw: market },
+    'desk': { label: '书桌', draw: desk },
+    'bloom': { label: '花枝', draw: bloom },
   };
 
   const KEYS = Object.keys(SCENES);

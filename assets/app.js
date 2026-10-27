@@ -109,20 +109,137 @@
     return activeSections().filter((s) => p[s.id]).length;
   }
 
-  /* ---------------- 主题 ---------------- */
+  /* ---------------- 外观：配色主题 / 字体 / 字号 ---------------- */
 
-  function applyTheme(t) {
-    meta.theme = t;
-    Store.set('dl.meta', meta);
-    document.documentElement.dataset.theme = t;
-    document.querySelector('meta[name="theme-color"]')
-      ?.setAttribute('content', t === 'dark' ? '#14130f' : '#faf7f1');
+  const THEMES = [
+    { id: 'light', label: '素纸', bg: '#faf7f1', swatch: '#f3ecdd' },
+    { id: 'green', label: '竹青', bg: '#edf2e9', swatch: '#dbe7d4' },
+    { id: 'sky', label: '天青', bg: '#eef3f6', swatch: '#d7e4ee' },
+    { id: 'sepia', label: '茶褐', bg: '#f3ead9', swatch: '#e4d3b6' },
+    { id: 'ink', label: '墨夜', bg: '#141719', swatch: '#2b3338' },
+    { id: 'dusk', label: '暮色', bg: '#191418', swatch: '#352a31' },
+  ];
+  const ZH_FONTS = [
+    { id: 'song', label: '宋体', preview: '"Songti SC","SimSun",serif', desc: '书卷气' },
+    { id: 'hei', label: '黑体', preview: '"PingFang SC","Microsoft YaHei",sans-serif', desc: '清爽' },
+    { id: 'kai', label: '楷体', preview: '"Kaiti SC","KaiTi",serif', desc: '古雅' },
+  ];
+  const EN_FONTS = [
+    { id: 'serif', label: '衬线', preview: 'Georgia,"Times New Roman",serif', desc: '耐读' },
+    { id: 'sans', label: '无衬线', preview: '"Segoe UI",Arial,sans-serif', desc: '干净' },
+    { id: 'mono', label: '等宽', preview: 'Consolas,"SF Mono",monospace', desc: '对代码友好' },
+  ];
+  const SIZES = [
+    { id: 's', label: '小' },
+    { id: 'm', label: '标准' },
+    { id: 'l', label: '大' },
+  ];
+
+  const look = {
+    theme: meta.theme || '',
+    zh: meta.zh || 'song',
+    en: meta.en || 'serif',
+    size: meta.size || 'm',
+  };
+
+  function prefersDark() {
+    try {
+      return !!(window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches);
+    } catch (e) { return false; }
   }
+
+  function themeInfo(id) {
+    return THEMES.find((t) => t.id === id) || THEMES[0];
+  }
+
+  /* 把当前外观写到 <html> 的 data-* 上，CSS 里靠这些选择器换色/换字 */
+  function applyLook(patch) {
+    Object.assign(look, patch || {});
+    if (!look.theme) look.theme = prefersDark() ? 'ink' : 'light';
+
+    const root = document.documentElement;
+    root.setAttribute('data-theme', look.theme);
+    root.setAttribute('data-zh', look.zh);
+    root.setAttribute('data-en', look.en);
+    root.setAttribute('data-size', look.size);
+
+    meta.theme = look.theme;
+    meta.zh = look.zh;
+    meta.en = look.en;
+    meta.size = look.size;
+    Store.set('dl.meta', meta);
+
+    document.querySelector('meta[name="theme-color"]')
+      ?.setAttribute('content', themeInfo(look.theme).bg);
+
+    syncLookUI();
+  }
+
+  /* 让面板里的选中态跟着当前外观走 */
+  function syncLookUI() {
+    document.querySelectorAll('#lookPanel .swatch').forEach((b) => {
+      b.classList.toggle('on', b.getAttribute('data-theme') === look.theme);
+    });
+    document.querySelectorAll('#lookPanel .chip').forEach((b) => {
+      const g = b.getAttribute('data-group');
+      const v = b.getAttribute('data-value');
+      b.classList.toggle('on', (g === 'zh' && v === look.zh) || (g === 'en' && v === look.en) || (g === 'size' && v === look.size));
+    });
+  }
+
+  function chipRow(group, list, opt) {
+    const row = h('div', { class: 'look-chips' });
+    list.forEach((item) => {
+      const b = h('button', {
+        class: 'chip', type: 'button',
+        'data-group': group, 'data-value': item.id,
+        title: item.desc || item.label,
+        style: opt && opt.fontFamily ? `font-family:${item.preview}` : null,
+      }, item.label);
+      b.addEventListener('click', () => applyLook({ [group]: item.id }));
+      row.append(b);
+    });
+    return row;
+  }
+
+  function buildLook() {
+    const panel = h('div', { class: 'look', id: 'lookPanel' });
+    const swatches = h('div', { class: 'look-swatches' });
+    THEMES.forEach((t) => {
+      const b = h('button', { class: 'swatch', type: 'button', 'data-theme': t.id },
+        h('i', { style: `background:${t.swatch}` }),
+        t.label);
+      b.addEventListener('click', () => applyLook({ theme: t.id }));
+      swatches.append(b);
+    });
+
+    panel.append(
+      h('div', { class: 'look-row' }, h('h3', null, '配色'), swatches),
+      h('div', { class: 'look-row' }, h('h3', null, '中文字体'), chipRow('zh', ZH_FONTS, { fontFamily: true })),
+      h('div', { class: 'look-row' }, h('h3', null, '英文字体'), chipRow('en', EN_FONTS, { fontFamily: true })),
+      h('div', { class: 'look-row' }, h('h3', null, '字号'), chipRow('size', SIZES)),
+      h('div', { class: 'look-note' }, '设置存在这台设备上；第一次打开会跟随系统深浅色。'));
+
+    document.body.append(panel);
+
+    const btn = $('#themeBtn');
+    const toggle = (force) => {
+      const open = force === undefined ? !panel.classList.contains('open') : force;
+      panel.classList.toggle('open', open);
+      btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+    };
+    btn.addEventListener('click', (ev) => { ev.stopPropagation(); toggle(); });
+    panel.addEventListener('click', (ev) => ev.stopPropagation());
+    document.addEventListener('click', () => toggle(false));
+    document.addEventListener('keydown', (ev) => { if (ev.key === 'Escape') toggle(false); });
+  }
+
 
   /* ---------------- 启动 ---------------- */
 
   async function init() {
-    applyTheme(meta.theme || 'light');
+    buildLook();
+    applyLook();
 
     try {
       await loadScript('data/days/index.js');
@@ -141,7 +258,6 @@
 
     buildDateSelect();
     buildTabs();
-    $('#themeBtn').addEventListener('click', () => applyTheme(meta.theme === 'dark' ? 'light' : 'dark'));
 
     await switchDay(state.date);
   }
@@ -212,6 +328,7 @@
     if (inv) main.append(renderInvest(inv));
     main.append(renderChecklist(d.checklist));
 
+    decorateArt();
     renderFooter(d);
     observeSections();
     refreshProgress();
@@ -236,6 +353,47 @@
       h('figcaption', null, caption || art.label(key)));
   }
 
+  /* 没有指定场景的板块，按「日期 + 板块」稳定地挑一张，同一天刷几次都一样 */
+  const SECTION_ART = {
+    hero: ['spring-river', 'autumn-mountain', 'pine-valley', 'lotus-moon', 'snow-peak', 'autumn-river'],
+    chinese: ['lotus-moon', 'bamboo', 'pastoral', 'autumn-mountain'],
+    poem: ['snow-peak', 'plum', 'tower', 'autumn-river', 'pine-valley', 'border'],
+    english: ['bloom', 'rain-window', 'pastoral', 'dunes'],
+    listening: ['desk', 'lamp', 'rain-window', 'paper'],
+    ai: ['orbit', 'signal', 'paper'],
+    frontier: ['signal', 'orbit', 'tower'],
+    invest: ['market', 'signal'],
+  };
+
+  function strHash(s) {
+    let x = 2166136261;
+    for (let i = 0; i < s.length; i++) { x ^= s.charCodeAt(i); x = Math.imul(x, 16777619); }
+    return x >>> 0;
+  }
+
+  function pickArt(id, seed) {
+    const list = SECTION_ART[id];
+    if (!list || !list.length) return null;
+    return list[strHash(`${seed || ''}|${id}`) % list.length];
+  }
+
+  /* 给还没有插图的板块补一张：放在标题/副标题之后、正文之前 */
+  function decorateArt() {
+    const cards = document.querySelectorAll('#main .card');
+    cards.forEach((card) => {
+      if (card.querySelector('figure.art')) return;
+      const id = (card.getAttribute('id') || '').replace(/^sec-/, '');
+      const key = pickArt(id, state.date);
+      const fig = artFigure(key, null, `${state.date}|${id}`);
+      if (!fig) return;
+      const body = card.querySelector('.card-body');
+      if (!body) return;
+      const ref = body.querySelector('.byline');
+      if (ref) body.insertBefore(fig, ref.nextSibling);
+      else body.insertBefore(fig, body.firstChild);
+    });
+  }
+
   function renderHero(d) {
     const p = dayProgress(state.date);
     const bar = h('i');
@@ -244,6 +402,12 @@
       h('div', { class: 'hero-date' }, `${d.date} · ${d.weekday || WEEK[parseDate(d.date).getDay()]}`),
       h('h1', { class: 'hero-title' }, d.theme || '今日一学'),
       h('div', { class: 'hero-meta' }, txt, h('div', { class: 'hero-bar' }, bar)));
+
+    const heroArt = artFigure(pickArt('hero', state.date), null, `${state.date}|hero`);
+    if (heroArt) {
+      heroArt.classList.add('hero-art');
+      sec.append(heroArt);
+    }
     return sec;
   }
 
