@@ -109,6 +109,7 @@ function buildPrompt(topic) {
     "level": "IELTS 7.0",
     "words": 520,
     "body": ["段落1", "段落2", "段落3", "段落4", "段落5"],
+    "translation": ["段落1的中文翻译", "段落2的中文翻译", "段落3的中文翻译", "段落4的中文翻译", "段落5的中文翻译"],
     "vocab": [{ "w": "单词", "pos": "n.", "cn": "中文释义", "ex": "英文例句" }],
     "collocations": [{ "phrase": "地道搭配", "cn": "中文意思", "ex": "英文例句" }],
     "phrases": [{ "p": "短语", "cn": "中文", "ex": "英文例句" }],
@@ -119,11 +120,15 @@ function buildPrompt(topic) {
     "output": { "prompt": "输出任务", "tasks": ["要求1", "要求2", "要求3"] }
   },
   "listening": {
-    "title": "听力标题（如 中国日报英语点津 · 今日音频）",
-    "level": "难度标签，如 慢速英语 / 雅思 6.5",
-    "source": "来源站点名，如 中国日报英语点津",
-    "url": "当天音频所在页面的 http(s) 链接",
-    "note": "一句话使用说明（在这个页面的哪里找音频、怎么配合听）"
+    "title": "听力标题（自拟，如 清晨的咖啡馆 / A Lesson from a Broken Umbrella）",
+    "level": "慢速美音",
+    "words": 200,
+    "topic": "一句话说明这段听的是什么（如 日常叙事 / 科普短文）",
+    "lines": [
+      { "en": "第一句英文。", "cn": "第一句的中文翻译。" },
+      { "en": "第二句英文。", "cn": "第二句的中文翻译。" }
+    ],
+    "note": "一句话使用说明（怎么听、听几遍）"
   },
   "ai": {
     "term": "AI 概念名",
@@ -140,16 +145,18 @@ function buildPrompt(topic) {
   ]
 }
 
-插图场景名只能从这个列表里选（按意境匹配，不要硬凑）：
-lotus-moon（荷塘月色）｜autumn-mountain（山间秋意）｜bamboo（竹林清影）｜snow-peak（雪岭）
-｜spring-river（春江）｜rain-window（雨窗）｜dunes（大漠孤烟）｜lamp（灯下）｜paper（素纸）
+插图场景名只能从这个列表里选（按文章意境匹配，古诗文尤其要对得上意象）：
+lotus-moon（荷塘月色）｜autumn-mountain（空山新雨）｜bamboo（竹林清影）｜snow-peak（雪岭）
+｜snow-boat（江雪孤舟）｜spring-river（春江）｜rain-window（雨窗）｜dunes（大漠孤烟）
+｜border（边塞烽烟）｜pastoral（田园）｜tower（登高）｜plum（寒梅）
+｜autumn-river（秋江芦荻）｜pine-valley（松间清泉）｜lamp（灯下）｜paper（素纸）
 
 硬性要求：
 1. 引言：一句压得住当日主题的名言，中外皆可，中文 18-36 字、英文不超过 20 词；作者必须真实存在，宁可选常见名句也不要编造；找不到可靠出处的 author 就换一句。source 没有把握就写空字符串。
 2. 语文：必须是**一篇完整的文章**，1200-2000 字，5-9 段，不许只给节选或片段。选公版名篇（1949 年前已故作者，如朱自清、鲁迅、郁达夫、老舍、傅雷、胡适、徐志摩、梁实秋、周作人、归有光、范仲淹、苏轼等）就给全文；否则自己写一篇完整的原创散文。首段要抓人，中段要有细节和转折，结尾要收得住。讲解 4-5 条，要具体到字词、节奏、标点，不要说空话。好词 6-8 个，好句 3-4 句，写作手法 4-5 种，仿写任务要能当天写完。
 3. 古诗文：与今日主题呼应的整首（词要整阕），注释 4-6 条，译文一段，赏析 3-4 段（讲结构、讲字眼、讲情感转折），背诵提示给结构线索。
-4. 英文：你必须原创，480-600 词，5-6 段，**雅思 6.5-7.5 水平**：要有抽象概念、解释性从句、让步与对比，避免四六级模板腔和口语化表达。生词 12-15 个（含例句），**地道搭配 8-10 个**（collocations，如 "pose a threat to"、"a growing body of evidence"这种真正能背下来用的），短语 6-8 个，句式 4-5 个，语法点 3-4 个（都要从本篇原文里举例）。摘要 120-160 字中文。阅读题 5-6 道单选，answer 用 0 起始的下标，解析用中文说清错项为什么错。输出任务要求读者真正动笔。
-5. 听力：**必须给中国大陆能直接打开的链接**，优先「中国日报英语点津 language.chinadaily.com.cn」「CGTN」「21世纪英文报 i21st.cn」这类国内站点；不要给 VOA、BBC、YouTube、Spotify（国内常打不开）。url 必须是 http(s) 开头；note 说明在这个页面上怎么找到当天音频、怎么配合精听。
+4. 英文：你必须原创，480-600 词，5-6 段，**雅思 6.5-7.5 水平**：要有抽象概念、解释性从句、让步与对比，避免四六级模板腔和口语化表达。**translation 必须与 body 段数完全一致、逐段对应**，是给读者对照阅读用的中文翻译（准确、通顺，不要写成摘要）。生词 12-15 个（含例句），**地道搭配 8-10 个**（collocations，如 "pose a threat to"、"a growing body of evidence"这种真正能背下来用的），短语 6-8 个，句式 4-5 个，语法点 3-4 个（都要从本篇原文里举例）。摘要 120-160 字中文。阅读题 5-6 道单选，answer 用 0 起始的下标，解析用中文说清错项为什么错。输出任务要求读者真正动笔。
+5. 听力：**自己写一篇英文听力短文**，180-260 词，拆成 6-10 句（每句一行，长度适合朗读，不要太长）。体裁自选：日常叙事、小科普、一段对话、一则观察都可以，但必须完整、有开头结尾、内容自洽有趣，用标准美式英语书写（美式拼写与用词，如 color、apartment、gotten）。每句都要给对应的中文翻译（cn 与 en 一一对应，数量必须相等）。note 写一句怎么用（例如"先盲听两遍抓大意，再看译文"）。**不要给任何外部链接**。
 6. AI：每天一个概念，从基础往上走（Agent、Token、上下文窗口、幻觉、RAG、微调、Skill、MCP、评测……）。explain 三段要有递进，example 要具体到"你说什么、它做什么"。quiz 四个选项，answer 为下标。
 7. 清单：5-6 项，覆盖五个板块，每项一句话、动词开头（读完/背下/做完/听/讲），tip 给一句方法提示，不要空话。
 8. 全部内容使用中文全角标点；字符串内部需要引号时用中文引号“”或「」，不要用 ASCII 双引号。
@@ -183,6 +190,7 @@ function stub(topic) {
     english: {
       title: 'Placeholder: ' + topic.english, level: 'IELTS 7.0', words: 0,
       body: ['Placeholder content. Configure API_KEY and re-run the generator.'],
+      translation: ['占位译文。'],
       vocab: [{ w: 'placeholder', pos: 'n.', cn: '占位', ex: 'This is a placeholder.' }],
       collocations: [{ phrase: 'placeholder', cn: '占位', ex: 'This is a placeholder.' }],
       phrases: [{ p: '—', cn: '—', ex: '—' }],
@@ -193,8 +201,13 @@ function stub(topic) {
       output: { prompt: '—', tasks: ['—'] },
     },
     listening: {
-      title: '（占位）' + topic.listening, level: '—', source: '中国日报英语点津',
-      url: 'https://language.chinadaily.com.cn/', note: '占位。',
+      title: 'Placeholder listening',
+      level: '慢速美音', words: 30, topic: '占位',
+      lines: [
+        { en: 'This is a placeholder line read by the browser voice.', cn: '这是浏览器朗读的占位句子。' },
+        { en: 'Configure API_KEY to get a real passage.', cn: '配置 API_KEY 即可得到真正的短文。' },
+      ],
+      note: '占位。',
     },
     ai: {
       term: '（占位）' + topic.ai, oneLiner: '占位。',
@@ -302,11 +315,24 @@ function validate(day) {
   });
   const l = day.listening || {};
   if (!l.title) throw new Error('listening.title 缺失');
-  if (!/^https?:\/\//.test(String(l.url || ''))) throw new Error('listening.url 必须是 http(s) 链接');
+  if (!Array.isArray(l.lines) || !l.lines.length) throw new Error('listening.lines 缺失（需要自创听力的逐句文本）');
+  l.lines.forEach((ln, i) => {
+    if (!ln || !String(ln.en || '').trim()) throw new Error(`listening.lines[${i}] 缺少英文 en`);
+    if (!String(ln.cn || '').trim()) ln.cn = '';
+  });
+
+  // 译文段数对不上就补齐/截断，页面按段对齐，缺一段会错位
+  const e2 = day.english;
+  if (!Array.isArray(e2.translation)) e2.translation = [];
+  if (e2.translation.length !== (e2.body || []).length) {
+    console.warn(`⚠ english.translation 有 ${e2.translation.length} 段，正文有 ${(e2.body || []).length} 段，已按正文对齐`);
+    e2.translation = (e2.body || []).map((_, i) => e2.translation[i] || '');
+  }
 
   // 插图只认内置场景，写错了退成素纸，不要让页面报错
-  const ART = new Set(['lotus-moon', 'autumn-mountain', 'bamboo', 'snow-peak',
-    'spring-river', 'rain-window', 'dunes', 'lamp', 'paper']);
+  const ART = new Set(['lotus-moon', 'autumn-mountain', 'bamboo', 'snow-peak', 'snow-boat',
+    'spring-river', 'rain-window', 'dunes', 'border', 'pastoral', 'tower', 'plum',
+    'autumn-river', 'pine-valley', 'lamp', 'paper']);
   for (const k of ['chinese', 'poem']) {
     const sec = day[k];
     if (sec.image && !ART.has(sec.image)) {
