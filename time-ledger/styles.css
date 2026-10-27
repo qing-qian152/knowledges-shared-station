@@ -5,19 +5,6 @@
 *, *::before, *::after { box-sizing: border-box; }
 
 :root {
-  --paper: #f5f1e8;
-  --card: #fffdf8;
-  --card-2: #fbf7ef;
-  --ink: #201d18;
-  --ink2: #5b5548;
-  --ink3: #948c7b;
-  --line: #e3dbc9;
-  --line-soft: #efe8da;
-  --accent: #a3572f;
-  --accent-soft: #f1e2d3;
-  --good: #3f6b4f;
-  --track: #e7e0d0;
-  --shadow: 0 1px 2px rgba(62, 47, 26, .05), 0 10px 28px -16px rgba(62, 47, 26, .35);
   --radius: 18px;
   --font-sans: ui-sans-serif, system-ui, "Segoe UI", "Microsoft YaHei", "PingFang SC", "Hiragino Sans GB", sans-serif;
   --font-serif: "Songti SC", "STSong", "SimSun", "Noto Serif SC", serif;
@@ -26,7 +13,105 @@
   --topbar-h: 64px;
 }
 
+/* ===========================================================
+   配色主题（8 套）
+   统一令牌：--paper 底 / --card 卡面 / --card-2 次级面 / --ink 主文字
+   --ink2 次文字 / --ink3 弱文字 / --line 边框 / --line-soft 细边
+   --accent 强调色 / --accent-soft 强调淡底 / --good 达标 / --danger 危险
+   --track 轨道 / --glow-a --glow-b 背景柔光 / --shadow 投影
+   主题选择器不加 html 前缀，便于用探针元素读取任意主题的取值。
+   =========================================================== */
+
+/* 1 · 米纸（默认；旧值 light 兼容） */
+:root,
+[data-theme="paper"],
+[data-theme="light"] {
+  color-scheme: light;
+  --paper: #f5f1e8;
+  --card: #fffdf8;
+  --card-2: #fbf7ef;
+  --ink: #201d18;
+  --ink2: #5b5548;
+  --ink3: #8b8271;
+  --line: #e3dbc9;
+  --line-soft: #efe8da;
+  --accent: #a3572f;
+  --accent-soft: #f1e2d3;
+  --good: #3f6b4f;
+  --danger: #b3443a;
+  --track: #e7e0d0;
+  --glow-a: rgba(163, 87, 47, .07);
+  --glow-b: rgba(63, 107, 79, .07);
+  --shadow: 0 1px 2px rgba(62, 47, 26, .05), 0 10px 28px -16px rgba(62, 47, 26, .35);
+}
+
+/* 2 · 雾青（浅 · 青绿） */
+[data-theme="mist"] {
+  color-scheme: light;
+  --paper: #edf3ef;
+  --card: #fcfffc;
+  --card-2: #f3f8f4;
+  --ink: #1b2721;
+  --ink2: #4b5c52;
+  --ink3: #76897d;
+  --line: #d5e1d8;
+  --line-soft: #e4eee8;
+  --accent: #3f6f57;
+  --accent-soft: #def0e5;
+  --good: #3f6b4f;
+  --danger: #b3443a;
+  --track: #dce8e0;
+  --glow-a: rgba(63, 111, 87, .09);
+  --glow-b: rgba(122, 150, 112, .07);
+  --shadow: 0 1px 2px rgba(28, 56, 40, .05), 0 10px 28px -16px rgba(28, 56, 40, .32);
+}
+
+/* 3 · 山岚（浅 · 雾蓝） */
+[data-theme="dusk"] {
+  color-scheme: light;
+  --paper: #eef2f7;
+  --card: #fcfdff;
+  --card-2: #f4f7fb;
+  --ink: #1a2129;
+  --ink2: #4a5460;
+  --ink3: #78848f;
+  --line: #d7dfe9;
+  --line-soft: #e6ecf4;
+  --accent: #4a6c8f;
+  --accent-soft: #e1eaf4;
+  --good: #3f6b5c;
+  --danger: #b3443a;
+  --track: #dee6ef;
+  --glow-a: rgba(74, 108, 143, .08);
+  --glow-b: rgba(116, 106, 146, .06);
+  --shadow: 0 1px 2px rgba(26, 40, 56, .05), 0 10px 28px -16px rgba(26, 40, 56, .3);
+}
+
+/* 4 · 藕荷（浅 · 淡紫） */
+[data-theme="lilac"] {
+  color-scheme: light;
+  --paper: #f6f0f4;
+  --card: #fdfbfc;
+  --card-2: #f9f3f7;
+  --ink: #241c22;
+  --ink2: #564c54;
+  --ink3: #8a7f8b;
+  --line: #e2d7e1;
+  --line-soft: #eee6ed;
+  --accent: #8a5a7c;
+  --accent-soft: #f1e3ed;
+  --good: #4a6b57;
+  --danger: #b3443a;
+  --track: #e8dee6;
+  --glow-a: rgba(138, 90, 124, .08);
+  --glow-b: rgba(96, 112, 142, .06);
+  --shadow: 0 1px 2px rgba(56, 32, 48, .05), 0 10px 28px -16px rgba(56, 32, 48, .3);
+}
+
+/* 5 · 墨夜（深 · 暖黑；旧值 dark 兼容） */
+[data-theme="night"],
 [data-theme="dark"] {
+  color-scheme: dark;
   --paper: #14130f;
   --card: #1d1b16;
   --card-2: #232019;
@@ -38,8 +123,74 @@
   --accent: #d9895c;
   --accent-soft: #35271d;
   --good: #7fae8c;
+  --danger: #e8796d;
   --track: #2e2a22;
+  --glow-a: rgba(217, 137, 92, .07);
+  --glow-b: rgba(127, 174, 140, .05);
   --shadow: 0 1px 2px rgba(0, 0, 0, .4), 0 12px 30px -18px rgba(0, 0, 0, .9);
+}
+
+/* 6 · 松夜（深 · 墨绿） */
+[data-theme="pine"] {
+  color-scheme: dark;
+  --paper: #0f1613;
+  --card: #16201b;
+  --card-2: #1a2620;
+  --ink: #e2ece5;
+  --ink2: #a6b8ac;
+  --ink3: #74877b;
+  --line: #25332c;
+  --line-soft: #1c2721;
+  --accent: #7fbd95;
+  --accent-soft: #1e2f26;
+  --good: #8ac7a0;
+  --danger: #e58b7f;
+  --track: #223028;
+  --glow-a: rgba(127, 189, 149, .07);
+  --glow-b: rgba(96, 132, 150, .06);
+  --shadow: 0 1px 2px rgba(0, 0, 0, .45), 0 12px 30px -18px rgba(0, 0, 0, .95);
+}
+
+/* 7 · 深海（深 · 藏蓝） */
+[data-theme="deep"] {
+  color-scheme: dark;
+  --paper: #0f1319;
+  --card: #161c25;
+  --card-2: #1b232d;
+  --ink: #e2e9f2;
+  --ink2: #a4b1c0;
+  --ink3: #727f8e;
+  --line: #232d3a;
+  --line-soft: #1a222b;
+  --accent: #8aa8d4;
+  --accent-soft: #1c2836;
+  --good: #7fb8a0;
+  --danger: #e58b7f;
+  --track: #212b37;
+  --glow-a: rgba(138, 168, 212, .08);
+  --glow-b: rgba(120, 150, 190, .05);
+  --shadow: 0 1px 2px rgba(0, 0, 0, .45), 0 12px 30px -18px rgba(0, 0, 0, .95);
+}
+
+/* 8 · 可可（深 · 棕调） */
+[data-theme="cocoa"] {
+  color-scheme: dark;
+  --paper: #17120f;
+  --card: #201a16;
+  --card-2: #261f1a;
+  --ink: #ece1d5;
+  --ink2: #b6a795;
+  --ink3: #857769;
+  --line: #31281f;
+  --line-soft: #241d18;
+  --accent: #cf9768;
+  --accent-soft: #33221a;
+  --good: #8fae86;
+  --danger: #e58b7f;
+  --track: #2b231c;
+  --glow-a: rgba(207, 151, 104, .07);
+  --glow-b: rgba(150, 122, 92, .05);
+  --shadow: 0 1px 2px rgba(0, 0, 0, .45), 0 12px 30px -18px rgba(0, 0, 0, .95);
 }
 
 /* 引文字体，可用「说明 → 字体」切换 */
@@ -54,8 +205,8 @@ body {
   color: var(--ink);
   background: var(--paper);
   background-image:
-    radial-gradient(1100px 460px at 12% -8%, rgba(163, 87, 47, .07), transparent 65%),
-    radial-gradient(900px 420px at 98% 4%, rgba(63, 107, 79, .07), transparent 60%);
+    radial-gradient(1100px 460px at 12% -8%, var(--glow-a), transparent 65%),
+    radial-gradient(900px 420px at 98% 4%, var(--glow-b), transparent 60%);
   background-attachment: fixed;
   -webkit-font-smoothing: antialiased;
   line-height: 1.6;
@@ -101,8 +252,7 @@ input, textarea, select { font: inherit; color: inherit; }
 .ghost-btn:hover { background: var(--card-2); color: var(--ink); border-color: var(--ink3); }
 .ghost-btn i { font-style: normal; }
 .ghost-btn.small { padding: 5px 10px; font-size: 12.5px; }
-.ghost-btn.danger:hover { color: #b3443a; border-color: #b3443a; }
-[data-theme="dark"] .ghost-btn.danger:hover { color: #e8796d; border-color: #e8796d; }
+.ghost-btn.danger:hover { color: var(--danger); border-color: var(--danger); }
 
 /* ---------------- 布局 ---------------- */
 .wrap { max-width: 1220px; margin: 0 auto; padding: 22px clamp(14px, 3vw, 34px) 60px; }
@@ -256,7 +406,7 @@ input, textarea, select { font: inherit; color: inherit; }
 .primary:hover { opacity: .88; }
 .primary:active { transform: scale(.985); }
 .primary.big { width: 100%; }
-.primary.ok { background: var(--good); border-color: var(--good); color: #f7f4ec; }
+.primary.ok { background: var(--good); border-color: var(--good); color: var(--paper); }
 
 .resume {
   margin-top: 12px; padding: 11px 12px; border-radius: 12px;
@@ -322,7 +472,7 @@ input, textarea, select { font: inherit; color: inherit; }
 .sessions input:hover { border-bottom-color: var(--line); }
 .sessions input:focus { outline: none; border-bottom-color: var(--accent); }
 .sessions .x { border: 0; background: transparent; color: var(--ink3); font-size: 13px; padding: 0; line-height: 1; border-radius: 4px; }
-.sessions .x:hover { color: #b3443a; }
+.sessions .x:hover { color: var(--danger); }
 .empty-note { font-size: 11.5px; color: var(--ink3); margin-top: 8px; }
 
 /* ---------------- 统计 ---------------- */
@@ -354,6 +504,38 @@ textarea {
 }
 textarea:focus { outline: none; border-color: var(--accent); background: var(--card); }
 .journal-foot { display: flex; gap: 10px; margin-top: 10px; font-size: 11px; color: var(--ink3); }
+
+/* ---------------- 外观主题 ---------------- */
+/* 探针：离屏元素，用来读取任意主题的 CSS 变量取值（不参与布局） */
+.theme-probe {
+  position: absolute; left: -9999px; top: 0;
+  width: 0; height: 0; overflow: hidden; pointer-events: none;
+}
+.theme-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+.theme-card {
+  display: grid; gap: 8px; text-align: left; padding: 9px;
+  border-radius: 13px; border: 1px solid var(--line); background: var(--card-2);
+  transition: border-color .18s, background .18s, transform .18s;
+}
+.theme-card:hover { border-color: var(--ink3); transform: translateY(-1px); }
+.theme-card.on { border-color: var(--accent); background: var(--accent-soft); }
+.theme-auto { grid-column: 1 / -1; }
+.th-preview {
+  display: block; height: 48px; border-radius: 9px; overflow: hidden;
+  background: var(--tp); border: 1px solid var(--tl); position: relative; padding: 8px 9px;
+}
+.th-preview i { display: block; border-radius: 3px; }
+.th-preview .th-l1 { height: 5px; width: 56%; background: var(--ti); opacity: .78; }
+.th-preview .th-l2 { height: 4px; width: 76%; background: var(--ti2); margin-top: 6px; opacity: .5; }
+.th-preview .th-l3 {
+  position: absolute; right: 9px; top: 9px; width: 16px; height: 16px;
+  border-radius: 50%; background: var(--ta);
+}
+.th-meta { display: flex; align-items: baseline; gap: 8px; }
+.th-name { font-size: 13px; font-weight: 600; }
+.th-tag { margin-left: auto; font-size: 10.5px; color: var(--ink3); letter-spacing: .06em; }
+.theme-card.on .th-tag { color: var(--ink2); }
+@media (min-width: 520px) { .theme-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
 
 /* ---------------- 弹窗 ---------------- */
 .modal {

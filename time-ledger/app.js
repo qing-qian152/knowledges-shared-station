@@ -139,6 +139,65 @@
     ['#1a2226', '#28383f', '#7fb3b8']
   ];
 
+  /* ------------------------- 配色主题 ------------------------- */
+  /* 颜色本身只写在 styles.css 里；这里只放名字与顺序，色样本从 CSS 变量读，
+     所以改配色不用动 JS，也不会出现两处颜色对不上。 */
+  var THEMES = [
+    { id: 'paper', name: '米纸', tag: '暖白' },
+    { id: 'mist',  name: '雾青', tag: '青绿' },
+    { id: 'dusk',  name: '山岚', tag: '雾蓝' },
+    { id: 'lilac', name: '藕荷', tag: '淡紫' },
+    { id: 'night', name: '墨夜', tag: '暖黑' },
+    { id: 'pine',  name: '松夜', tag: '墨绿' },
+    { id: 'deep',  name: '深海', tag: '藏蓝' },
+    { id: 'cocoa', name: '可可', tag: '棕调' }
+  ];
+  var THEME_IDS = THEMES.map(function (t) { return t.id; });
+
+  function themeById(id) {
+    for (var i = 0; i < THEMES.length; i++) if (THEMES[i].id === id) return THEMES[i];
+    return null;
+  }
+  function prefersDark() {
+    return !!(window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches);
+  }
+  /* 把设置里的值解析成真正要用的主题 id；light/dark 是旧版取值，做兼容映射 */
+  function resolveTheme(id) {
+    if (id === 'light') return 'paper';
+    if (id === 'dark') return 'night';
+    if (id === 'auto' || !id) return prefersDark() ? 'night' : 'paper';
+    return themeById(id) ? id : 'paper';
+  }
+  function themeLabel(id) {
+    if (id === 'auto') return '跟随系统';
+    var t = themeById(id);
+    return t ? t.name : '米纸';
+  }
+  /* 离屏探针：借 CSS 级联读出任意主题的实际颜色 */
+  function themeVars(id) {
+    var p = document.getElementById('themeProbe');
+    if (!p) {
+      p = document.createElement('div');
+      p.id = 'themeProbe';
+      p.className = 'theme-probe';
+      p.setAttribute('aria-hidden', 'true');
+      document.body.appendChild(p);
+    }
+    p.setAttribute('data-theme', id === 'auto' ? resolveTheme('auto') : id);
+    var cs = getComputedStyle(p);
+    var g = function (n) { return (cs.getPropertyValue(n) || '').trim(); };
+    var out = {
+      paper: g('--paper') || '#ffffff',
+      card: g('--card') || '#ffffff',
+      ink: g('--ink') || '#000000',
+      ink2: g('--ink2') || '#666666',
+      line: g('--line') || '#dddddd',
+      accent: g('--accent') || '#000000'
+    };
+    p.removeAttribute('data-theme');
+    return out;
+  }
+
   /* ------------------------- 状态 ------------------------- */
   var S, saveT = 0;
 
@@ -191,6 +250,10 @@
       s.days[k] = d;
     });
     s.settings = Object.assign({ overtime: false, sound: true, font: 'kai', theme: 'auto', quoteShift: 0 }, s.settings || {});
+    /* 旧数据里 theme 只可能是 light / dark，迁移成新主题 id */
+    if (s.settings.theme !== 'auto' && THEME_IDS.indexOf(s.settings.theme) < 0) {
+      s.settings.theme = s.settings.theme === 'dark' ? 'night' : (s.settings.theme === 'light' ? 'paper' : 'auto');
+    }
     s.ui = Object.assign({ cat: null, mode: 'down' }, s.ui || {});
     s.timer = s.timer && s.timer.cat ? s.timer : null;
     return s;
@@ -200,7 +263,17 @@
     var raw = null;
     try { raw = localStorage.getItem(KEY); } catch (e) { raw = null; }
     if (!raw) return fresh();
-    try { return normalize(JSON.parse(raw)); } catch (e) { return fresh(); }
+    var parsed = null;
+    try { parsed = JSON.parse(raw); } catch (e) { return fresh(); }
+    /* 注意：normalize() 会就地改传入的对象，所以旧值必须在调用前读出来 */
+    var before = parsed && parsed.settings ? parsed.settings.theme : undefined;
+    var s = normalize(parsed);
+    /* 旧版主题值（light / dark）已被升级成新主题 id，回写一次，
+       免得每次启动都重算一遍迁移，导出的备份里也是新值 */
+    if (before !== s.settings.theme) {
+      try { localStorage.setItem(KEY, JSON.stringify(s)); } catch (e) { /* 存不进去就下次再迁 */ }
+    }
+    return s;
   }
 
   function save() {
@@ -836,6 +909,38 @@
     );
   }
 
+  function openTheme() {
+    var cur = S.settings.theme || 'auto';
+    var cards = THEMES.map(function (t) {
+      var v = themeVars(t.id);
+      return '<button type="button" class="theme-card' + (cur === t.id ? ' on' : '') + '"' +
+        ' data-act="set-theme" data-v="' + t.id + '">' +
+        '<span class="th-preview" style="--tp:' + v.paper + ';--ti:' + v.ink + ';--ti2:' + v.ink2 + ';--ta:' + v.accent + ';--tl:' + v.line + '">' +
+        '<i class="th-l1"></i><i class="th-l2"></i><i class="th-l3"></i>' +
+        '</span>' +
+        '<span class="th-meta"><span class="th-name">' + t.name + '</span><span class="th-tag">' + t.tag + '</span></span>' +
+        '</button>';
+    }).join('');
+
+    var lp = themeVars('paper'), ld = themeVars('night');
+    var autoStyle = '--tp:linear-gradient(100deg,' + lp.paper + ' 0 49%,' + ld.paper + ' 51% 100%);' +
+      '--ti:' + lp.ink + ';--ti2:' + ld.ink2 + ';--ta:' + ld.accent + ';--tl:' + lp.line;
+
+    openModal(
+      '<h3>外观主题</h3>' +
+      '<p class="sub">八套配色都把饱和度压低了，长时间看不容易累。点一下立刻生效，选择会自动记住。</p>' +
+      '<div class="theme-grid">' +
+      '<button type="button" class="theme-card theme-auto' + (cur === 'auto' ? ' on' : '') + '" data-act="set-theme" data-v="auto">' +
+      '<span class="th-preview" style="' + autoStyle + '"><i class="th-l1"></i><i class="th-l2"></i><i class="th-l3"></i></span>' +
+      '<span class="th-meta"><span class="th-name">跟随系统</span><span class="th-tag">白天米纸 · 夜间墨夜</span></span>' +
+      '</button>' +
+      cards +
+      '</div>' +
+      '<p class="modal-note">选深色主题时，输入框、下拉框、滚动条也会一起变暗（color-scheme）。四套浅色适合白天和投影，四套深色适合晚上。引文字体仍在「说明」里单独设置。</p>' +
+      '<div class="modal-actions"><button type="button" class="primary" data-act="close">完成</button></div>'
+    );
+  }
+
   function openData() {
     var bytes = 0;
     try { bytes = (localStorage.getItem(KEY) || '').length * 2; } catch (e) {}
@@ -882,6 +987,7 @@
       '<ul>' +
       '<li>全部存在本机浏览器，不上传。建议每周导出一次 JSON 备份。</li>' +
       '<li>换电脑 / 手机：导出后在新设备点「从备份导入」。</li>' +
+      '<li>右上角「◐ 主题」有八套配色（四浅四深），晚上换深色更护眼，选择会自动记住。</li>' +
       '</ul>' +
       '<h4>偏好</h4>' +
       '<div class="field-row">' +
@@ -971,10 +1077,19 @@
 
   /* ------------------------- 偏好 ------------------------- */
   function applyPrefs() {
-    var t = S.settings.theme;
-    var dark = t === 'dark' || (t === 'auto' && window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches);
-    document.documentElement.setAttribute('data-theme', dark ? 'dark' : 'light');
-    document.documentElement.setAttribute('data-q', S.settings.font || 'kai');
+    var id = resolveTheme(S.settings.theme);
+    var root = document.documentElement;
+    root.setAttribute('data-theme', id);
+    root.setAttribute('data-q', S.settings.font || 'kai');
+    /* 手机浏览器地址栏/状态栏跟着主题走 */
+    var meta = document.querySelector('meta[name="theme-color"]');
+    if (meta) meta.setAttribute('content', themeVars(id).paper);
+    var btn = $('#btnTheme');
+    if (btn) {
+      btn.setAttribute('title', '外观主题 · 当前：' + themeLabel(S.settings.theme));
+      var em = btn.querySelector('i');
+      if (em) em.textContent = '主题';
+    }
   }
 
   /* ------------------------- 事件 ------------------------- */
@@ -1033,6 +1148,16 @@
         flush(); renderPoster();
         break;
       case 'close': closeModal(); break;
+      case 'set-theme': {
+        var th = b.getAttribute('data-v');
+        S.settings.theme = th;
+        applyPrefs(); flush();
+        Array.prototype.forEach.call(document.querySelectorAll('#modal .theme-card'), function (el) {
+          el.classList.toggle('on', el.getAttribute('data-v') === th);
+        });
+        toast('已切换为「' + themeLabel(th) + '」');
+        break;
+      }
       case 'export-json': exportJSON(); break;
       case 'export-csv': exportCSV(); break;
       case 'import-json':
@@ -1189,11 +1314,7 @@
     $('#btnAddCat').addEventListener('click', function () { openCatEditor(''); });
     $('#btnHelp').addEventListener('click', openHelp);
     $('#btnData').addEventListener('click', openData);
-    $('#btnTheme').addEventListener('click', function () {
-      var cur = document.documentElement.getAttribute('data-theme');
-      S.settings.theme = cur === 'dark' ? 'light' : 'dark';
-      applyPrefs(); flush();
-    });
+    $('#btnTheme').addEventListener('click', openTheme);
 
     var modal = $('#modal');
     modal.addEventListener('click', function (e) { if (e.target === modal) closeModal(); });
