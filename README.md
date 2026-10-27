@@ -15,12 +15,12 @@
 | --- | --- |
 | **晨读** | 一篇**完整的**公版名篇（1200–2000 字）+ 应景插画 + 逐句讲解 + 好词好句 + 写作手法 + 当天能写完的仿写任务 |
 | **古诗文** | 一首与当日主题呼应的诗词：应景插画、注释、白话译文、结构赏析、背诵提示 |
-| **英文精读** | 480–600 词原创文章（IELTS 7.0 难度）+ 生词、**地道搭配**、短语、句式、语法点 + 中文摘要 + 6 道单选题 + 输出任务 |
-| **英语听力** | 只给一个**国内可直接打开**的音频/双语页面外链（中国日报英语点津、CGTN 等）+ 通用精听四步法 |
+| **英文精读** | 480–600 词原创文章（IELTS 7.0 难度）+ **一键显示逐段译文** + 生词、**地道搭配**、短语、句式、语法点 + 中文摘要 + 6 道单选题 + 输出任务 |
+| **英语听力** | 每天一篇**原创英文短文**（180–260 词），页面内用浏览器**标准美音**逐句朗读 + 高亮跟读 + 三档语速 + 原文/译文切换；不依赖任何外链 |
 | **AI 知识** | 每天一个 AI 概念（智能体 → Token → 上下文窗口 → 幻觉 → RAG …），配类比、场景和小测 |
 | **今日清单** | 当天的可勾选任务清单，勾选即保存，全部勾完会提示休息 |
 
-互动部分：选择题答错自动进错题本（带中文解析）、生词卡点击显隐、英文全文朗读、笔记自动保存、板块标记完成、清单打勾、每日打卡与连续天数、深浅色切换、按日期回看历史。
+互动部分：选择题答错自动进错题本（带中文解析）、生词卡点击显隐、英文全文朗读、**英文逐段译文开关**、**听力逐句朗读与译文开关**、笔记自动保存、板块标记完成、清单打勾、每日打卡与连续天数、深浅色切换、按日期回看历史。
 
 ---
 
@@ -117,35 +117,34 @@ window.LEARN_DAY = {
                body[], explain[], words[], expressions[], techniques[], imitation{} },
   poem:      { title, author, dynasty, tag, image, imageCaption,
                body[], notes[], translation, appreciation[], recite },
-  english:   { title, level, words, body[], vocab[], collocations[], phrases[], patterns[], grammar[],
+  english:   { title, level, words, body[], translation[], vocab[], collocations[], phrases[], patterns[], grammar[],
                summary, questions[], output{} },
-  listening: { title, level, source, url, note },            // url 必须是 http(s) 外链
+  listening: { title, level, words, topic, lines[{ en, cn }], note },  // 自创短文 + 浏览器美音朗读
   ai:        { term, oneLiner, explain[], analogy, example, takeaway, quiz{}, next },
   checklist: [{ text, tip }]                                 // 今日任务清单
 }
 ```
 
-`questions[].answer` 是 **0 起始的下标**（0 = A）。生成脚本会校验题量与下标合法性，不合法直接报错而不是写出坏数据；`image` 不认识时自动退回 `paper`（素纸）。
+`questions[].answer` 是 **0 起始的下标**（0 = A）。生成脚本会校验题量与下标合法性，不合法直接报错而不是写出坏数据；`english.translation` 段数对不上会按正文补齐；`image` 不认识时自动退回 `paper`（素纸）。
 
 ---
 
 ## 配图
 
-`assets/art.js` 里内置 9 幅**代码生成的水墨插画**，不引用任何外部图片，离线可用、无版权问题，并且同一个场景名每次画出来都一样。数据里只写场景名：
+`assets/art.js` 里内置 16 幅**代码生成的水墨插画**，不引用任何外部图片，离线可用、无版权问题。同一个场景名同一天画出来一样，**换一天构图会重新随机**（seed 取日期），所以每天的配图都不重复。数据里只写场景名：
 
-| 场景名 | 画面 |
-| --- | --- |
-| `lotus-moon` | 荷塘月色 |
-| `autumn-mountain` | 空山新雨 |
-| `bamboo` | 竹影 |
-| `snow-peak` | 雪岭 |
-| `spring-river` | 春江 |
-| `rain-window` | 雨窗 |
-| `dunes` | 沙丘 |
-| `lamp` | 灯下 |
-| `paper` | 素纸（兜底） |
+| 场景名 | 画面 | 场景名 | 画面 |
+| --- | --- | --- | --- |
+| `lotus-moon` | 荷塘月色 | `autumn-mountain` | 空山新雨 |
+| `bamboo` | 竹林清影 | `snow-peak` | 雪岭 |
+| `snow-boat` | 江雪孤舟 | `spring-river` | 春江 |
+| `rain-window` | 雨窗 | `dunes` | 大漠孤烟 |
+| `border` | 边塞烽烟 | `pastoral` | 田园 |
+| `tower` | 登高 | `plum` | 寒梅 |
+| `autumn-river` | 秋江芦荻 | `pine-valley` | 松间清泉 |
+| `lamp` | 灯下 | `paper` | 素纸（兜底） |
 
-要加新画面：在 `art.js` 的 `SCENES` 里加一个 `{ label, draw() }`，`draw()` 返回 SVG 片段即可。
+要加新画面：在 `art.js` 的 `SCENES` 里加一个 `{ label, draw(r, uid) }`，`draw()` 返回 SVG 片段即可；同时把场景名加进 `scripts/generate.mjs` 的 `ART` 白名单和 prompt 的场景列表。
 
 ---
 
@@ -160,7 +159,7 @@ window.LEARN_DAY = {
   "poem": "诗词方向，如「王维《山居秋暝》」",
   "english": "英文题材，如「科技与生活 · 讨论 AI 助手」",
   "ai": "当天要讲的 AI 概念",
-  "listening": "听力方向，如「中国日报英语点津 · 双语新闻」"
+  "listening": "听力方向，如「日常叙事 · 一段关于地铁的观察」（会写成自创英文短文）"
 }
 ```
 
@@ -175,7 +174,7 @@ window.LEARN_DAY = {
 - **语文**：只用公版作品（明清以前，或 1949 年前已故作者），或由模型原创。
 - **古诗文**：公版。
 - **英文精读**：模型原创，不搬运他人文章。
-- **听力**：只给外部链接（中国日报英语点津、CGTN 等国内可直接访问的公开栏目），不复制其音频或文稿。
+- **听力**：模型原创的英文短文，朗读由浏览器自带的语音合成（SpeechSynthesis，en-US）完成，不涉及任何第三方音频或音频版权。
 - **配图**：`assets/art.js` 用代码画的水墨插画，无第三方素材。
 - **名言**：中外名人语句，均为公版内容并标注作者与出处。
 - **AI 知识**：原创讲解。
