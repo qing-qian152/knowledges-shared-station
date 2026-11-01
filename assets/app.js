@@ -120,10 +120,24 @@
     { id: 'dusk', label: '暮色', bg: '#191418', swatch: '#352a31' },
   ];
   const ZH_FONTS = [
-    { id: 'song', label: '宋体', preview: '"Songti SC","SimSun",serif', desc: '书卷气' },
+    { id: 'song', label: '宋体', preview: '"DLSong","Songti SC","SimSun",serif', desc: '书卷气' },
     { id: 'hei', label: '黑体', preview: '"PingFang SC","Microsoft YaHei",sans-serif', desc: '清爽' },
-    { id: 'kai', label: '楷体', preview: '"Kaiti SC","KaiTi",serif', desc: '古雅' },
+    { id: 'kai', label: '楷体', preview: '"DLWenKai","Kaiti SC","KaiTi",serif', desc: '古雅' },
   ];
+
+  /* ---------------- 听力朗读：风格与音色偏好 ---------------- */
+  const STYLES = [
+    { id: 'calm', label: '舒缓', rate: 0.82, pitch: 0.96, pause: 1.25 },
+    { id: 'natural', label: '自然', rate: 0.92, pitch: 1.0, pause: 1.0 },
+    { id: 'bright', label: '轻快', rate: 1.04, pitch: 1.06, pause: 0.82 },
+  ];
+  function listenPrefs() {
+    const p = Store.get('dl.listen', {});
+    return { voice: p.voice || '', style: STYLES.some((s) => s.id === p.style) ? p.style : 'natural' };
+  }
+  function saveListen(p) {
+    Store.set('dl.listen', { voice: p.voice || '', style: p.style || 'natural' });
+  }
   const EN_FONTS = [
     { id: 'serif', label: '衬线', preview: 'Georgia,"Times New Roman",serif', desc: '耐读' },
     { id: 'sans', label: '无衬线', preview: '"Segoe UI",Arial,sans-serif', desc: '干净' },
@@ -632,13 +646,18 @@
     const playBtn = h('button', { class: 'btn small', type: 'button' }, '▶ 播放');
     const stopBtn = h('button', { class: 'btn small ghost', type: 'button' }, '■ 停止');
     const transBtn = h('button', { class: 'btn small ghost toggle-trans', type: 'button' }, '显示译文');
-    const rateSel = h('select', { class: 'speed-sel' },
-      h('option', { value: '0.8' }, '0.8× 慢'),
-      h('option', { value: '0.95', selected: 'selected' }, '0.95×'),
-      h('option', { value: '1.1' }, '1.1× 快'));
+
+    const pref = listenPrefs();
+    const styleSel = h('select', { class: 'speed-sel', title: '朗读风格：语速、音高和句间停顿一起变' },
+      STYLES.map((s) => h('option', { value: s.id, selected: s.id === pref.style ? 'selected' : null }, s.label)));
+    const voiceSel = h('select', { class: 'speed-sel voice-sel', title: '音色：不同系统语音差别很大，⭐ 是最自然的' });
 
     body.append(
-      h('div', { class: 'listen-controls' }, playBtn, stopBtn, rateSel, transBtn),
+      h('div', { class: 'listen-controls' }, playBtn, stopBtn, styleSel, transBtn),
+      h('div', { class: 'listen-controls tight' },
+        h('span', { class: 'listen-lab' }, '音色'),
+        voiceSel,
+        h('span', { class: 'listen-lab dim' }, '听着生硬就换一个 ⭐')),
       h('div', { class: 'listen-lines' }, nodes),
       l.note ? h('div', { class: 'listen-note' }, l.note) : null,
       block('怎么听（四步）', h('ol', { class: 'note-list' },
@@ -649,63 +668,148 @@
 
     const synth = window.speechSynthesis;
     const U = window.SpeechSynthesisUtterance;
-    let voice = null, playing = false;
+    const STYLE_MAP = {};
+    STYLES.forEach((s) => { STYLE_MAP[s.id] = s; });
 
-    function pickVoice() {
+    let voice = null, playing = false, runId = 0, myRun = 0, queue = [], curLine = -1;
+
+    function isNatural(v) {
+      return /natural|neural|online|aria|jenny|guy|samantha|google us english|libby|sonia|ryan|ava|alloy/i.test(v.name || '');
+    }
+    function voiceScore(v) {
+      let s = 0;
+      if (/^en[-_]US/i.test(v.lang)) s += 10;
+      else if (/^en[-_]GB/i.test(v.lang)) s += 6;
+      else if (/^en/i.test(v.lang)) s += 4;
+      if (isNatural(v)) s += 6;
+      if (/compact|espeak|pico|david|mark/i.test(v.name || '')) s -= 5;
+      return s;
+    }
+    function englishVoices() {
       const vs = (synth && synth.getVoices && synth.getVoices()) || [];
-      const score = (v) => {
-        let s = 0;
-        if (/^en[-_]US/i.test(v.lang)) s += 10;
-        else if (/^en[-_]GB/i.test(v.lang)) s += 6;
-        else if (/^en/i.test(v.lang)) s += 4;
-        if (/natural|neural|aria|jenny|guy|samantha|google us english|zira/i.test(v.name || '')) s += 5;
-        return s;
-      };
-      return vs.slice().sort((a, b) => score(b) - score(a))[0] || null;
-    }
-    voice = pickVoice();
-    if (synth && synth.addEventListener) {
-      synth.addEventListener('voiceschanged', () => { voice = pickVoice(); });
+      return vs.filter((v) => /^en/i.test(v.lang || '')).sort((a, b) => voiceScore(b) - voiceScore(a));
     }
 
-    function clearHi() { nodes.forEach((n) => n.classList.remove('playing')); }
+    function fillVoices() {
+      const list = englishVoices();
+      voiceSel.textContent = '';
+      if (!list.length) {
+        voiceSel.append(h('option', { value: '' }, '系统暂无英语音色'));
+        return;
+      }
+      list.forEach((v) => voiceSel.append(h('option', {
+        value: v.voiceURI,
+        selected: v.voiceURI === pref.voice ? 'selected' : null,
+      }, `${v.name}${isNatural(v) ? ' ⭐' : ''} · ${String(v.lang || '').replace('_', '-')}`)));
+      const pick = list.find((v) => v.voiceURI === pref.voice) || list[0];
+      voiceSel.value = pick.voiceURI;
+      voice = pick;
+    }
+
+    function syncVoice() {
+      voice = englishVoices().find((v) => v.voiceURI === voiceSel.value) || null;
+      const p = listenPrefs();
+      p.voice = voiceSel.value;
+      saveListen(p);
+    }
+
+    function styleNow() { return STYLE_MAP[styleSel.value] || STYLES[1]; }
+
+    /* 把一句按标点切成短句：每段单独合成，句间留气口，听感才不会一路平推 */
+    function clauses(text) {
+      const s = String(text || '').trim();
+      if (!s) return [];
+      const parts = s.match(/[^,;:.!?—–、；：，。！？…]+[,;:.!?—–、；：，。！？…]*/g) || [s];
+      return parts.map((p) => p.trim()).filter(Boolean);
+    }
+    function tailPause(text, mult) {
+      const end = String(text).slice(-1);
+      if ('.!?。！？…'.indexOf(end) >= 0) return Math.round(430 * mult);
+      if (',;:、；：，—–'.indexOf(end) >= 0) return Math.round(190 * mult);
+      return Math.round(110 * mult);
+    }
+
+    function clearHi() { nodes.forEach((n) => n.classList.remove('playing')); curLine = -1; }
+    function markLine(i) {
+      clearHi();
+      if (nodes[i]) {
+        nodes[i].classList.add('playing');
+        curLine = i;
+        try {
+          if (nodes[i].scrollIntoView) nodes[i].scrollIntoView({ block: 'center', behavior: 'smooth' });
+        } catch { /* 部分环境不支持参数 */ }
+      }
+    }
 
     function done() {
       playing = false;
+      runId++;
       clearHi();
       playBtn.textContent = '▶ 播放';
     }
 
-    function speakAt(i) {
-      if (!synth || !U) { playBtn.textContent = '此浏览器不支持朗读'; playing = false; return; }
-      if (i >= lines.length) { done(); return; }
-      clearHi();
-      nodes[i].classList.add('playing');
-      try {
-        if (nodes[i].scrollIntoView) nodes[i].scrollIntoView({ block: 'center', behavior: 'smooth' });
-      } catch { /* 有的环境不支持参数 */ }
-      const u = new U(lines[i].en);
-      u.lang = 'en-US';
-      if (voice) u.voice = voice;
-      u.rate = parseFloat(rateSel.value) || 0.95;
-      u.pitch = 1;
-      u.onend = () => { if (playing) speakAt(i + 1); };
-      u.onerror = () => { if (playing) speakAt(i + 1); };
-      synth.speak(u);
+    function buildQueue() {
+      const st = styleNow();
+      const q = [];
+      lines.forEach((ln, li) => {
+        clauses(ln.en).forEach((c, ci) => {
+          q.push({
+            line: li, text: c, rate: st.rate,
+            pitch: Math.max(0.6, Math.min(1.6, st.pitch + (ci % 2 ? 0.014 : -0.012))),
+            gap: tailPause(c, st.pause),
+          });
+        });
+        q.push({ line: li, text: '', rate: st.rate, pitch: st.pitch, gap: Math.round(240 * st.pause) });
+      });
+      return q;
     }
+
+    function playAt(idx) {
+      if (!playing || myRun !== runId) return;
+      if (idx >= queue.length) { done(); return; }
+      const item = queue[idx];
+      if (!item.text) { window.setTimeout(() => playAt(idx + 1), item.gap); return; }
+      if (item.line !== curLine) markLine(item.line);
+
+      const u = new U(item.text);
+      u.lang = (voice && voice.lang) || 'en-US';
+      if (voice) u.voice = voice;
+      u.rate = item.rate;
+      u.pitch = item.pitch;
+      u.volume = 1;
+      u.onend = () => { if (myRun === runId) window.setTimeout(() => playAt(idx + 1), item.gap); };
+      u.onerror = () => { if (myRun === runId) window.setTimeout(() => playAt(idx + 1), 60); };
+      try { synth.speak(u); } catch (e) { window.setTimeout(() => playAt(idx + 1), 60); }
+    }
+
+    fillVoices();
+    if (synth && synth.addEventListener) synth.addEventListener('voiceschanged', fillVoices);
+    else if (synth && 'onvoiceschanged' in synth) synth.onvoiceschanged = fillVoices;
+
+    voiceSel.addEventListener('change', (ev) => { ev.stopPropagation(); syncVoice(); });
+    styleSel.addEventListener('change', (ev) => {
+      ev.stopPropagation();
+      const p = listenPrefs();
+      p.style = styleSel.value;
+      saveListen(p);
+    });
 
     playBtn.addEventListener('click', (ev) => {
       ev.stopPropagation();
-      if (!synth) { playBtn.textContent = '此浏览器不支持朗读'; return; }
-      synth.cancel();
+      if (!synth || !U) { playBtn.textContent = '此浏览器不支持朗读'; return; }
+      try { synth.cancel(); } catch (e) { /* ignore */ }
+      runId++;
+      myRun = runId;
       playing = true;
       playBtn.textContent = '❚❚ 停止';
-      speakAt(0);
+      queue = buildQueue();
+      if (!queue.length) { done(); return; }
+      playAt(0);
     });
 
     stopBtn.addEventListener('click', (ev) => {
       ev.stopPropagation();
-      if (synth) synth.cancel();
+      try { if (synth) synth.cancel(); } catch (e) { /* ignore */ }
       done();
     });
 
