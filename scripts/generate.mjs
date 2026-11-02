@@ -356,6 +356,22 @@ function validate(day) {
   if (!day.quote || !String(day.quote.text || '').trim()) {
     console.warn('⚠ 缺少 quote，页面顶部的每日一句会空着');
   }
+  // 清单里常写「做完英文五道单选题」，但实际出了 6 道——按真实题数改掉，
+  // 不然读者照清单做会以为漏了一题。
+  const nQ = (day.english.questions || []).length;
+  const CN = ['零', '一', '二', '三', '四', '五', '六', '七', '八', '九', '十'];
+  const fixCount = (txt) => String(txt).replace(/([一二三四五六七八九十]+)道(单选)?题/g, (m0, num, single) => {
+    const v = CN.indexOf(num);
+    return v > 0 && v !== nQ ? `${CN[nQ] || nQ}道${single || ''}题` : m0;
+  });
+  if (Array.isArray(day.checklist)) {
+    day.checklist = day.checklist.map((it) => {
+      if (typeof it === 'string') return fixCount(it);
+      if (it && it.text) return { ...it, text: fixCount(it.text) };
+      return it;
+    });
+  }
+
   if (!Array.isArray(day.checklist) || !day.checklist.length) {
     console.warn('⚠ 缺少 checklist，页面会用默认的五项清单');
   }
