@@ -54,6 +54,21 @@ jobs:
           echo "参数: ${ARGS[*]:-（无，按今天自动生成）}"
           node scripts/generate.mjs "${ARGS[@]}"
 
+      - name: Fetch frontier & invest
+        # 网络抓取失败不该拖垮当天的正文，所以允许这一步行失败，日志里能看到原因
+        continue-on-error: true
+        env:
+          API_KEY: ${{ secrets.DEEPSEEK_KNOWLEDGE_SHARE || secrets.DEEPSEEK_API_KEY }}
+          MODEL: deepseek-chat
+          TZ: Asia/Shanghai
+          IN_DATE: ${{ inputs.date }}
+          IN_FORCE: ${{ inputs.force }}
+        run: |
+          ARGS=()
+          [ -n "$IN_DATE" ] && ARGS+=(--date "$IN_DATE")
+          [ "$IN_FORCE" = "true" ] && ARGS+=(--force)
+          node scripts/fetch-extra.mjs "${ARGS[@]}"
+
       - name: Commit
         run: |
           git config user.name  "daily-learn-bot"
