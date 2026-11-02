@@ -268,10 +268,12 @@
     }
 
     const today = fmtDate(new Date());
-    state.date = state.dates.includes(today) ? today : state.dates[0];
+    state.date = dateFromUrl() || (state.dates.includes(today) ? today : state.dates[0]);
 
     buildDateSelect();
     buildTabs();
+    $('#dateSel').addEventListener('change', () => switchDay($('#dateSel').value));
+    wireDayNav();
 
     await switchDay(state.date);
   }
@@ -279,13 +281,59 @@
   function buildDateSelect() {
     const sel = $('#dateSel');
     sel.innerHTML = '';
+    const groups = new Map();
     state.dates.forEach((d) => {
+      const key = d.slice(0, 7);
+      let g = groups.get(key);
+      if (!g) {
+        const [y, m] = key.split('-').map(Number);
+        g = h('optgroup', { label: `${y} 年 ${m} 月` });
+        groups.set(key, g);
+        sel.append(g);
+      }
       const dt = parseDate(d);
-      const opt = h('option', { value: d }, `${dt.getMonth() + 1}月${dt.getDate()}日 · ${WEEK[dt.getDay()]}`);
-      sel.append(opt);
+      g.append(h('option', { value: d }, `${dt.getDate()} 日 · ${WEEK[dt.getDay()]}`));
     });
     sel.value = state.date;
-    sel.addEventListener('change', () => switchDay(sel.value));
+  }
+
+  /* 地址栏带上日期：?d=2026-11-02，可直接分享/收藏某一天 */
+  function setUrlDate(date) {
+    try {
+      const u = new URL(window.location.href);
+      u.searchParams.set('d', date);
+      window.history.replaceState(null, '', u.toString());
+    } catch (e) { /* file:// 下可能不允许，忽略 */ }
+  }
+
+  function dateFromUrl() {
+    try {
+      const d = new URL(window.location.href).searchParams.get('d');
+      return d && /^\d{4}-\d{2}-\d{2}$/.test(d) && state.dates.includes(d) ? d : null;
+    } catch (e) { return null; }
+  }
+
+  function syncDayNav() {
+    const i = state.dates.indexOf(state.date);
+    const prev = $('#prevDay');
+    const next = $('#nextDay');
+    if (prev) {
+      const older = state.dates[i + 1];
+      prev.disabled = !older;
+      prev.dataset.date = older || '';
+    }
+    if (next) {
+      const newer = state.dates[i - 1];
+      next.disabled = !newer;
+      next.dataset.date = newer || '';
+    }
+  }
+
+  function wireDayNav() {
+    const prev = $('#prevDay');
+    const next = $('#nextDay');
+    if (prev) prev.addEventListener('click', () => { if (prev.dataset.date) switchDay(prev.dataset.date); });
+    if (next) next.addEventListener('click', () => { if (next.dataset.date) switchDay(next.dataset.date); });
   }
 
   function buildTabs() {
@@ -307,7 +355,9 @@
     state.date = date;
     const sel = $('#dateSel');
     if (sel.value !== date) sel.value = date;
+    setUrlDate(date);
     buildTabs();
+    syncDayNav();
     delete window.LEARN_DAY;
     try {
       await loadScript(`data/days/${date}.js`);
@@ -1189,6 +1239,265 @@
     });
   }
 
+  /* ---------------- 导出全年：打包成一个离线可读的 HTML ---------------- */
+
+  function esc(s) {
+    return String(s == null ? '' : s).replace(/[&<>"']/g, (c) => (
+      { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+  }
+  const pgh = (arr) => (Array.isArray(arr) ? arr : []).map((p) => `<p>${esc(p)}</p>`).join('');
+  const ul = (arr) => (Array.isArray(arr) && arr.length
+    ? `<ul>${arr.map((x) => `<li>${esc(x)}</li>`).join('')}</ul>` : '');
+
+  function anyBlock(v) {
+    if (v == null || v === '') return '';
+    if (typeof v === 'string') return `<p>${esc(v)}</p>`;
+    if (typeof v === 'number' || typeof v === 'boolean') return `<p>${esc(v)}</p>`;
+    if (Array.isArray(v)) return v.map(anyBlock).join('');
+    return Object.keys(v).map((k) => `<p><b>${esc(k)}</b>：${esc(typeof v[k] === 'object' ? JSON.stringify(v[k]) : v[k])}</p>`).join('');
+  }
+
+  function exportDayHtml(d) {
+    const out = [];
+    const dt = parseDate(d.date);
+    out.push(`<section id="d-${esc(d.date)}"><h2 class="day-h">${dt.getMonth() + 1} 月 ${dt.getDate()} 日 · ${esc(d.weekday || WEEK[dt.getDay()])}<span>${esc(d.theme || '')}</span></h2>`);
+
+    if (d.quote && d.quote.text) {
+      out.push(`<blockquote class="q">${esc(d.quote.text)}<cite>${esc(d.quote.author || '')}${d.quote.source ? '《' + esc(d.quote.source) + '》' : ''}</cite></blockquote>`);
+    }
+
+    const c = d.chinese || {};
+    out.push('<h3>01 · 语文晨读</h3>');
+    out.push(`<p class="meta">${esc(c.title || '')}${c.author ? ' · ' + esc(c.author) : ''}${c.tag ? ' · ' + esc(c.tag) : ''}${c.readingTime ? ' · ' + esc(c.readingTime) : ''}</p>`);
+    out.push(pgh(c.body));
+    if (c.imageCaption) out.push(`<p class="cap">配图：${esc(c.imageCaption)}</p>`);
+    if (Array.isArray(c.explain) && c.explain.length) {
+      out.push('<h4>讲解</h4>');
+      out.push(c.explain.map((x) => `<p><b>${esc(x.line)}</b><br>${esc(x.note)}</p>`).join(''));
+    }
+    if (Array.isArray(c.words) && c.words.length) {
+      out.push('<h4>好词</h4>');
+      out.push(c.words.map((x) => `<p><b>${esc(x.w)}</b>　${esc(x.meaning || '')}${x.use ? '<br>例：' + esc(x.use) : ''}</p>`).join(''));
+    }
+    if (Array.isArray(c.expressions) && c.expressions.length) {
+      out.push('<h4>好句</h4>');
+      out.push(c.expressions.map((x) => `<p>「${esc(x.s)}」<br><span class="dim">${esc(x.why || '')}</span></p>`).join(''));
+    }
+    if (Array.isArray(c.techniques) && c.techniques.length) {
+      out.push('<h4>写作手法</h4>');
+      out.push(c.techniques.map((x) => `<p><b>${esc(x.name)}</b>　${esc(x.desc || '')}${x.example ? '<br><span class="dim">' + esc(x.example) + '</span>' : ''}</p>`).join(''));
+    }
+    if (c.imitation) out.push('<h4>仿写任务</h4>' + anyBlock(c.imitation));
+
+    const p = d.poem || {};
+    out.push('<h3>02 · 古诗文</h3>');
+    out.push(`<p class="meta">${esc(p.title || '')}${p.author ? ' · ' + esc(p.author) : ''}${p.dynasty ? '（' + esc(p.dynasty) + '）' : ''}</p>`);
+    out.push(`<div class="verse">${(Array.isArray(p.body) ? p.body : []).map((l) => `<p>${esc(l)}</p>`).join('')}</div>`);
+    if (Array.isArray(p.notes) && p.notes.length) {
+      out.push('<h4>注释</h4>');
+      out.push(p.notes.map((x) => `<p><b>${esc(x.line)}</b>　${esc(x.note)}</p>`).join(''));
+    }
+    if (p.translation) out.push('<h4>译文</h4>' + pgh([p.translation]));
+    if (Array.isArray(p.appreciation) && p.appreciation.length) out.push('<h4>赏析</h4>' + pgh(p.appreciation));
+    if (p.recite) out.push('<h4>背诵提示</h4>' + pgh([p.recite]));
+
+    const e = d.english || {};
+    out.push('<h3>03 · 英文精读</h3>');
+    out.push(`<p class="meta">${esc(e.title || '')}${e.level ? ' · ' + esc(e.level) : ''}${e.words ? ' · ' + esc(e.words) + ' 词' : ''}</p>`);
+    const eb = Array.isArray(e.body) ? e.body : [];
+    const et = Array.isArray(e.translation) ? e.translation : [];
+    out.push(eb.map((x, i) => `<p class="en">${esc(x)}</p>${et[i] ? `<p class="cn">${esc(et[i])}</p>` : ''}`).join(''));
+    if (Array.isArray(e.vocab) && e.vocab.length) {
+      out.push('<h4>重点词汇</h4>');
+      out.push(e.vocab.map((x) => `<p><b>${esc(x.w)}</b> <span class="dim">${esc(x.pos || '')} ${esc(x.cn || '')}</span>${x.ex ? '<br>' + esc(x.ex) : ''}</p>`).join(''));
+    }
+    if (Array.isArray(e.collocations) && e.collocations.length) {
+      out.push('<h4>地道搭配</h4>');
+      out.push(e.collocations.map((x) => `<p><b>${esc(x.phrase)}</b>　${esc(x.cn || '')}${x.ex ? '<br><span class="dim">' + esc(x.ex) + '</span>' : ''}</p>`).join(''));
+    }
+    if (Array.isArray(e.phrases) && e.phrases.length) {
+      out.push('<h4>短语</h4>');
+      out.push(e.phrases.map((x) => `<p><b>${esc(x.p)}</b>　${esc(x.cn || '')}${x.ex ? '<br><span class="dim">' + esc(x.ex) + '</span>' : ''}</p>`).join(''));
+    }
+    if (Array.isArray(e.patterns) && e.patterns.length) {
+      out.push('<h4>句式</h4>');
+      out.push(e.patterns.map((x) => `<p><b>${esc(x.s)}</b>　${esc(x.cn || '')}${x.note ? '<br><span class="dim">' + esc(x.note) + '</span>' : ''}</p>`).join(''));
+    }
+    if (Array.isArray(e.grammar) && e.grammar.length) {
+      out.push('<h4>语法</h4>');
+      out.push(e.grammar.map((x) => `<p><b>${esc(x.point)}</b><br>${esc(x.explain || '')}${x.example ? '<br><span class="dim">' + esc(x.example) + '</span>' : ''}</p>`).join(''));
+    }
+    if (e.summary) out.push('<h4>中文摘要</h4>' + pgh([e.summary]));
+    if (Array.isArray(e.questions) && e.questions.length) {
+      out.push('<h4>阅读题</h4>');
+      out.push(e.questions.map((q, i) => {
+        const opts = (q.options || []).map((o, j) => `<p class="opt${j === q.answer ? ' right' : ''}">${'ABCDEFG'[j]}. ${esc(o)}</p>`).join('');
+        return `<div class="qbox"><p class="qt"><b>${i + 1}.</b> ${esc(q.q)}</p>${opts}${q.explain ? `<p class="dim">解析：${esc(q.explain)}</p>` : ''}</div>`;
+      }).join(''));
+    }
+    if (e.output) out.push('<h4>输出任务</h4>' + anyBlock(e.output));
+
+    const l = d.listening || {};
+    out.push('<h3>04 · 英语听力</h3>');
+    out.push(`<p class="meta">${esc(l.title || '')}${l.level ? ' · ' + esc(l.level) : ''}${l.topic ? ' · ' + esc(l.topic) : ''}</p>`);
+    out.push((Array.isArray(l.lines) ? l.lines : []).map((x) => `<p class="en">${esc(x.en)}</p>${x.cn ? `<p class="cn">${esc(x.cn)}</p>` : ''}`).join(''));
+    if (l.note) out.push(`<p class="dim">${esc(l.note)}</p>`);
+
+    const a = d.ai || {};
+    out.push('<h3>05 · AI 一小时</h3>');
+    out.push(`<p class="meta"><b>${esc(a.term || '')}</b>${a.oneLiner ? ' · ' + esc(a.oneLiner) : ''}</p>`);
+    if (Array.isArray(a.explain)) out.push(pgh(a.explain));
+    if (a.analogy) out.push(`<p><b>打个比方</b>　${esc(a.analogy)}</p>`);
+    if (a.example) out.push(`<p><b>实际例子</b>　${esc(a.example)}</p>`);
+    if (a.takeaway) out.push(`<p><b>一句话记住</b>　${esc(a.takeaway)}</p>`);
+    if (a.quiz && a.quiz.q) {
+      const opts = (a.quiz.options || []).map((o, j) => `<p class="opt${j === a.quiz.answer ? ' right' : ''}">${'ABCDEFG'[j]}. ${esc(o)}</p>`).join('');
+      out.push(`<div class="qbox"><p class="qt"><b>小测</b>　${esc(a.quiz.q)}</p>${opts}${a.quiz.explain ? `<p class="dim">解析：${esc(a.quiz.explain)}</p>` : ''}</div>`);
+    }
+    if (a.next) out.push(`<p class="dim">${esc(a.next)}</p>`);
+
+    const fr = (window.LEARN_FRONTIER || {})[d.date];
+    if (fr && Array.isArray(fr.items) && fr.items.length) {
+      out.push('<h3>06 · AI 前沿</h3>');
+      if (fr.updated) out.push(`<p class="meta">更新于 ${esc(fr.updated)}</p>`);
+      if (fr.lead) out.push(`<p><b>今天在发生什么：</b>${esc(fr.lead)}</p>`);
+      out.push(fr.items.map((it) => {
+        const head = it.url ? `<a href="${esc(it.url)}" rel="noopener">${esc(it.title)}</a>` : esc(it.title);
+        const meta = [it.source, it.meta, it.publishedAt].filter(Boolean).join(' · ');
+        return `<p class="item"><b>${head}</b>${it.takeaway ? `<br>一句记住：${esc(it.takeaway)}` : ''}${it.why ? `<br>为什么值得看：${esc(it.why)}` : ''}${meta ? `<br><span class="dim">${esc(meta)}</span>` : ''}</p>`;
+      }).join(''));
+      if (Array.isArray(fr.repos) && fr.repos.length) {
+        out.push('<h4>今天可以动手的 GitHub 项目</h4>');
+        out.push(fr.repos.map((r) => `<p><b><a href="${esc(r.url)}" rel="noopener">${esc(r.name)}</a></b>${r.stars ? ` ★ ${esc(r.stars)}` : ''}${r.lang ? ` · ${esc(r.lang)}` : ''}<br>${esc(r.what || '')}${r.tryThis ? `<br>怎么试${r.minutes ? `（约 ${esc(r.minutes)} 分钟）` : ''}：${esc(r.tryThis)}` : ''}</p>`).join(''));
+      }
+      if (fr.task) {
+        const t = fr.task;
+        out.push(`<h4>今天上手做这一件${t.time ? '（' + esc(t.time) + '）' : ''}</h4>`);
+        out.push(`<p><b>${esc(t.title || '')}</b>${t.goal ? ' —— ' + esc(t.goal) : ''}</p>`);
+        if (t.url) out.push(`<p class="dim">材料：${esc(t.url)}</p>`);
+        if (Array.isArray(t.steps)) out.push(`<ol>${t.steps.map((s) => `<li>${esc(s)}</li>`).join('')}</ol>`);
+        if (t.done) out.push(`<p class="dim">做完的标准：${esc(t.done)}</p>`);
+      }
+    }
+
+    const inv = (window.LEARN_INVEST || {})[d.date];
+    if (inv) {
+      out.push('<h3>07 · 投资</h3>');
+      const line = [inv.asof ? `数据截至 ${inv.asof}` : '', inv.updated ? `更新于 ${inv.updated}` : ''].filter(Boolean).join(' · ');
+      if (line) out.push(`<p class="meta">${esc(line)}</p>`);
+      if (inv.brief) out.push(`<p><b>今天一眼：</b>${esc(inv.brief)}</p>`);
+      const k = inv.knowledge;
+      if (k && k.term) {
+        out.push('<h4>今天一个投资知识</h4>');
+        out.push(`<p><b>${esc(k.term)}</b>${k.plain ? `<br>说人话：${esc(k.plain)}` : ''}${k.example ? `<br>举个例子：${esc(k.example)}` : ''}${k.pitfall ? `<br>最容易踩的坑：${esc(k.pitfall)}` : ''}</p>`);
+        if (k.quiz && k.quiz.q) {
+          const opts = (k.quiz.options || []).map((o, j) => `<p class="opt${j === k.quiz.answer ? ' right' : ''}">${'ABCDEFG'[j]}. ${esc(o)}</p>`).join('');
+          out.push(`<div class="qbox"><p class="qt">${esc(k.quiz.q)}</p>${opts}${k.quiz.explain ? `<p class="dim">解析：${esc(k.quiz.explain)}</p>` : ''}</div>`);
+        }
+      }
+      if (Array.isArray(inv.indices) && inv.indices.length) {
+        out.push('<h4>今日市场</h4>');
+        out.push(inv.indices.map((x) => {
+          const pts = (x.series || []).map((p) => Number(p[1])).filter((n) => isFinite(n));
+          const range = pts.length ? `　区间 ${Math.min(...pts).toFixed(2)} ~ ${Math.max(...pts).toFixed(2)}` : '';
+          return `<p><b>${esc(x.name)}</b>${x.code ? ' · ' + esc(x.code) : ''}　${esc(x.last)}　${Number(x.chg) > 0 ? '+' : ''}${esc(x.chg)}（${Number(x.pct) > 0 ? '+' : ''}${esc(x.pct)}%）<span class="dim">${esc(range)}${x.asof ? '　' + esc(x.asof) : ''}${x.source ? '　来源：' + esc(x.source) : ''}</span></p>`;
+        }).join(''));
+      }
+      const news = (inv.news || []).slice().sort((a, b) => String(b.time || '').localeCompare(String(a.time || '')));
+      if (news.length) {
+        out.push('<h4>最近的消息</h4>');
+        out.push(news.map((n) => {
+          const t = n.url ? `<a href="${esc(n.url)}" rel="noopener">${esc(n.title)}</a>` : esc(n.title);
+          return `<p><b>${t}</b>${[n.time, n.source].filter(Boolean).length ? `<br><span class="dim">${esc([n.time, n.source].filter(Boolean).join(' · '))}</span>` : ''}${n.note ? `<br>${esc(n.note)}` : ''}</p>`;
+        }).join(''));
+      }
+    }
+
+    if (Array.isArray(d.checklist) && d.checklist.length) {
+      out.push('<h3>08 · 今日清单</h3><ul class="tasks">');
+      out.push(d.checklist.map((x) => `<li>☐ ${esc(typeof x === 'string' ? x : x.text)}${x.tip ? '<br><span class="dim">' + esc(x.tip) + '</span>' : ''}</li>`).join(''));
+      out.push('</ul>');
+    }
+
+    out.push('</section>');
+    return out.join('\n');
+  }
+
+  const EXPORT_CSS = `
+:root{--ink:#23282b;--ink2:#4a5257;--dim:#7d868c;--line:#ddd6c8;--bg:#faf7f1;--accent:#b14d33;--teal:#2c6e68;--gold:#9a7223}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.9 "Songti SC",Georgia,serif}
+.wrap{max-width:760px;margin:0 auto;padding:28px 20px 80px}
+h1{font-size:26px;margin:0 0 6px;letter-spacing:.04em}
+.sub{color:var(--dim);font-size:13px;margin:0 0 22px}
+.toc{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 30px;padding:0;list-style:none}
+.toc a{font-size:13px;padding:4px 9px;border:1px solid var(--line);border-radius:999px;color:var(--ink2);text-decoration:none}
+section{margin:0 0 56px;padding:0 0 26px;border-bottom:1px solid var(--line)}
+.day-h{font-size:20px;margin:0 0 18px;padding-top:10px}
+.day-h span{display:block;font-size:13px;color:var(--accent);font-weight:400;margin-top:2px}
+h3{font-size:14px;letter-spacing:.1em;color:var(--teal);margin:26px 0 10px;font-weight:600}
+h4{font-size:14px;margin:20px 0 8px;color:var(--ink2)}
+p{margin:0 0 12px}
+.meta{font-size:13px;color:var(--dim)}
+.dim{color:var(--dim);font-size:13px}
+.cap{font-size:12.5px;color:var(--dim);font-style:italic}
+.q{margin:0 0 20px;padding:14px 18px;border-left:3px solid var(--accent);background:#f3ecdd}
+.q cite{display:block;margin-top:6px;font-size:12.5px;color:var(--dim);font-style:normal}
+.verse p{margin:0;line-height:2.1;font-size:17px}
+.en{font-family:Georgia,"Times New Roman",serif;font-size:16.5px}
+.cn{color:var(--ink2);font-size:14.5px;background:#f4f0e6;padding:6px 10px;border-radius:6px}
+.qbox{margin:0 0 14px;padding:10px 12px;background:#fff;border:1px solid var(--line);border-radius:8px}
+.qt{margin:0 0 6px}
+.opt{margin:0;font-size:14.5px;color:var(--ink2)}
+.right{color:var(--teal);font-weight:600}
+.tasks{list-style:none;padding:0}
+.tasks li{margin:0 0 8px;font-size:14.5px}
+@media print{body{background:#fff}section{page-break-after:always;border:0}.toc{display:none}}
+`;
+
+  function yearHtml(year, days) {
+    const toc = days.map((d) => {
+      const dt = parseDate(d.date);
+      return `<li><a href="#d-${esc(d.date)}">${dt.getMonth() + 1}/${dt.getDate()} ${esc(d.theme || '')}</a></li>`;
+    }).join('');
+    return `<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>每日一学 · ${esc(year)} 年合集</title>
+<style>${EXPORT_CSS}</style></head>
+<body><div class="wrap">
+<h1>每日一学 · ${esc(year)} 年</h1>
+<p class="sub">共 ${days.length} 天 · 语文晨读 / 古诗文 / 英文精读 / 英语听力 / AI · 生成于 ${esc(fmtDate(new Date()))}</p>
+<ul class="toc">${toc}</ul>
+${days.map(exportDayHtml).join('\n')}
+</div></body></html>`;
+  }
+
+  async function exportYear(btn) {
+    const year = state.date.slice(0, 4);
+    const dates = state.dates.filter((x) => x.startsWith(year + '-')).slice().sort();
+    const days = [];
+    for (let i = 0; i < dates.length; i++) {
+      if (btn) btn.textContent = `导出中… ${i + 1} / ${dates.length}`;
+      delete window.LEARN_DAY;
+      try { await loadScript(`data/days/${dates[i]}.js`); } catch (e) { continue; }
+      if (window.LEARN_DAY) days.push(window.LEARN_DAY);
+    }
+    /* 导出过程中把当天数据换掉了，收尾要还原，页面才不会被误伤 */
+    delete window.LEARN_DAY;
+    try { await loadScript(`data/days/${state.date}.js`); state.day = window.LEARN_DAY; } catch (e) { /* 忽略 */ }
+
+    if (!days.length) { if (btn) btn.textContent = '这一年没有内容'; return; }
+    const html = yearHtml(year, days);
+    const blob = new Blob([html], { type: 'text/html;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const a = h('a', { href: url, download: `每日一学-${year}.html` });
+    document.body.append(a);
+    a.click();
+    setTimeout(() => { a.remove(); try { URL.revokeObjectURL(url); } catch (e) { /* 忽略 */ } }, 5000);
+    if (btn) btn.textContent = `✓ 已导出 ${days.length} 天`;
+  }
+
   function renderFooter(day) {
     const f = $('#footer');
     if (!f) return;
@@ -1238,6 +1547,18 @@
       wb.append(list, clearBtn);
     }
     f.append(wb);
+
+    /* 导出：把这一年已生成的内容打包成一个可离线阅读的 HTML */
+    const year = state.date.slice(0, 4);
+    const years = Array.from(new Set(state.dates.map((x) => x.slice(0, 4)))).sort().reverse();
+    const expBtn = h('button', { class: 'btn small ghost' }, `⤓ 导出 ${year} 年（离线 HTML）`);
+    expBtn.addEventListener('click', () => exportYear(expBtn));
+    const row = h('div', { class: 'export-row' }, expBtn,
+      h('span', { class: 'export-hint' },
+        years.length > 1
+          ? `把 ${year} 年的 ${state.dates.filter((x) => x.startsWith(year + '-')).length} 天内容打包成一个网页文件，断网也能读`
+          : '把这一年所有内容打包成一个网页文件，断网也能读'));
+    f.append(row);
   }
 
   function calcStreak() {
