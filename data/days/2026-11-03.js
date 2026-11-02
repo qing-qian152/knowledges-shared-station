@@ -2,9 +2,9 @@
 window.LEARN_DAY = {
   "theme": "名字是归处，也是出发",
   "quote": {
-    "text": "世界上没有两片完全相同的树叶，也没有两个完全相同的名字。",
-    "author": "莱布尼茨",
-    "source": ""
+    "text": "名不正，则言不顺；言不顺，则事不成。",
+    "author": "孔子",
+    "source": "论语·子路"
   },
   "chinese": {
     "title": "缝在名字里的那根线",
