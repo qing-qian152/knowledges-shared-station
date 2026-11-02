@@ -219,6 +219,15 @@ body {
 .icon-btn { padding: 6px 10px; line-height: 1; }
 .date-sel:hover, .icon-btn:hover { border-color: var(--accent); color: var(--accent); }
 
+/* 前一天 / 后一天 */
+.step-btn { width: 30px; height: 30px; padding: 0; font-size: 16px; line-height: 1; border-radius: 999px; }
+.step-btn:disabled { opacity: .32; cursor: default; border-color: var(--line); color: var(--ink-2); }
+@media (max-width: 520px) { .step-btn { width: 28px; height: 28px; } }
+
+/* 导出全年 */
+.export-row { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; margin-top: 14px; }
+.export-hint { font-size: 12.5px; color: var(--muted); line-height: 1.6; }
+
 /* ---------- 板块导航 ---------- */
 .tabs {
   position: sticky; top: 51px; z-index: 19;
