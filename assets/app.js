@@ -1257,6 +1257,14 @@
     return Object.keys(v).map((k) => `<p><b>${esc(k)}</b>：${esc(typeof v[k] === 'object' ? JSON.stringify(v[k]) : v[k])}</p>`).join('');
   }
 
+  function artBlock(key, seed) {
+    if (!key || !window.LEARN_ART || typeof window.LEARN_ART.svg !== 'function') return '';
+    try {
+      const svg = window.LEARN_ART.svg(key, seed);
+      return svg ? `<div class="art">${svg}</div>` : '';
+    } catch (e) { return ''; }
+  }
+
   function exportDayHtml(d) {
     const out = [];
     const dt = parseDate(d.date);
@@ -1269,8 +1277,9 @@
     const c = d.chinese || {};
     out.push('<h3>01 · 语文晨读</h3>');
     out.push(`<p class="meta">${esc(c.title || '')}${c.author ? ' · ' + esc(c.author) : ''}${c.tag ? ' · ' + esc(c.tag) : ''}${c.readingTime ? ' · ' + esc(c.readingTime) : ''}</p>`);
+    out.push(artBlock(c.image, d.date + '|c'));
     out.push(pgh(c.body));
-    if (c.imageCaption) out.push(`<p class="cap">配图：${esc(c.imageCaption)}</p>`);
+    if (c.imageCaption) out.push(`<p class="cap">${esc(c.imageCaption)}</p>`);
     if (Array.isArray(c.explain) && c.explain.length) {
       out.push('<h4>讲解</h4>');
       out.push(c.explain.map((x) => `<p><b>${esc(x.line)}</b><br>${esc(x.note)}</p>`).join(''));
@@ -1292,6 +1301,7 @@
     const p = d.poem || {};
     out.push('<h3>02 · 古诗文</h3>');
     out.push(`<p class="meta">${esc(p.title || '')}${p.author ? ' · ' + esc(p.author) : ''}${p.dynasty ? '（' + esc(p.dynasty) + '）' : ''}</p>`);
+    out.push(artBlock(p.image, d.date + '|p'));
     out.push(`<div class="verse">${(Array.isArray(p.body) ? p.body : []).map((l) => `<p>${esc(l)}</p>`).join('')}</div>`);
     if (Array.isArray(p.notes) && p.notes.length) {
       out.push('<h4>注释</h4>');
@@ -1452,7 +1462,9 @@ p{margin:0 0 12px}
 .right{color:var(--teal);font-weight:600}
 .tasks{list-style:none;padding:0}
 .tasks li{margin:0 0 8px;font-size:14.5px}
-@media print{body{background:#fff}section{page-break-after:always;border:0}.toc{display:none}}
+.art{margin:0 0 16px;border-radius:10px;overflow:hidden;background:#f3ecdd}
+.art svg{display:block;width:100%;height:auto}
+@media print{body{background:#fff}.art{page-break-inside:avoid}section{page-break-after:always;border:0}.toc{display:none}}
 `;
 
   function yearHtml(year, days) {
