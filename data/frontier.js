@@ -181,5 +181,99 @@ window.LEARN_FRONTIER = {
       "主动交互"
     ],
     "note": "31.1% 这个数字提醒你：看到「任务成功率 90%」，先问一句——它是怎么做到的，中间有没有偷工。"
+  },
+  "2026-11-03": {
+    "lead": "今天的主线是「把模型内部和训练数据里的东西翻出来看」：有人用梯度追踪微调数据如何悄悄削弱安全性，有人让模型直接读写权重来改行为，也有研究者追问研究代理是否具备选题品味。工具侧则继续把前沿模型塞进本地和菜单栏。",
+    "items": [
+      {
+        "title": "用梯度揪出悄悄削弱模型安全性的微调数据",
+        "url": "https://huggingface.co/papers/2610.37481",
+        "source": "Hugging Face 每日论文 · 第 1 名（25 赞）",
+        "publishedAt": "2026-10-26 发布",
+        "meta": "论文榜当日最高赞，25 赞",
+        "takeaway": "安全退化可以追溯到具体训练样本，而不是笼统归因于微调本身。",
+        "why": "问题设定很具体：指令微调数据看起来无害，却会侵蚀模型安全，常规内容过滤抓不到。作者提出 SimpleLoRIF，用梯度嵌入找出梯度方向与不安全行为对齐的样本，把「哪条数据导致退化」变成可定位的问题。"
+      },
+      {
+        "title": "Astra 直接读写权重，改造 Qwen 行为",
+        "url": "https://rikiyat.github.io/blog/weight-space-programming/",
+        "source": "Hacker News · 1701 分",
+        "publishedAt": "2026-11-02 上榜",
+        "meta": "549 条评论",
+        "takeaway": "不改提示、不重训，直接在权重空间里做「编程」成为一种可讨论的干预手段。",
+        "why": "这是当天讨论量最大的技术帖，思路是把模型权重当作可读写的对象来修改行为，而不是靠提示词或再训练。值得看的是它给出的操作路径与边界，以及评论区对可复现性和副作用的质疑。"
+      },
+      {
+        "title": "研究代理有没有「品味」：让它预判实验值不值得做",
+        "url": "https://huggingface.co/papers/2610.40488",
+        "source": "Hugging Face 每日论文 · 第 5 名（2 赞）",
+        "publishedAt": "2026-10-29 发布",
+        "meta": "6 个前沿模型 × 7 篇近期 NLP 论文",
+        "takeaway": "把「选题判断力」变成可打分的能力，而不只是看代理能否完成任务。",
+        "why": "设计巧妙：给模型近期论文，让它提出最小可行实验、预测能否过阈值并排序，再由独立执行器把包括排名最后的实验全部跑一遍，用结果反查判断质量。这考验的是结果未知前的取舍，而非事后解释。"
+      },
+      {
+        "title": "单卡跑 Qwen3.8-Flash-Next 的一键推理引擎",
+        "url": "https://github.com/Niko1221/Strata",
+        "source": "GitHub 近 60 天冒头 · 38422 星",
+        "publishedAt": "2026-11-03 抓取",
+        "meta": "38422 星，C++ 实现",
+        "takeaway": "消费级硬件上本地跑前沿模型，门槛被压到一次安装。",
+        "why": "据其仓库描述，提供 Windows／Linux 一键安装，在 localhost 暴露 OpenAI／Anthropic 兼容接口，可选图像输入。对想把本地模型接进现有工具链的人，兼容接口比模型本身更关键。"
+      }
+    ],
+    "repos": [
+      {
+        "name": "Niko1221/Strata",
+        "url": "https://github.com/Niko1221/Strata",
+        "stars": 38422,
+        "lang": "C++",
+        "what": "在普通消费级电脑上一键装好并运行 Qwen3.8-Flash-Next，同时在本机开放兼容 OpenAI／Anthropic 的接口。",
+        "tryThis": "按 README 下载对应平台安装包，装完启动服务，用 curl 向 localhost 的 /v1/chat/completions 发一条消息，确认返回正常。",
+        "minutes": 20
+      },
+      {
+        "name": "Gathin23/cleanyourtv",
+        "url": "https://github.com/Gathin23/cleanyourtv",
+        "stars": 50410,
+        "lang": "Python",
+        "what": "通过 Wi-Fi 用 adb 清理 Android TV／Google TV 上的预装软件和广告，换成接近 Apple TV 的简洁桌面。",
+        "tryThis": "在电视上打开开发者调试并记下 IP，运行仓库脚本连接后先执行只列出应用的命令，确认清单无误再卸载。",
+        "minutes": 20
+      },
+      {
+        "name": "browser-use/jev-ultrafast",
+        "url": "https://github.com/browser-use/jev-ultrafast",
+        "stars": 24097,
+        "lang": "Python",
+        "what": "面向网页操作的代理，主打更快更省，用自然语言驱动浏览器完成任务。",
+        "tryThis": "克隆仓库、装依赖，跑仓库自带的最小示例，让它打开一个网页并抓取指定字段，对比耗时。",
+        "minutes": 15
+      }
+    ],
+    "task": {
+      "title": "今天上手做这一件",
+      "goal": "在本地起一个兼容 OpenAI 接口的模型服务，并用一条 curl 跑通。",
+      "time": "约 20 分钟",
+      "url": "https://github.com/Niko1221/Strata",
+      "steps": [
+        "按 README 选择对应系统的一键安装包并完成安装",
+        "启动本地服务，确认监听端口",
+        "用 curl 向 localhost 的 /v1/chat/completions 发送一条测试消息，检查返回内容"
+      ],
+      "done": "curl 能拿到模型回复，且接口格式与 OpenAI 兼容。",
+      "output": "一个可被现有工具直接调用的本地模型端点。"
+    },
+    "concept": {
+      "term": "梯度嵌入（gradient embedding）",
+      "line": "把每个训练样本产生的梯度当作特征向量，用来判断它把模型往哪个方向推。"
+    },
+    "keywords": [
+      "安全微调",
+      "权重空间",
+      "研究代理"
+    ],
+    "note": "论文榜赞数普遍偏低，热度不等于结论可靠，先看实验设定再信。",
+    "updated": "2026-11-02T23:57:47.117Z"
   }
 };
