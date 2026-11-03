@@ -455,6 +455,16 @@ async function doFrontier() {
   if (!material.hf.length && !material.hn.length) throw new Error('前沿素材全空，跳过');
   if (!KEY) throw new Error('未配置 API_KEY，无法写中文解读');
   const out = checkFrontier(await callModel(frontierPrompt(material)));
+  // 只留素材里真实存在的链接：模型偶尔会把 url 编得很像真的，这类链接点开是 404
+  const allowed = new Set([
+    ...material.hf.map((x) => x.url), ...material.hn.map((x) => x.url), ...material.repos.map((x) => x.url),
+  ]);
+  const dropped = [];
+  out.items = out.items.filter((it) => (allowed.has(it.url) ? true : dropped.push(it.title) && false));
+  if (dropped.length) warn(`⚠ 前沿：丢弃 ${dropped.length} 条链接不在素材里的条目：${dropped.join(' / ')}`);
+  if (out.items.length < 2) throw new Error('过滤掉编造链接后不足 2 条，跳过');
+  if (Array.isArray(out.repos)) out.repos = out.repos.filter((r) => allowed.has(r.url));
+  if (out.task && out.task.url && !allowed.has(out.task.url)) out.task.url = '';
   out.updated = new Date().toISOString();
   data[DATE] = out;
   await saveStore(FRONTIER_FILE, 'LEARN_FRONTIER', header, data);
@@ -485,17 +495,20 @@ async function doInvest() {
   log(`▸ 素材：指数 ${material.indices.length} 个（${material.indices.filter((i) => i.series.length > 1).length} 个有走势）· 快讯 ${material.news.length} 条`);
   if (!material.indices.length) throw new Error('没抓到行情，跳过');
   if (!KEY) throw new Error('未配置 API_KEY，无法写中文解读');
-  const out = checkInvest(await callModel(investPrompt(material), { temperature: 0.4, maxTokens: 2600 }));
+  const out = await callModel(investPrompt(material), { temperature: 0.4, maxTokens: 2600 });
   out.updated = new Date().toISOString();
-  // 行情与走势以抓取结果为准，模型只写文字，数字不许改
-  out.indices = out.indices.map((x) => {
-    const real = material.indices.find((r) => r.code === x.code) || material.indices.find((r) => r.name === x.name);
-    return real ? { ...real, name: x.name || real.name } : { ...x, source: x.source || '腾讯行情' };
-  });
+  // 行情与走势一律以抓到的数字为准：模型只负责写文字，指数表由我们填，
+  // 这样它就算把 -1.33% 记成 -1.13% 也不会进到页面上。
+  out.indices = material.indices;
+  if (Array.isArray(out.news)) {
+    const ok = new Set(material.news.map((n) => n.url).filter(Boolean));
+    out.news = out.news.map((n) => (n.url && !ok.has(n.url) ? { ...n, url: '' } : n));
+  }
   if (!out.asof) {
     const t = new Date().toLocaleString('sv-SE', { timeZone: TZ }).slice(0, 16);
     out.asof = `${t}（北京时间）`;
   }
+  checkInvest(out);
   data[DATE] = out;
   await saveStore(INVEST_FILE, 'LEARN_INVEST', header, data);
   log(`✓ 投资已写入 ${DATE}：${out.indices.length} 个指数 · ${out.news.length} 条消息`);
