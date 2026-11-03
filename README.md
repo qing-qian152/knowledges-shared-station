@@ -87,6 +87,35 @@ node scripts/generate.mjs        # 默认生成今天，自动挑主题池里的
 
 ---
 
+## 每日自动抓取（前沿 / 投资）
+
+`node scripts/fetch-extra.mjs` 负责把两个「会过期」的板块变成自动的：
+
+| 板块 | 抓什么 | 从哪抓 |
+|---|---|---|
+| AI 前沿 | 每日论文榜、Hacker News 热帖、近 60 天新冒头的仓库 | `huggingface.co/api/daily_papers`、Hacker News Firebase API、GitHub Search API |
+| 投资 | 6 个指数（含近 30 日走势）、7×24 快讯 | 腾讯行情 `qt.gtimg.cn` + `web.ifzq.gtimg.cn`、东方财富 `np-listapi.eastmoney.com` |
+
+抓到的只是素材，中文的「今天在发生什么 / 为什么值得看 / 今天一个投资知识」仍由模型写，
+写进 `data/frontier.js` 与 `data/invest.js`（按日期存，和每日正文一样是永久保留的）。
+
+```bash
+node scripts/fetch-extra.mjs                # 抓今天的两栏
+node scripts/fetch-extra.mjs --date 2026-11-03 --force
+node scripts/fetch-extra.mjs --only invest  # 只抓投资
+node scripts/fetch-extra.mjs --dump         # 只打印素材，不写文件（排查数据源）
+node scripts/fetch-extra.mjs --mock         # 写占位条目，验收页面用
+```
+
+三道安全阀：
+
+1. **链接白名单**：正文里出现的 url 必须在抓取结果里真实存在，模型自己编的链接会被丢掉，条数不足 2 条就整天跳过；
+2. **数字以抓取为准**：指数表由脚本填写，模型只写文字，避免把 -1.33% 写成 -1.13%；
+3. **失败不阻塞正文**：任一栏抓取失败只跳过那一栏（页面上没有当天数据就不显示该板块），日志里会写清原因。
+
+GitHub Actions 里这一步排在正文生成之后、提交之前，并且 `continue-on-error: true`——
+所以就算行情源临时抽风，当天的晨读、古文、英文、听力、AI 照样会发出来。
+
 ## 目录结构
 
 ```
