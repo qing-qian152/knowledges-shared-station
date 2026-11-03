@@ -1,144 +1,138 @@
 /* 2026-11-03 · 周二 —— 由 scripts/generate.mjs 生成 */
 window.LEARN_DAY = {
-  "theme": "名字是归处，也是出发",
+  "theme": "名字是归途，也是出发",
   "quote": {
-    "text": "名不正，则言不顺；言不顺，则事不成。",
+    "text": "父母在，不远游，游必有方。",
     "author": "孔子",
-    "source": "论语·子路"
+    "source": "论语·里仁"
   },
   "chinese": {
-    "title": "缝在名字里的那根线",
+    "title": "那件大衣与一袋橘子",
     "author": "本站原创",
     "tag": "现代散文 · 亲情",
-    "readingTime": "约 6 分钟",
+    "readingTime": "约 7 分钟",
     "image": "lamp",
-    "imageCaption": "灯下，母亲在旧衣上补着名字标签",
+    "imageCaption": "站台灯下，父亲抱着橘子转身",
     "body": [
-      "那年冬天，我要去县城读高中。出发前一晚，母亲把一件深灰色的棉袄摊在灯下，翻出针线盒，说学校宿舍乱，衣服容易混，得缝个名字。我嫌麻烦，说用记号笔写在领子上就行，她却摇头，说写的不经洗，缝的才长久。",
-      "灯光落在她那双手上。那双手我从小看到大，指节粗，虎口有一道旧疤，是年轻时剁猪草留下的。她把一小块白布裁成方方正正的条，用铅笔在上面写我的名字，一笔一画，像在抄什么要紧的文书。写完了，拿到灯下端详，嫌“军”字一竖歪了半分，又换一块重写。",
-      "我坐在旁边看她缝。针尖穿过布，发出很轻的“嗤”的一声，线跟上去，再抽紧，那一小块白布就服服帖帖地贴到棉袄内衬的领口上。她缝得很慢，一针一针，像是要把什么缝进去，而不只是把一个名字固定住。我忽然想起小学时，她也这样缝过。那时我嫌她缝的名字太显眼，同学笑我穿“补丁衣”，我在学校门口把领子翻上去，回家一路不跟她说话。",
-      "母亲没提那件事，只是低着头。缝到最后一针，她把线在指头上绕了两圈，一扯，打了个结，用牙咬断。然后抖开棉袄，让我试。我套上，领口那块白布贴着脖子，有一点点硌。她说，过几天就软了。",
-      "第二天清早，天还没亮，她送我到村口。班车来得晚，风从田埂上刮过来，她把自己的围巾解下来，硬给我围上，说车上睡一觉就到了。我说不用，她说别犟。车开动的时候，我回头看，她还站在那儿，围巾没了，脖子缩着，像一根被风吹弯的干柴。",
-      "到了学校，我才明白她为什么非要缝。宿舍八个人，棉袄挂在一起，颜色深浅差不多，翻领子才认得出。第一个冬天，我洗了三次，那块白布上的字淡了些，可线还在，名字还在。有一次同宿舍的人借我的棉袄穿，还回来时说，你这名字缝得真结实，洗都洗不掉。我说是我妈缝的。他说，看得出来。",
-      "高二那年冬天，母亲病了。我请假回去，坐在她床边，她说话已经费劲，却还问我棉袄够不够厚。我说够。她笑了一下，说那名字别拆，拆了衣服就散了。我当时没听懂，只觉得她说话糊涂了。",
-      "后来我上了大学，工作了，那件棉袄早穿不下，压在老家柜子最底下。有一年回去翻东西，翻出来，领口那块白布已经发黄，线却还牢牢地咬着。我把领子凑到鼻子底下，什么味道也没有，只有旧棉花和樟脑混在一起的气味。可我站在那儿，站了很久。",
-      "原来她缝的从来不是一个名字。名字只是针脚落下去的地方，真正缝进去的，是她怕我在外面走丢的那点心思。人这一生，名字会被人叫错，会被人忘记，会被写进各种各样的表格。可有一个人，在灯下把你的名字一笔一画写正，又一针一针缝牢，这件事，比名字本身要紧得多。"
+      "我始终记得那件紫毛大衣。它挂在我十八岁那年的冬天里，像一块被灯照旧的布，颜色褪了，可还倔强地紫着。父亲把它从柜子最底下拽出来时，抖起一层细灰，在灯下慢慢飘，飘得满屋都是旧年的味道。",
+      "那年我要去很远的地方读书。父亲说送我到车站，我说不用，他说顺路。其实不顺路，他在城西做事，车站在城东。我后来才知道，他请了半天假，扣了半天的工钱。",
+      "出发那天下小雨，站台上湿漉漉的，人挤着人。父亲穿着那件紫毛大衣，领子竖起，一手提我的箱子，一手拎一袋橘子。他说路上吃，橘子上火，一天别超过三个。我说知道了。他又说，到了记得来信。我说知道了。他说着，我应着，话像雨点落在水泥地上，很快就没了。",
+      "检票的时候，人往前涌。父亲被挤到一边，忽然把橘子递过来，自己转身往站台那头走。我喊他，他没听见。我看见他走到铁轨边的台阶上，先把大衣下摆撩起来，再探脚试了试，才一级一级往下挪。他胖，弯腰很吃力，那件紫毛大衣在他背上绷成一张小小的弓。",
+      "他下去，又上来，手里多了一小包东西。走近了才看清，是几块烤红薯，用纸包着，还烫手。他把红薯塞进我怀里，说车上冷。我低头看那纸包，油渍洇出来，像一小片深色的地图。那一刻我忽然觉得，自己是要走远的那个人，他却像是被留在原地的人。",
+      "车开了很久。我剥橘子，橘皮的气味在车厢里散开，涩而清。我想起他撩大衣的样子，想起他背上那张弓。我原以为离别是大哭，是拥抱，是说得出口的千言万语；原来离别是这样笨拙的、不说一句话的、把红薯塞进你怀里的一下子。",
+      "后来我也送过人。站在站台上，看车走远，才知道送的人比走的人更难受——走的人前方有新事，送的人身后只剩空站台。父亲当年站在那里，看我的车拐过弯，然后一个人穿着紫毛大衣回去，回去的路上也许什么都没想，也许想了很多。",
+      "那件大衣现在还挂在我家柜子里。我不穿，也不扔。每年入冬，我打开柜门，闻见一点点旧布的味道，就想起站台的灯，想起那袋橘子。橘子早就吃完了，可那股涩而清的气味，一直留在我的记忆里，像一个名字，叫一声，就有人应。"
     ],
     "explain": [
       {
-        "line": "她把一小块白布裁成方方正正的条，用铅笔在上面写我的名字，一笔一画，像在抄什么要紧的文书。",
-        "note": "“方方正正”“一笔一画”两个叠词连用，把动作放慢；末句用比喻把日常动作抬高到“抄文书”的郑重，<b>郑重感</b>是这段的底色。"
+        "line": "它挂在我十八岁那年的冬天里，像一块被灯照旧的布，颜色褪了，可还倔强地紫着。",
+        "note": "「挂」字把大衣写成有生命的东西；<b>「倔强地紫着」</b>用形容词作动词，写出颜色的固执，也暗暗写出父亲的性格。"
       },
       {
-        "line": "针尖穿过布，发出很轻的“嗤”的一声，线跟上去，再抽紧。",
-        "note": "三个短句，动词依次是<b>穿、跟、抽</b>，节奏和缝衣的动作完全同步；拟声词“嗤”只出现一次，克制，反而更清楚。"
+        "line": "他说着，我应着，话像雨点落在水泥地上，很快就没了。",
+        "note": "两个短句对举，节奏轻快；比喻把父子间那些琐碎的叮嘱写得很轻，<b>轻才显出后面的重</b>。"
       },
       {
-        "line": "她把自己的围巾解下来，硬给我围上，说车上睡一觉就到了。",
-        "note": "“解”“硬”“围”三个动作没有一句抒情，母亲的形象全靠动作立起来；“睡一觉就到了”是典型的<b>用轻描淡写掩住不舍</b>。"
+        "line": "他胖，弯腰很吃力，那件紫毛大衣在他背上绷成一张小小的弓。",
+        "note": "<b>「绷成一张弓」</b>是全篇的核心比喻：弓是弯的，是吃力的，也是射向远方的——父亲弯下腰，儿子才走得更远。"
       },
       {
-        "line": "她笑了一下，说那名字别拆，拆了衣服就散了。",
-        "note": "这句话表面说衣服，实则说家；作者不解释，留白。后文“我当时没听懂”是<b>延迟理解</b>，让情感在结尾才落地。"
+        "line": "我原以为离别是大哭，是拥抱，是说得出口的千言万语；原来离别是这样笨拙的、不说一句话的、把红薯塞进你怀里的一下子。",
+        "note": "分号前后一虚一实；<b>三个「的」字短语层层叠加</b>，把「笨拙」具体化，「一下子」收得干脆，情绪不铺张。"
       },
       {
-        "line": "名字只是针脚落下去的地方，真正缝进去的，是她怕我在外面走丢的那点心思。",
-        "note": "用“不是……只是……”的让步句式收束全文，把题目里的“线”与“名字”轻轻系上，<b>不喊口号</b>。"
+        "line": "橘子早就吃完了，可那股涩而清的气味，一直留在我的记忆里，像一个名字，叫一声，就有人应。",
+        "note": "结尾由物及名，<b>「叫一声，就有人应」</b>照应「名字与归属」，不说思念而思念自现，收得住。"
       }
     ],
     "words": [
       {
-        "w": "服帖",
-        "meaning": "平整贴合，也指顺从",
-        "use": "写衣物、纸张贴合时用；写人时带一点温顺意味。"
+        "w": "倔强",
+        "meaning": "强硬不屈，这里形容颜色固执地不退",
+        "use": "形容颜色、性格、神情都可以，比「顽固」多一分可敬"
       },
       {
-        "w": "端详",
-        "meaning": "仔细地看",
-        "use": "比“看”多一层郑重，常用于看人、看物、看字。"
+        "w": "顺路",
+        "meaning": "路程相同，可以顺便同行",
+        "use": "口语常用，表面轻描淡写，实则常是善意的托词"
       },
       {
-        "w": "犟",
-        "meaning": "固执，不听劝",
-        "use": "口语色彩强，写亲人之间的顶撞很传神。"
+        "w": "洇",
+        "meaning": "液体落在纸上向四周散开",
+        "use": "写墨、油、水渍极传神，如「墨迹洇开」"
       },
       {
-        "w": "田埂",
-        "meaning": "田与田之间的土埂",
-        "use": "乡村场景常用词，比“小路”更有泥土气。"
+        "w": "涩",
+        "meaning": "不滑润，带一点苦味",
+        "use": "写橘皮、茶、柿子都可，兼可写声音与表情"
       },
       {
-        "w": "干柴",
-        "meaning": "干燥的柴火",
-        "use": "比喻瘦削、枯干的身形，带怜惜。"
+        "w": "笨拙",
+        "meaning": "不灵巧，不圆滑",
+        "use": "写动作，也写不善表达的感情，褒贬随语境"
       },
       {
-        "w": "樟脑",
-        "meaning": "防虫用的樟脑丸气味",
-        "use": "写旧衣物、旧柜子时的气味符号。"
+        "w": "空落",
+        "meaning": "心里或眼前空荡荡的",
+        "use": "常写送别后的站台、房间，比「空虚」更具体"
       },
       {
-        "w": "咬",
-        "meaning": "本指用牙夹住，这里指线牢牢固定",
-        "use": "把动词用在非人或非口部对象上，是常见的移用，增强力度。"
-      },
-      {
-        "w": "走丢",
-        "meaning": "迷路、失散",
-        "use": "比“走失”口语，适合写亲人之间的牵挂。"
+        "w": "照应",
+        "meaning": "前后呼应，彼此关照",
+        "use": "写作术语，也指人与人之间的照看"
       }
     ],
     "expressions": [
       {
-        "s": "她缝得很慢，一针一针，像是要把什么缝进去，而不只是把一个名字固定住。",
-        "why": "用“不只是……而是……”的隐含对比，把具体动作引向抽象情感，且不下结论，留下余地。"
+        "s": "他下去，又上来，手里多了一小包东西。",
+        "why": "不写「买红薯」，只写「下去」「上来」「多了一包」，动作留白，读者自己补出父亲挤过人群的背影。"
       },
       {
-        "s": "车开动的时候，我回头看，她还站在那儿，围巾没了，脖子缩着，像一根被风吹弯的干柴。",
-        "why": "不写“我很难过”，只写回望所见；比喻朴素而准，瘦与冷同时到位。"
+        "s": "走的人前方有新事，送的人身后只剩空站台。",
+        "why": "对句工整，一「新」一「空」，把离别的不对等说透，句子短，分量重。"
       },
       {
-        "s": "领口那块白布已经发黄，线却还牢牢地咬着。",
-        "why": "“咬着”一词把线写活，也暗合母亲“别拆”的叮嘱，物是人非的意味全在这一个字上。"
+        "s": "橘子早就吃完了，可那股涩而清的气味，一直留在我的记忆里。",
+        "why": "由味觉转到记忆，感官是通道，不是装饰，气味成了情感的容器。"
       },
       {
-        "s": "可有一个人，在灯下把你的名字一笔一画写正，又一针一针缝牢。",
-        "why": "“写正”与“缝牢”对举，句式整齐，收束全文，不拔高却有分量。"
+        "s": "像一个名字，叫一声，就有人应。",
+        "why": "用最日常的动作解释抽象的归属感，比喻轻，落点准。"
       }
     ],
     "techniques": [
       {
-        "name": "细节白描",
-        "desc": "不抒情，只写动作、声音、光线，让情感从细节里自己渗出来。",
-        "example": "针尖穿过布，发出很轻的“嗤”的一声，线跟上去，再抽紧。"
+        "name": "细节聚焦",
+        "desc": "不写宏大离别，只写撩大衣、试台阶、塞红薯等小动作",
+        "example": "先把大衣下摆撩起来，再探脚试了试"
       },
       {
         "name": "物象贯穿",
-        "desc": "用一件物（棉袄上的名字布）串起少年、求学、母亲病中、多年后翻柜，时间跨度靠物收拢。",
-        "example": "领口那块白布已经发黄，线却还牢牢地咬着。"
+        "desc": "紫毛大衣与橘子反复出现，成为情感的线索",
+        "example": "那件紫毛大衣在他背上绷成一张小小的弓"
       },
       {
-        "name": "延迟理解",
-        "desc": "当时不懂、后来才懂，形成情感的时间差，结尾因此有力。",
-        "example": "我当时没听懂，只觉得她说话糊涂了。"
+        "name": "视角转换",
+        "desc": "由「被送的人」转到「送人的人」，完成认知转折",
+        "example": "后来我也送过人。站在站台上，看车走远"
       },
       {
         "name": "以轻写重",
-        "desc": "用一句轻描淡写的话承载最重的情感，避免直白煽情。",
-        "example": "她说，过几天就软了。"
+        "desc": "用轻描淡写的句子承载最重的情感",
+        "example": "他说着，我应着，话像雨点落在水泥地上"
       },
       {
-        "name": "对照",
-        "desc": "少年时的嫌弃与成年后的珍重前后对照，人物心境的变化不靠说明。",
-        "example": "那时我嫌她缝的名字太显眼……我把领子凑到鼻子底下，什么味道也没有。"
+        "name": "首尾照应",
+        "desc": "开头的紫毛大衣在结尾的柜门里再次出现",
+        "example": "那件大衣现在还挂在我家柜子里"
       }
     ],
     "imitation": {
-      "prompt": "写一件旧物，以及它身上留下的某个人的手迹（字、针脚、划痕、补丁都可以），600 字左右。",
+      "prompt": "写一段 300 字左右的文字，写一个「送别」的场面，只用一个反复出现的物件贯穿全文。",
       "steps": [
-        "先定一件具体的旧物，写清它的颜色、材质、磨损处，不超过三句。",
-        "回忆一个与这件物有关的动作场面，用白描写出声音、光线和手的细节，至少三处动词。",
-        "在结尾写一次“当时不懂、后来才懂”的转折，不要直接说出感动二字。"
+        "先定物件：一件衣服、一个饭盒、一把伞都行，写清它的颜色或质感。",
+        "只写三个动作细节，不写「舍不得」「难过」这类词。",
+        "结尾回到这件物件，让读者感到时间过去了，感情还在。"
       ]
     }
   },
@@ -148,7 +142,7 @@ window.LEARN_DAY = {
     "dynasty": "唐",
     "tag": "乐府诗",
     "image": "lamp",
-    "imageCaption": "灯下母亲为远行的儿子缝衣",
+    "imageCaption": "灯下母亲缝衣，针脚细密",
     "body": [
       "慈母手中线，游子身上衣。",
       "临行密密缝，意恐迟迟归。",
@@ -165,7 +159,7 @@ window.LEARN_DAY = {
       },
       {
         "line": "意恐",
-        "note": "心里担心。"
+        "note": "心里担心。意，心中；恐，担忧。"
       },
       {
         "line": "寸草",
@@ -173,432 +167,435 @@ window.LEARN_DAY = {
       },
       {
         "line": "三春晖",
-        "note": "春天的阳光，比喻母爱。三春指春季的三个月。"
+        "note": "春天三个月的阳光，比喻母亲深厚的恩情。晖，阳光。"
       }
     ],
-    "translation": "慈爱的母亲手里拿着针线，为将要远行的儿子缝制身上的衣裳。临出发前她密密地缝着，心里怕的是儿子迟迟不能回来。谁说小草那一点点心意，能报答得了春天阳光般的母爱呢？",
+    "translation": "慈爱的母亲手里拿着针线，缝的是远行儿子身上的衣服。临出发前，她一针一线缝得又密又牢，心里怕的是儿子迟迟不能回家。谁能说子女那一点像小草一样微薄的心意，报答得了母亲如春天阳光般深厚的恩情呢？",
     "appreciation": [
-      "开头两句不写人，只写“线”和“衣”。线在母亲手里，衣在儿子身上，一物两头，把母子连在一起。十字之内，人物、关系、场景全出，这是乐府诗最见功夫的地方。",
-      "“密密缝”三字是全诗的眼。缝得密，是因为怕衣服不结实；怕衣服不结实，是因为怕儿子在外久留。一个动作里藏着一层担心，担心又生出另一层担心，层层推下去，母爱就有了重量。",
-      "最后两句忽然转成反问，用“寸草”与“三春晖”作比。草再有心，也报不尽阳光；不是不愿报，是报不尽。这一问不作答，反而比任何答语都沉。",
-      "全诗没有一句直接说“爱”，全从针线、担心、比喻里透出来。孟郊一生困顿，这首诗写得朴素，正因朴素，才经得起一千多年反复读。"
+      "全诗只有六句，前四句全是白描，不着一字抒情。「手中线」与「身上衣」两个日常物件一对照，母子之间的距离就出来了：线在母亲手里，衣在儿子身上，中间连着的是看不见的牵挂。",
+      "「密密缝」三个字最见功力。缝得密，是怕衣服不结实；衣服结实，是盼儿子在外久一点也穿得暖。可下一句「意恐迟迟归」又翻出一层：缝得越密，越说明母亲心里怕的是儿子回不来。动作与心理在这里打了个结。",
+      "最后两句忽然拔高，用「寸草」比子女、用「三春晖」比母爱，一大一小，悬殊得让人心惊。妙在不作结论，只用反问收束，把答案留给读者——报答不了，才要一辈子记着。",
+      "这首诗语言近乎口语，没有典故，也没有华丽辞藻，却成了写母爱的绝唱。原因在于它写的是动作，不是概念：天下的母亲都缝过衣，天下的儿女都穿过那件衣。"
     ],
-    "recite": "记住三个层次：手中线、身上衣（起）；临行密密缝、意恐迟迟归（承）；寸草心、三春晖（转合）。先背中间两句，最容易记。"
+    "recite": "记住三组镜头：线—衣（起笔）、密密缝—迟迟归（转折）、寸草—春晖（收束）。先背动作，再背心理，最后背比喻，六句一气呵成。"
   },
   "english": {
     "title": "What Your Name Says About You",
     "level": "IELTS 7.0",
     "words": 520,
     "body": [
-      "Few things are as intimately attached to us as our names. We answer to them before we can read them, and we hear them spoken thousands of times before we ever consider what they might mean. Yet a name is rarely a neutral label. It carries the expectations of those who chose it, the history of a family, and, quite often, a set of assumptions made by strangers who have never met us.",
-      "Sociolinguists have long argued that names function as a kind of social signal. Although the information they convey is far from reliable, it is processed almost instantly. Studies conducted in several countries suggest that employers, teachers and landlords form impressions of a person's background, age and even personality on the basis of a name alone. This does not mean that such impressions are accurate; it means that they are difficult to avoid.",
-      "What makes this particularly interesting is the way individuals respond. Rather than accepting the meanings imposed on them, many people actively negotiate with their names. Some shorten them to fit in, while others insist on the original pronunciation, even at the cost of repeated correction. A young woman may adopt a different spelling when applying for jobs and revert to her given form among friends. In each case, the name becomes less a fixed fact than a site of ongoing negotiation between self-perception and external judgment.",
-      "There is, however, a limit to how much choice we really have. A name that is frequently mispronounced can be a daily reminder of not quite belonging, whereas one that is easily recognized can smooth social encounters in ways the bearer hardly notices. This asymmetry is easy to overlook, precisely because those whose names attract no comment have never had to think about it. For them, a name is simply a name; for others, it is a small task that must be performed again and again.",
-      "None of this implies that names determine who we become. Clearly, they do not. What they do reveal is how closely identity is bound up with recognition: to be called by the right name, pronounced with reasonable care, is to be acknowledged as a person who exists. It is perhaps for this reason that changing one's name can feel liberating to some and unsettling to others, since it touches not merely on labels but on the question of who has the right to define us.",
-      "Ultimately, a name is less a description than an invitation. It invites others to place us, and it invites us to decide how much of that placing we are willing to accept. Whether we keep, shorten or replace it, the act of naming and being named remains one of the quietest ways in which belonging is granted, claimed, and occasionally withheld."
+      "Few of us choose the name we are given, yet almost all of us spend a lifetime living with it. A name is the first piece of information strangers receive about us, and it is often the one they remember longest. It is also, quietly, a claim about where we belong: to a family, a language, a generation, a place.",
+      "Psychologists have found that names carry more weight than we tend to assume. Studies suggest that teachers may unconsciously expect more from children whose names sound familiar or conventional, while employers reading identical CVs have been shown to favor applicants with names that match the dominant culture. Whether or not such biases are deliberate, they shape the opportunities people encounter long before any interview takes place.",
+      "This does not mean that a name determines a life. Many people shorten, translate or entirely replace their names when they move to a new country, and for some this is a pragmatic decision rather than a surrender. Others insist on keeping the original pronunciation, even when it costs them a small moment of awkwardness at every introduction. Both choices involve a negotiation between belonging and self-respect, and neither is simply right or wrong.",
+      "What is striking is how early the attachment forms. Children who are teased about an unusual name may grow up wishing it away, yet the same adults often rediscover that name with pride in their thirties or forties. A name that once felt like a burden can become evidence of heritage, a link to grandparents, or a reason to learn a language they had almost forgotten.",
+      "In an age of global mobility, names are increasingly mixed, misspelled and reinvented. A person may answer to one name at work, another at home and a third in official documents, shifting between them as easily as between languages. Rather than signaling confusion, this flexibility suggests that identity is not a fixed label but a set of relationships that we keep renewing.",
+      "So the question “what does your name say about you” may be less interesting than its reverse: what do you say about your name? Every time we introduce ourselves, correct a pronunciation or choose not to, we are quietly deciding how much of our history to carry forward. A name is not a verdict. It is an invitation, and the answer is ours to give."
     ],
     "translation": [
-      "很少有东西像名字那样与我们贴得如此之近。我们在还不会读它的时候就回应它，在还未想过它意味着什么之前就已听它被叫过成千上万次。然而名字很少是中性的标签。它带着选名者的期望、一个家族的历史，也常常带着素未谋面的陌生人对我们的一整套假设。",
-      "社会语言学家早就指出，名字起着某种社会信号的作用。尽管它传递的信息远不可靠，却几乎在瞬间被处理。在若干国家进行的研究表明，雇主、教师和房东仅凭一个名字就会对一个人的背景、年龄乃至性格形成印象。这并不意味着这些印象是准确的，而意味着它们难以避免。",
-      "特别有意思的是个体的反应方式。许多人并不接受强加于己的意义，而是主动与自己的名字协商。有人缩短名字以求合群，有人则坚持原有读音，哪怕要一次次纠正别人。一位年轻女性可能在求职时换一种拼法，在朋友之间又恢复本名。在每一种情形里，名字都不像一个固定的事实，而更像自我认知与外部评判之间持续协商的场所。",
-      "然而，我们真正的选择余地是有限的。一个常被念错的名字，会日复一日地提醒你并不完全属于这里；而一个容易被认出的名字，则以名字主人几乎察觉不到的方式让社交变得顺畅。这种不对称极易被忽视，恰恰因为那些名字从不引人议论的人，从来不必去想这件事。对他们而言，名字就是名字；对另一些人而言，它却是一件必须反复完成的小任务。",
-      "这一切都不意味着名字决定了我们会成为什么样的人。显然并非如此。它们真正揭示的，是身份与被认出之间何等紧密：被正确的名字称呼、被以起码的用心念出来，就是被承认为一个确实存在的人。也许正因如此，改名对一些人意味着解放，对另一些人却令人不安，因为它触及的不只是标签，而是谁有权定义我们这一问题。",
-      "归根结底，名字与其说是描述，不如说是邀请。它邀请他人为我们定位，也邀请我们决定愿意接受多少这样的定位。无论我们保留、缩短还是更换它，命名与被命名这一行为，始终是归属被给予、被主张、偶尔也被扣留的最安静的方式之一。"
+      "我们几乎没有人能选择自己被给予的名字，却几乎所有人都要与之相处一生。名字是陌生人得到的关于我们的第一条信息，也往往是他们记得最久的一条。它同时还在无声地宣告我们属于哪里：属于一个家庭、一种语言、一代人、一个地方。",
+      "心理学家发现，名字承载的分量比我们通常以为的更重。研究表明，教师可能会不自觉地对名字听起来熟悉或常规的孩子抱有更高期待；而在阅读完全相同的简历时，雇主也被证明会偏爱名字与主流文化相符的求职者。无论这些偏见是否有意为之，它们都在面试发生之前很久就塑造了人们遇到的机会。",
+      "这并不意味着名字决定一生。许多人移居他国时会缩短、翻译甚至完全更换自己的名字，对一些人来说这是务实的决定，而非屈服。另一些人则坚持保留原来的发音，哪怕这意味着每次自我介绍都要经历一小段尴尬。两种选择都涉及归属感与自尊之间的权衡，也都不能简单地判定对错。",
+      "引人注意的是，这种依恋形成得极早。因名字特别而被取笑的孩子，可能从小就希望摆脱它；然而同样是这些人，往往在三十多岁或四十多岁时又带着骄傲重新发现那个名字。曾经像负担一样的名字，可以成为族裔传承的凭证、与祖辈的连接，或一个去学那门几乎已经遗忘的语言的理由。",
+      "在全球流动的时代，名字越来越混杂、被拼错、被重新创造。一个人可能在工作时用一个名字，在家用另一个，在官方文件里又是第三个，在它们之间切换，就像在语言之间切换一样自如。这并非混乱的信号，反而说明身份不是一个固定的标签，而是一组我们不断更新的关系。",
+      "因此，「你的名字说明了你是谁」这个问题，也许不如它的反面有趣：你如何说明你的名字？每当我们自我介绍、纠正一个发音或选择不去纠正，我们都在悄悄决定要把多少历史带在身上。名字不是判决，而是一份邀请，答案由我们自己给出。"
     ],
     "vocab": [
       {
-        "w": "intimately",
-        "pos": "adv.",
-        "cn": "密切地，亲密地",
-        "ex": "Few things are as intimately attached to us as our names."
-      },
-      {
-        "w": "neutral",
+        "w": "conventional",
         "pos": "adj.",
-        "cn": "中性的，不带倾向的",
-        "ex": "A name is rarely a neutral label."
+        "cn": "传统的，常规的",
+        "ex": "She chose a conventional name to avoid unwanted attention."
       },
       {
-        "w": "assumption",
+        "w": "bias",
         "pos": "n.",
-        "cn": "假设，想当然的看法",
-        "ex": "Strangers often make assumptions about us based on our names."
+        "cn": "偏见，偏向",
+        "ex": "The study revealed a subtle bias in hiring decisions."
       },
       {
-        "w": "sociolinguist",
-        "pos": "n.",
-        "cn": "社会语言学家",
-        "ex": "Sociolinguists study how language reflects social identity."
-      },
-      {
-        "w": "convey",
-        "pos": "v.",
-        "cn": "传达，传递",
-        "ex": "Names convey information about background and age."
-      },
-      {
-        "w": "negotiate",
-        "pos": "v.",
-        "cn": "协商，周旋",
-        "ex": "Many people negotiate with their names rather than accept them."
-      },
-      {
-        "w": "revert",
-        "pos": "v.",
-        "cn": "恢复，回到",
-        "ex": "She reverted to her given name among close friends."
-      },
-      {
-        "w": "perception",
-        "pos": "n.",
-        "cn": "认知，看法",
-        "ex": "Self-perception and external judgment rarely coincide."
-      },
-      {
-        "w": "mispronounce",
-        "pos": "v.",
-        "cn": "念错（名字、词）",
-        "ex": "A name that is frequently mispronounced can be a daily burden."
-      },
-      {
-        "w": "asymmetry",
-        "pos": "n.",
-        "cn": "不对称",
-        "ex": "This asymmetry is easy to overlook."
-      },
-      {
-        "w": "acknowledge",
-        "pos": "v.",
-        "cn": "承认，认可",
-        "ex": "To be called by the right name is to be acknowledged."
-      },
-      {
-        "w": "unsettling",
+        "w": "deliberate",
         "pos": "adj.",
-        "cn": "令人不安的",
-        "ex": "Changing one's name can feel unsettling to some people."
+        "cn": "故意的，有意的",
+        "ex": "It was a deliberate attempt to mislead the public."
       },
       {
-        "w": "withhold",
+        "w": "pragmatic",
+        "pos": "adj.",
+        "cn": "务实的，讲求实际的",
+        "ex": "Adopting a new name was a pragmatic choice for her career."
+      },
+      {
+        "w": "surrender",
+        "pos": "n.",
+        "cn": "屈服，放弃",
+        "ex": "Changing his accent felt like a surrender of identity."
+      },
+      {
+        "w": "negotiation",
+        "pos": "n.",
+        "cn": "协商，权衡",
+        "ex": "Learning a language involves a constant negotiation between accuracy and fluency."
+      },
+      {
+        "w": "attachment",
+        "pos": "n.",
+        "cn": "依恋，情感联系",
+        "ex": "Early attachment to a name can last a lifetime."
+      },
+      {
+        "w": "heritage",
+        "pos": "n.",
+        "cn": "遗产，传承",
+        "ex": "The festival is part of our cultural heritage."
+      },
+      {
+        "w": "mobility",
+        "pos": "n.",
+        "cn": "流动性，迁移",
+        "ex": "Global mobility has changed how we think about names."
+      },
+      {
+        "w": "reinvent",
         "pos": "v.",
-        "cn": "扣留，不给",
-        "ex": "Belonging can be granted, claimed, or occasionally withheld."
+        "cn": "重新创造，彻底改变",
+        "ex": "Many immigrants reinvent themselves in a new country."
+      },
+      {
+        "w": "flexibility",
+        "pos": "n.",
+        "cn": "灵活性",
+        "ex": "Flexibility in naming reflects a more fluid identity."
+      },
+      {
+        "w": "verdict",
+        "pos": "n.",
+        "cn": "裁决，定论",
+        "ex": "Your background is not a verdict on your future."
+      },
+      {
+        "w": "reverse",
+        "pos": "n.",
+        "cn": "相反，反面",
+        "ex": "The reverse is also true: effort matters more than talent."
       }
     ],
     "collocations": [
       {
-        "phrase": "be attached to",
-        "cn": "与……紧密相连；依恋",
-        "ex": "We are deeply attached to the names we grew up with."
+        "phrase": "live with a name",
+        "cn": "与一个名字相伴一生",
+        "ex": "Most of us spend a lifetime living with the name we were given."
       },
       {
-        "phrase": "form an impression of",
-        "cn": "对……形成印象",
-        "ex": "Employers form an impression of a candidate within seconds."
+        "phrase": "carry weight",
+        "cn": "有分量，有影响力",
+        "ex": "Names carry more weight than we tend to assume."
       },
       {
-        "phrase": "at the cost of",
-        "cn": "以……为代价",
-        "ex": "She kept the original pronunciation at the cost of constant correction."
+        "phrase": "shape opportunities",
+        "cn": "塑造机会",
+        "ex": "Such biases shape opportunities long before an interview takes place."
       },
       {
-        "phrase": "fit in",
-        "cn": "融入，合群",
-        "ex": "Some immigrants shorten their names in order to fit in."
+        "phrase": "a pragmatic decision",
+        "cn": "务实的决定",
+        "ex": "For some, shortening a name is a pragmatic decision."
       },
       {
-        "phrase": "a site of negotiation",
-        "cn": "协商的场所",
-        "ex": "The name becomes a site of negotiation between self and society."
+        "phrase": "insist on doing sth",
+        "cn": "坚持做某事",
+        "ex": "Others insist on keeping the original pronunciation."
       },
       {
-        "phrase": "be bound up with",
-        "cn": "与……密不可分",
-        "ex": "Identity is closely bound up with recognition."
+        "phrase": "a negotiation between A and B",
+        "cn": "A 与 B 之间的权衡",
+        "ex": "Every introduction involves a negotiation between belonging and self-respect."
       },
       {
-        "phrase": "touch on",
-        "cn": "涉及，触及",
-        "ex": "The debate touches on who has the right to define us."
+        "phrase": "wish sth away",
+        "cn": "希望某事物消失",
+        "ex": "Children may wish an unusual name away."
       },
       {
-        "phrase": "rather than",
-        "cn": "而不是",
-        "ex": "Names are invitations rather than descriptions."
+        "phrase": "a link to",
+        "cn": "与……的连接",
+        "ex": "A name can become a link to grandparents."
       },
       {
-        "phrase": "in ways that",
-        "cn": "以……的方式",
-        "ex": "Recognition smooths encounters in ways we hardly notice."
+        "phrase": "signal confusion",
+        "cn": "显示出困惑",
+        "ex": "Switching names does not necessarily signal confusion."
       },
       {
-        "phrase": "grant and claim",
-        "cn": "给予与主张（归属）",
-        "ex": "Belonging is granted, claimed, and sometimes withheld."
+        "phrase": "carry forward",
+        "cn": "传承，带下去",
+        "ex": "We decide how much of our history to carry forward."
       }
     ],
     "phrases": [
       {
-        "p": "answer to a name",
-        "cn": "对某个名字有反应，被叫作",
-        "ex": "We answer to our names before we can read them."
+        "p": "tend to assume",
+        "cn": "倾向于认为",
+        "ex": "We tend to assume that a name is a neutral label."
       },
       {
-        "p": "far from reliable",
-        "cn": "远不可靠",
-        "ex": "The information names convey is far from reliable."
+        "p": "whether or not",
+        "cn": "无论是否",
+        "ex": "Whether or not the bias is deliberate, it matters."
       },
       {
-        "p": "on the basis of",
-        "cn": "根据，基于",
-        "ex": "Judgments are made on the basis of a name alone."
+        "p": "rather than",
+        "cn": "而不是",
+        "ex": "This is a pragmatic decision rather than a surrender."
       },
       {
-        "p": "insist on",
-        "cn": "坚持",
-        "ex": "Some people insist on the original pronunciation."
+        "p": "be teased about",
+        "cn": "因……被取笑",
+        "ex": "He was teased about his name at school."
       },
       {
-        "p": "a reminder of",
-        "cn": "对……的提醒",
-        "ex": "A mispronounced name is a daily reminder of not belonging."
+        "p": "in an age of",
+        "cn": "在……的时代",
+        "ex": "In an age of global mobility, names are increasingly mixed."
       },
       {
-        "p": "precisely because",
-        "cn": "恰恰因为",
-        "ex": "It is overlooked precisely because it affects so few."
+        "p": "shift between A and B",
+        "cn": "在 A 与 B 之间切换",
+        "ex": "She shifts between two names as easily as between languages."
       },
       {
-        "p": "the right to define",
-        "cn": "定义……的权利",
-        "ex": "The question is who has the right to define us."
-      },
-      {
-        "p": "keep, shorten or replace",
-        "cn": "保留、缩短或更换",
-        "ex": "Whether we keep, shorten or replace a name, the act matters."
+        "p": "be ours to give",
+        "cn": "由我们自己给出",
+        "ex": "The answer is ours to give."
       }
     ],
     "patterns": [
       {
-        "s": "Rather than accepting the meanings imposed on them, many people actively negotiate with their names.",
-        "cn": "许多人并不接受强加于己的意义，而是主动与自己的名字协商。",
-        "note": "Rather than 置于句首，后接动名词，构成对比；主句用主动语态，语气干净。"
+        "s": "Few of us choose the name we are given, yet almost all of us spend a lifetime living with it.",
+        "cn": "我们几乎没人能选择被给予的名字，却几乎所有人都要与之相处一生。",
+        "note": "Few…yet… 构成让步转折，前半否定、后半肯定，适合写议论文开头。"
       },
       {
-        "s": "What makes this particularly interesting is the way individuals respond.",
-        "cn": "特别有意思的是个体的反应方式。",
-        "note": "What 引导主语从句 + is the way…，是学术写作中常见的聚焦句式。"
+        "s": "Whether or not such biases are deliberate, they shape the opportunities people encounter.",
+        "cn": "无论这些偏见是否有意为之，它们都塑造了人们遇到的机会。",
+        "note": "Whether or not 引导让步状语从句，主句用一般现在时陈述普遍事实。"
       },
       {
-        "s": "This does not mean that such impressions are accurate; it means that they are difficult to avoid.",
-        "cn": "这并不意味着这些印象准确，而意味着它们难以避免。",
-        "note": "分号连接两个平行句，用 not…but 的隐含对比推进论证。"
+        "s": "What is striking is how early the attachment forms.",
+        "cn": "引人注意的是，这种依恋形成得极早。",
+        "note": "What 引导主语从句，后接 how 引导的表语从句，适合用来引出观察。"
       },
       {
-        "s": "A name that is frequently mispronounced can be a daily reminder of not quite belonging, whereas one that is easily recognized can smooth social encounters.",
-        "cn": "常被念错的名字会日日提醒你并不完全属于这里，而容易被认出的名字则让社交变得顺畅。",
-        "note": "whereas 引导对比分句，两边都用定语从句修饰 name，结构对称。"
+        "s": "Rather than signaling confusion, this flexibility suggests that identity is not a fixed label.",
+        "cn": "这并非混乱的信号，反而说明身份不是固定标签。",
+        "note": "Rather than + 动名词置于句首，表示「与其说……不如说……」，比 instead of 更书面。"
       },
       {
-        "s": "It is perhaps for this reason that changing one's name can feel liberating to some and unsettling to others.",
-        "cn": "也许正因如此，改名对一些人意味着解放，对另一些人却令人不安。",
-        "note": "It is for this reason that… 强调句式，把因果焦点放到句首。"
+        "s": "So the question may be less interesting than its reverse.",
+        "cn": "因此这个问题也许不如它的反面有趣。",
+        "note": "less…than… 比较结构，用于委婉地转移论述重心。"
       }
     ],
     "grammar": [
       {
-        "point": "让步与对比的衔接",
-        "explain": "用 Although、whereas、rather than 把对立面先摆出来，再给主论断，避免一边倒的论断腔。",
-        "example": "Although the information they convey is far from reliable, it is processed almost instantly."
-      },
-      {
-        "point": "名词化表达",
-        "explain": "把动作变成名词（recognition、negotiation、asymmetry），句子更紧凑，适合议论文。",
-        "example": "The name becomes less a fixed fact than a site of ongoing negotiation."
+        "point": "现在完成时的被动语态",
+        "explain": "强调「被证明、被发现」的客观研究结论，主语是受事者。",
+        "example": "Employers reading identical CVs have been shown to favor applicants with matching names."
       },
       {
         "point": "非限制性定语从句",
-        "explain": "用 which 补充说明前文整件事，而非修饰单个名词。",
-        "example": "This asymmetry is easy to overlook, precisely because those whose names attract no comment have never had to think about it."
+        "explain": "which 指代前面整个主句或某个名词，补充说明而不限定。",
+        "example": "A name that once felt like a burden can become evidence of heritage, a link to grandparents."
       },
       {
-        "point": "比较结构 less…than…",
-        "explain": "less A than B 表示“与其说是 A，不如说是 B”，用于下判断。",
-        "example": "A name is less a description than an invitation."
+        "point": "动名词作主语",
+        "explain": "用动名词短语充当主语，使论述显得客观、抽象。",
+        "example": "Rather than signaling confusion, this flexibility suggests that identity is not a fixed label."
+      },
+      {
+        "point": "让步状语从句",
+        "explain": "whether or not 引导的从句表示「无论……与否」，主句不受其影响。",
+        "example": "Whether or not such biases are deliberate, they shape the opportunities people encounter."
       }
     ],
-    "summary": "文章从名字与人的亲密关系入手，指出名字并非中性标签，而是一种被瞬间处理的社会信号。研究显示，人们仅凭名字便对他人背景与性格形成印象，虽不可靠却难以避免。个体因此常与自己的名字协商：缩短、改拼写或坚持原音，名字成为自我认知与外部评判的交涉场所。但选择有限，常被念错的名字会日日提醒归属的缺失，而这种不对称恰是名字顺遂者难以察觉的。作者强调名字并不决定人，却揭示身份与被认出何等紧密；改名之所以既解放又令人不安，正因它触及谁有权定义我们。最终，名字与其说是描述，不如说是邀请。",
+    "summary": "文章从「名字是陌生人得到的第一条信息」入手，指出名字不仅标识身份，还宣告归属。心理学研究显示，名字会引发教师与雇主的无意识偏见，从而影响机会分配。但作者强调名字并不决定人生：改名与否都是归属感与自尊之间的权衡。名字的依恋形成极早，童年想摆脱的名字，成年后常被重新认领为 heritage。在全球流动时代，一人多名并不等于混乱，而说明身份是不断更新的关系。结尾把问题反转：不是名字说明你，而是你如何说明你的名字。",
     "questions": [
       {
-        "q": "According to the passage, why are impressions based on names difficult to avoid?",
+        "q": "What does the author suggest about the information a name conveys?",
         "options": [
-          "Because they are usually accurate.",
-          "Because they are formed almost instantly and unconsciously.",
-          "Because employers are required to judge by names.",
-          "Because people enjoy making assumptions."
+          "It is usually chosen by the person who bears it.",
+          "It is the first and often the most lasting impression strangers receive.",
+          "It reveals a person's income and education level.",
+          "It is less important than appearance in first meetings."
         ],
         "answer": 1,
-        "explain": "原文说信息“processed almost instantly”，并强调不是准确而是难以避免，B 对应；A 与原文相反，C、D 无据。"
+        "explain": "第一段明确说名字是陌生人得到的第一条信息，也往往是记得最久的。A 与原文「几乎没人能选择」相反；C、D 文中未提。"
       },
       {
-        "q": "The word “negotiate” in paragraph 3 is closest in meaning to",
+        "q": "Why does the author mention studies about teachers and employers?",
         "options": [
-          "argue formally with someone",
-          "reach a compromise with circumstances",
-          "refuse to accept any change",
-          "translate into another language"
+          "To prove that names determine people's careers.",
+          "To show that unconscious bias linked to names affects opportunities.",
+          "To criticize teachers and employers directly.",
+          "To argue that conventional names are always better."
         ],
         "answer": 1,
-        "explain": "此处指个人与名字所承载的外部意义之间周旋、折中，B 最贴合；A 过于正式且对象错，C 与“缩短名字”等例矛盾，D 无关。"
+        "explain": "第二段用研究说明名字相关偏见塑造机会。A 过于绝对，第三段明确说名字不决定人生；C 曲解作者意图；D 文中无此结论。"
       },
       {
-        "q": "What does the author suggest about people whose names attract no comment?",
+        "q": "According to the passage, changing one's name when moving abroad is…",
         "options": [
-          "They are more tolerant of mispronunciation.",
-          "They often change their names later in life.",
-          "They rarely realize how much a name can matter.",
-          "They are usually better at social encounters."
-        ],
-        "answer": 2,
-        "explain": "原文说他们“never had to think about it”，即难以意识到名字的分量，C 正确；A、B、D 均为无据推断。"
-      },
-      {
-        "q": "Which statement best reflects the author's view in paragraph 5?",
-        "options": [
-          "Names determine a person's character.",
-          "Names reveal the link between identity and being recognized.",
-          "Names should always be kept unchanged.",
-          "Names are irrelevant to how others treat us."
+          "always a sign of giving up one's identity.",
+          "a choice that may be pragmatic rather than a surrender.",
+          "strongly discouraged by the author.",
+          "only done by people who dislike their families."
         ],
         "answer": 1,
-        "explain": "第五段明确“names do not determine”，但揭示身份与被认出紧密相关，B 正确；A 与原文相反，C、D 均过度或歪曲。"
+        "explain": "第三段说对一些人改名是务实决定而非屈服。A 是作者明确反对的看法；C、D 文中均无依据。"
       },
       {
-        "q": "The phrase “an invitation” at the end implies that a name",
+        "q": "What point does the author make about children with unusual names?",
         "options": [
-          "forces others to treat us in a fixed way",
-          "asks others to place us and asks us how far to accept it",
-          "is a formal request for recognition by law",
-          "should be chosen by parents rather than ourselves"
+          "They never accept their names.",
+          "They may later rediscover the name with pride.",
+          "They always change their names as adults.",
+          "They are less likely to learn their heritage language."
         ],
         "answer": 1,
-        "explain": "末段说名字“invites others to place us”并“invites us to decide how much…to accept”，B 为同义转述；A 的“forces”过强，C、D 无据。"
+        "explain": "第四段说这些人常在三十多岁或四十多岁时带着骄傲重新发现那个名字。A、C 用 never、always 绝对化；D 与原文「成为学那门语言的理由」相反。"
       },
       {
-        "q": "Which best summarizes the overall argument?",
+        "q": "What does the phrase “a negotiation between belonging and self-respect” imply?",
         "options": [
-          "Names are unreliable and should be replaced.",
-          "Names are social signals that shape and are shaped by identity.",
-          "Names matter only in professional settings.",
-          "Names have little effect on how people feel about themselves."
+          "Names are decided by legal negotiation.",
+          "Keeping or changing a name involves weighing two competing values.",
+          "Belonging and self-respect can never coexist.",
+          "People should always keep their original names."
         ],
         "answer": 1,
-        "explain": "全文核心是名字作为社会信号与身份之间的双向塑造，B 概括准确；A 是极端化，C、D 均与原文相悖。"
+        "explain": "negotiation 在此为比喻，指在归属感与自尊之间权衡取舍。A 字面误解；C 过于绝对；D 作者明确说两种选择都无对错。"
+      },
+      {
+        "q": "What is the main purpose of the final paragraph?",
+        "options": [
+          "To summarize the research findings mentioned earlier.",
+          "To reverse the question and stress personal agency.",
+          "To recommend a particular naming policy.",
+          "To compare naming practices in different countries."
+        ],
+        "answer": 1,
+        "explain": "末段把问题反转：不是名字说明你，而是你如何说明名字，强调主动权在自己。A 是前文功能；C、D 文中未提。"
       }
     ],
     "output": {
-      "prompt": "写一段 180–220 词的短文，谈谈你自己的名字（或你认识的某个人的名字）与归属感的关系。",
+      "prompt": "写一篇 220—260 词的短文，谈谈你自己的名字（或你熟悉的某个名字）与归属感的关系。",
       "tasks": [
-        "用一个具体场景开头（例如第一次被念错名字、第一次用英文名介绍自己），不要泛泛而谈。",
-        "至少使用本课三个地道搭配（如 be bound up with、at the cost of、fit in）和一处 whereas 对比句。",
-        "结尾给出一个判断，不用总结全文，用一句话回答“名字对你意味着什么”。"
+        "开头用一个具体场景引入，例如一次被念错名字的经历。",
+        "中间至少使用三个本文学过的搭配，如 carry weight、a link to、carry forward。",
+        "结尾把「名字不是判决，而是邀请」改写成你自己的说法，不要照抄原句。"
       ]
     }
   },
   "listening": {
     "title": "Introducing Yourself in a New Team",
     "level": "慢速美音",
-    "words": 200,
-    "topic": "日常叙事 · 新团队里的自我介绍",
+    "words": 215,
+    "topic": "日常叙事 · 新团队里的第一次自我介绍",
     "lines": [
       {
-        "en": "On my first Monday at the new office, I was told to introduce myself to the team.",
-        "cn": "到新办公室的第一个周一，有人让我向团队做个自我介绍。"
+        "en": "On my first Monday at the new office, I arrived forty minutes early.",
+        "cn": "到新办公室的第一个周一，我提前四十分钟就到了。"
       },
       {
-        "en": "I had practiced a short speech in the elevator, but it vanished the moment I stood up.",
-        "cn": "我在电梯里练过一小段话，可站起来的那一刻全忘了。"
+        "en": "I sat in the lobby with a paper cup of coffee, practicing my introduction in my head.",
+        "cn": "我坐在大厅里，捧着一纸杯咖啡，在心里练习自我介绍。"
       },
       {
-        "en": "So I said the only thing I could think of: my name, where I grew up, and what I had for breakfast.",
-        "cn": "于是我只好说出唯一想得起来的：我的名字、我在哪儿长大，还有我早饭吃了什么。"
+        "en": "My name is a little hard for some people here, so I had already decided to shorten it.",
+        "cn": "我的名字对这里的一些人来说有点难念，所以我早就决定把它缩短。"
       },
       {
-        "en": "Everyone laughed, and then a woman across the table said, “I had the same breakfast.”",
-        "cn": "大家都笑了，接着桌子对面一位女士说：“我早饭也吃的一样。”"
+        "en": "At nine, our manager walked me to a small meeting room and asked me to say a few words.",
+        "cn": "九点，经理把我带到一间小会议室，让我说几句。"
       },
       {
-        "en": "Her name was Dana, and she had moved here from Ohio two years ago.",
-        "cn": "她叫 Dana，两年前从俄亥俄州搬到这里。"
+        "en": "I gave the short version of my name, and everyone smiled and nodded.",
+        "cn": "我说了名字的短版本，大家都笑着点头。"
       },
       {
-        "en": "During the break, she showed me where the good coffee was and which printer always jammed.",
-        "cn": "休息时，她告诉我好咖啡在哪儿，哪台打印机总卡纸。"
+        "en": "Then a woman across the table said, \"Actually, I'd love to learn the full one.\"",
+        "cn": "这时桌子对面的一位女士说：「其实我很想学念完整版。」"
       },
       {
-        "en": "By the end of the week, I had learned ten names, but hers was the first one I got right.",
-        "cn": "到那周结束时，我记住了十个名字，但她的名字是我第一个念对的。"
+        "en": "So I said it slowly, syllable by syllable, and she repeated it after me.",
+        "cn": "于是我一个音节一个音节地慢慢念，她跟着我重复。"
       },
       {
-        "en": "Later I realized that a good introduction is not a perfect speech.",
-        "cn": "后来我意识到，好的自我介绍并不是一段完美的讲话。"
+        "en": "It took her three tries, and when she got it right, the whole room clapped.",
+        "cn": "她试了三次，念对的时候，整个房间都鼓起掌来。"
       },
       {
-        "en": "It is a small door you open, so that someone else can walk through it.",
-        "cn": "它是一扇你打开的小门，好让别人能走进来。"
+        "en": "I laughed, and something tight in my chest finally let go.",
+        "cn": "我笑了，胸口那点绷紧的东西终于松开了。"
+      },
+      {
+        "en": "I had thought belonging meant fitting in quietly.",
+        "cn": "我原以为归属就是安静地融入。"
+      },
+      {
+        "en": "It turned out it could also mean being asked to say your own name out loud.",
+        "cn": "原来它也可以意味着，有人请你把自己的名字大声说出来。"
       }
     ],
-    "note": "先盲听两遍抓大意，再对照中文听第三遍，最后跟读最后两句，注意 a good introduction is not… 的停顿。"
+    "note": "先盲听两遍抓大意，再对照译文听第三遍，最后跟读模仿语调。"
   },
   "ai": {
     "term": "Evaluation（评测）",
-    "oneLiner": "用一套固定的题目和标准，去衡量一个 AI 系统到底行不行。",
+    "oneLiner": "评测就是用一套固定的题目和标准，给 AI 系统的表现打分，判断它到底行不行。",
     "explain": [
-      "模型训练完，你只知道它“看起来会”，不知道它“到底会不会”。评测就是给它出考卷：固定题目、固定评分标准、固定流程，让不同版本、不同模型可以放在同一把尺子下比较。",
-      "评测分两类。一类是自动指标，比如答案是否与标准答案完全一致、翻译的相似度分数，快而便宜，但常常和人的真实感受对不上。另一类是人评，让真人按有用、准确、得体打分，靠谱但慢且贵。好的评测通常两者结合。",
-      "更关键的是评测集本身。如果题目泄露进训练数据，分数就会虚高；如果题目只覆盖简单场景，模型在真实使用中就会翻车。所以做评测的第一件事，往往不是跑分，而是问：这套题，真的代表我要用的场景吗？"
+      "模型训练完，我们只能知道它「读了很多」，却不知道它「会不会用」。评测就是给它出一套考卷：题目固定、评分规则固定，跑一遍得出分数，才能比较两个模型谁更好。",
+      "评测要有标准答案或评分标准。选择题看对错，写作题看要点是否齐全、语气是否得体，开放式任务则常让另一个模型或人来当裁判，按细则打分。",
+      "更重要的是，评测集必须和训练数据分开，否则模型等于提前看过答案。真正有用的评测还要贴近你的真实场景——通用榜单第一，未必等于在你的业务里好用。"
     ],
-    "analogy": "评测像餐厅的试菜：只看厨师说“我会做”不算数，得按同一份菜单、同一套标准，让几个人分别尝，再对比分数。菜单选错了，分数再高也说明不了这家店合不合你的口味。",
-    "example": "你做一个客服机器人，先收集 200 条真实用户提问，人工标注“好答案”的标准；然后让新旧两版模型各答一遍，由两名同事盲评打分，并记录自动指标。结果新版总分更高，但在“退款流程”这一类上明显更差——于是你知道该往哪里改。",
-    "takeaway": "没有评测的模型只是“看起来会”，有评测才知道它在哪里不会。",
+    "analogy": "评测就像体检：不是看你读了多少书，而是量血压、验血、测视力，用一套固定项目把「健康」变成可比较的数字。",
+    "example": "你说：「用这 200 条客服对话测一下新模型。」系统把每条对话喂给模型，按「是否解决问题、语气是否礼貌、有没有编造信息」三项打分，最后输出准确率 82%、编造率 3%，并列出答错的 36 条供你逐条看。",
+    "takeaway": "没有评测，就没有进步的方向；先定标准，再谈优化。",
     "quiz": {
-      "q": "下面哪种做法最可能让评测分数虚高、失去参考价值？",
+      "q": "下面哪种做法最可能让评测结果虚高、失去参考价值？",
       "options": [
-        "让两名同事独立盲评",
-        "把评测题目混入模型的训练数据",
-        "同时记录自动指标与人工评分",
-        "按真实业务场景分类统计得分"
+        "把评测题目和训练数据严格分开",
+        "用同一套题目反复比较不同模型",
+        "把训练时用过的题目放进评测集",
+        "让评审按统一细则打分"
       ],
-      "answer": 1,
-      "explain": "评测题目一旦进入训练数据，模型等于提前看过考卷，分数自然虚高。其余三项都是提高评测可信度的常见做法。"
+      "answer": 2,
+      "explain": "训练时见过的题目再拿来考，模型等于提前看过答案，分数自然虚高。A 是正确做法；B 只要题目固定，反而便于横向比较；D 是保证评分一致的必要手段。"
     },
-    "next": "明天学 Benchmark（基准测试）：当评测题变成公开考卷，会发生什么。"
+    "next": "明天学 Prompt Injection（提示词注入）"
   },
   "checklist": [
     {
-      "text": "读完《缝在名字里的那根线》，标出三处最打动你的细节。",
-      "tip": "用铅笔在“动作”上画圈，看作者是怎样不抒情而写出情的。"
+      "text": "读完《那件大衣与一袋橘子》，圈出三个动作细节",
+      "tip": "只圈动作，不圈抒情句，体会「以轻写重」"
     },
     {
-      "text": "背下《游子吟》全诗，重点记中间两句。",
-      "tip": "按“线—衣—缝—归—草—晖”六个字串起来背。"
+      "text": "背下《游子吟》全诗",
+      "tip": "按「线—衣／缝—归／草—晖」三组线索记"
     },
     {
-      "text": "读一遍英文正文，划出所有 whereas、rather than、although。",
-      "tip": "边划边想：作者为什么先把对立面摆出来。"
+      "text": "做完英文阅读 6 道题并回原文找依据",
+      "tip": "每道错题标出原文对应句"
     },
     {
-      "text": "做完英文六道单选题，错题回原文找依据句。",
-      "tip": "每道错题在旁边写下原文行号，别只看解析。"
+      "text": "听三遍《Introducing Yourself in a New Team》并跟读",
+      "tip": "第三遍模仿语调，注意句尾升降"
     },
     {
-      "text": "听三遍《Introducing Yourself in a New Team》，跟读最后两句。",
-      "tip": "第一遍只听不看书，第三遍开口跟，注意 is not 的连读。"
+      "text": "讲清「评测」是什么，并举一个自己场景的例子",
+      "tip": "用「考卷」或「体检」的比喻讲给身边人听"
     },
     {
-      "text": "用自己的话说清“评测”是什么，并举一个你会怎么测的例子。",
-      "tip": "讲给身边的人听，讲不清的地方就是没懂的地方。"
+      "text": "写 220—260 词短文，谈谈名字与归属",
+      "tip": "至少用上三个本文搭配，写完朗读一遍"
     }
   ],
   "date": "2026-11-03",
