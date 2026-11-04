@@ -2,9 +2,9 @@
 window.LEARN_DAY = {
   "theme": "远处的风景与近处的路",
   "quote": {
-    "text": "不积跬步，无以至千里；不积小流，无以成江海。",
-    "author": "荀子",
-    "source": "荀子·劝学"
+    "text": "路漫漫其修远兮，吾将上下而求索。",
+    "author": "屈原",
+    "source": "《离骚》"
   },
   "chinese": {
     "title": "窗外的山与脚下的砖",
