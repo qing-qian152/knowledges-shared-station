@@ -120,9 +120,11 @@
     { id: 'dusk', label: '暮色', bg: '#191418', swatch: '#352a31' },
   ];
   const ZH_FONTS = [
-    { id: 'song', label: '宋体', preview: '"DLSong","Songti SC","SimSun",serif', desc: '书卷气' },
-    { id: 'hei', label: '黑体', preview: '"PingFang SC","Microsoft YaHei",sans-serif', desc: '清爽' },
-    { id: 'kai', label: '楷体', preview: '"DLWenKai","Kaiti SC","KaiTi",serif', desc: '古雅' },
+    { id: 'hei', label: '黑体', preview: '"PingFang SC","Microsoft YaHei",sans-serif', desc: '清爽 · 不下载字体' },
+    { id: 'song', label: '宋体', preview: '"DLSong","Songti SC","SimSun",serif', desc: '书卷气 · 思源宋体' },
+    { id: 'kai2', label: '楷书', preview: '"DLKai2","KaiTi",serif', desc: '端正 · 文鼎 PL 楷' },
+    { id: 'fangsong', label: '仿宋', preview: '"DLFangSong","FangSong",serif', desc: '清瘦 · 朱雀仿宋' },
+    { id: 'kai', label: '文楷', preview: '"DLWenKai","Kaiti SC",serif', desc: '古雅 · 霞鹜文楷' },
   ];
 
   /* ---------------- 听力朗读：风格与音色偏好 ---------------- */
