@@ -33,9 +33,11 @@
   --ff-en-sans: "Segoe UI", "Inter", "Helvetica Neue", Arial, system-ui, sans-serif;
   --ff-en-mono: "SF Mono", "Cascadia Mono", "JetBrains Mono", "Consolas", ui-monospace, monospace;
 
-  /* 下面两个由 data-zh / data-en 改写 */
+  /* 下面三个由 data-zh / data-en 改写 */
   --ff-serif: var(--ff-song);
   --ff-prose: var(--ff-song);
+  /* 中文小字（英文译文、听力译文里的中文）也跟着主题字体走 */
+  --ff-cn: var(--ff-serif);
   --ff-en: var(--ff-en-serif);
 
   --fs: 16px;
