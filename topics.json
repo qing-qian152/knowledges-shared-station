@@ -57,15 +57,15 @@
   },
   {
     "theme": "把一件事做到笨拙",
-    "chinese": "胡适《差不多先生传》：认真"
-, "poem": "荀子《劝学》节选：不积跬步",
+    "chinese": "胡适《差不多先生传》：认真",
+    "poem": "荀子《劝学》节选：不积跬步",
     "english": "The Value of Doing One Thing Slowly（慢工）",
     "ai": "Skill（技能）",
     "listening": "Practising the Same Bar Twice（练琴的人）"
   },
   {
     "theme": "远处的风景与近处的路",
-    "chinese": "徐志摩《我所知道的康桥》节选：独自看水",
+    "chinese": "原创散文：远方与脚下的路（自拟题目，写身边的人与事，别写名胜游记）",
     "poem": "王之涣《登鹳雀楼》：更上一层楼",
     "english": "Why We Romanticise Places We Have Never Been（想象的远方）",
     "ai": "MCP（模型上下文协议）",
@@ -113,7 +113,7 @@
   },
   {
     "theme": "看见别人的难处",
-    "chinese": "沈从文《边城》节选：翠翠与渡口", 
+    "chinese": "沈从文《边城》节选：翠翠与渡口",
     "poem": "杜甫《石壕吏》节选：妇啼一何苦",
     "english": "The Quiet Power of Being Kind（善意）",
     "ai": "Function Calling（工具调用）",
