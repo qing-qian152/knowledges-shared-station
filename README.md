@@ -124,7 +124,7 @@ daily-learn/
 ├── assets/
 │   ├── style.css               # 设计系统（6 套配色 + 字体 + 字号 + 纸感布局）
 │   ├── art.js                  # 21 幅代码生成的水墨插画（无外部图片）
-│   ├── fonts/                  # 中文网络字体子集（思源宋体 song.woff2、霞鹜文楷 wenkai.woff2，OFL）
+│   ├── fonts/                  # 中文网络字体子集（song 思源宋、wenkai 霞鹜文楷、kai2 文鼎 PL 楷、fangsong 朱雀仿宋，均 OFL/Arphic 授权）
 │   └── app.js                  # 全部交互（渲染、答题、清单、打卡、笔记、TTS、外观面板）
 ├── data/
 │   ├── frontier.js             # AI 前沿板块（按日期，agent 写，不归生成脚本管）
@@ -252,7 +252,8 @@ window.LEARN_INVEST = {
 右上角的 ◐ 打开外观面板，三项都可选，选择存在本机（`localStorage` 的 `dl.meta`），下次打开照旧：
 
 - **配色 6 套**：素纸 `light`、竹青 `green`、天青 `sky`、茶褐 `sepia`、墨夜 `ink`、暮色 `dusk`。第一次访问跟随系统深浅色（`prefers-color-scheme`），之后以你的选择为准。旧的 `data-theme="dark"` 仍然有效，等价于 `ink`。
-- **中文字体 3 种**：宋体 `song`、黑体 `hei`、楷体 `kai`。手机上系统没有「宋体 / 楷体」这两个字体，所以宋体和楷体各自**自带了一份 OFL 开源字体子集**（`assets/fonts/song.woff2` 思源宋体约 1.2 MB、`wenkai.woff2` 霞鹜文楷约 1.5 MB，GB2312 全字表 + ASCII + 常用标点），选中时才下载，之后由 Service Worker 缓存；黑体走系统字体栈，零下载。桌面端优先用系统字体，缺字才回落到自带子集。
+- **中文字体 5 种**：黑体 `hei`（系统栈、零下载）、宋体 `song`、楷书 `kai2`、仿宋 `fangsong`、文楷 `kai`。手机上系统没有「宋体 / 楷书 / 仿宋」，所以这四款各自**自带一份开源字体子集**（`assets/fonts/song.woff2` 思源宋体 1.27 MB、`kai2.woff2` 文鼎 PL 楷 2.02 MB、`fangsong.woff2` 朱雀仿宋 2.58 MB、`wenkai.woff2` 霞鹜文楷 1.55 MB；字符集为 GB2312 全字表 + ASCII + 常用标点），**选中哪款才下载哪款**，之后由 Service Worker 缓存；桌面端仍优先用系统同名/近名，缺字才回落到自带子集。
+- 想加字体：把子集化的 woff2 放进 `assets/fonts/`，在 `assets/style.css` 加一段 `@font-face` + 一个 `:root[data-zh="xxx"]` 规则，再在 `assets/app.js` 的 `ZH_FONTS` 里加一行即可。
 - **英文字体 3 种**：衬线 `serif`、无衬线 `sans`、等宽 `mono`。
 - **字号 3 档**：小 15px / 标准 16px / 大 17.5px（改的是 `--fs`，全局跟着缩放）。
 
