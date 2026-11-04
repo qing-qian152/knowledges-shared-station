@@ -413,9 +413,17 @@ async function main() {
     topic = Number.isFinite(n) ? topics[(n - 1 + topics.length) % topics.length] : topics.find((t) => t.theme.includes(String(topicArg)));
     if (!topic) throw new Error('找不到这个主题：' + topicArg);
   } else {
-    // 按已经生成的天数轮转，保证同一个 30 天池不会重复
-    const n = await countDays();
-    topic = topics[n % topics.length];
+    // 编号 = 目标日期之前已有的天数（不含自己），这样 --force 重跑同一天不会把编号顶掉
+    const n0 = await countDaysBefore(DATE);
+    const used = await recentFingerprints(DATE);
+    topic = topics[n0 % topics.length];
+    for (let i = 0; i < topics.length; i++) {
+      const cand = topics[(n0 + i) % topics.length];
+      if (!used.has(fingerprint(cand))) { topic = cand; break; }
+    }
+    if (used.has(fingerprint(topic))) {
+      console.log('⚠ 30 个主题都和最近几天撞了，仍用轮转结果');
+    }
   }
 
   if (!FORCE && (await exists(outFile))) {
@@ -445,12 +453,44 @@ async function main() {
   console.log(`✓ 已写入 data/days/${DATE}.js，索引已更新`);
 }
 
-async function countDays() {
+async function dayFiles() {
   const { readdir } = await import('node:fs/promises');
   try {
-    const files = await readdir(DAYS_DIR);
-    return files.filter((f) => /^\d{4}-\d{2}-\d{2}\.js$/.test(f)).length;
-  } catch { return 0; }
+    return (await readdir(DAYS_DIR)).filter((f) => /^\d{4}-\d{2}-\d{2}\.js$/.test(f)).sort();
+  } catch { return []; }
+}
+
+/** 目标日期之前已有的天数（不含目标自己），用于算主题编号 */
+async function countDaysBefore(date) {
+  return (await dayFiles()).filter((f) => f.slice(0, 10) < date).length;
+}
+
+const poemTitleOf = (s) => {
+  const m = /《([^》]+)》/.exec(s || '');
+  return m ? m[1].trim() : '';
+};
+const aiKeyOf = (s) => String(s || '').split(/[（(]/)[0].trim().toLowerCase();
+
+/** 一个主题的内容指纹：用「古文篇名 + AI 概念」，两者都撞了才算重复 */
+function fingerprint(t) {
+  return poemTitleOf(t.poem) + '|' + aiKeyOf(t.ai);
+}
+
+/** 读目标日期前最近几天已生成的内容，收集它们的内容指纹 */
+async function recentFingerprints(date, howMany = 4) {
+  const recent = (await dayFiles()).filter((f) => f.slice(0, 10) < date).slice(-howMany);
+  const used = new Set();
+  for (const f of recent) {
+    try {
+      const txt = await readFile(path.join(DAYS_DIR, f), 'utf8');
+      const poem = /"poem"\s*:\s*\{[\s\S]{0,400}?"title"\s*:\s*"([^"]*)"/.exec(txt)
+        || /poem\s*:\s*\{[\s\S]{0,400}?title\s*:\s*"([^"]*)"/.exec(txt);
+      const ai = /"ai"\s*:\s*\{[\s\S]{0,200}?"term"\s*:\s*"([^"]*)"/.exec(txt)
+        || /ai\s*:\s*\{[\s\S]{0,200}?term\s*:\s*"([^"]*)"/.exec(txt);
+      used.add(poemTitleOf(poem ? poem[1] : '') + '|' + aiKeyOf(ai ? ai[1] : ''));
+    } catch { /* 读不到就跳过 */ }
+  }
+  return used;
 }
 
 main().catch((e) => {
