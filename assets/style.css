@@ -26,6 +26,8 @@
   --ff-song: "DLSong", "Songti SC", "STSong", "Noto Serif SC", "Source Han Serif SC", "SimSun", serif;
   --ff-hei: "PingFang SC", "HarmonyOS Sans SC", "Microsoft YaHei", "Noto Sans SC", system-ui, sans-serif;
   --ff-kai: "DLWenKai", "Kaiti SC", "STKaiti", "KaiTi", "楷体", "Noto Serif SC", serif;
+  --ff-kai2: "DLKai2", "KaiTi", "Kaiti SC", "STKaiti", serif;
+  --ff-fs: "DLFangSong", "FangSong", "STFangsong", "华文仿宋", serif;
   --ff-sans: system-ui, -apple-system, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
   --ff-en-serif: "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, "Times New Roman", serif;
   --ff-en-sans: "Segoe UI", "Inter", "Helvetica Neue", Arial, system-ui, sans-serif;
@@ -53,6 +55,20 @@
 @font-face {
   font-family: "DLWenKai";
   src: url("fonts/wenkai.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "DLKai2";
+  src: url("fonts/kai2.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "DLFangSong";
+  src: url("fonts/fangsong.woff2") format("woff2");
   font-weight: 400;
   font-style: normal;
   font-display: swap;
@@ -162,10 +178,13 @@
 }
 
 /* ---------- 字体主题 ----------
-   中文三选：宋（书卷）/ 黑（清爽）/ 楷（古雅）；英文三选：衬线 / 无衬线 / 等宽 */
-:root[data-zh="song"] { --ff-serif: var(--ff-song); --ff-prose: var(--ff-song); }
-:root[data-zh="hei"]  { --ff-serif: var(--ff-hei); --ff-prose: var(--ff-hei); }
-:root[data-zh="kai"]  { --ff-serif: var(--ff-kai); --ff-prose: var(--ff-kai); }
+   中文五选：宋（书卷）/ 黑（清爽）/ 楷书（端正）/ 仿宋（清瘦）/ 文楷（古雅）；
+   英文三选：衬线 / 无衬线 / 等宽。自托管的那四款只在选中时才下载。 */
+:root[data-zh="song"]    { --ff-serif: var(--ff-song); --ff-prose: var(--ff-song); }
+:root[data-zh="hei"]     { --ff-serif: var(--ff-hei); --ff-prose: var(--ff-hei); }
+:root[data-zh="kai"]     { --ff-serif: var(--ff-kai); --ff-prose: var(--ff-kai); }
+:root[data-zh="kai2"]    { --ff-serif: var(--ff-kai2); --ff-prose: var(--ff-kai2); }
+:root[data-zh="fangsong"]{ --ff-serif: var(--ff-fs); --ff-prose: var(--ff-fs); }
 :root[data-en="serif"] { --ff-en: var(--ff-en-serif); }
 :root[data-en="sans"]  { --ff-en: var(--ff-en-sans); }
 :root[data-en="mono"]  { --ff-en: var(--ff-en-mono); }
