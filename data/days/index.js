@@ -8,5 +8,6 @@ window.LEARN_INDEX = [
   { date: "2026-10-31", weekday: "周六", theme: "给自己留一条退路，心才不慌", modules: 5 },
   { date: "2026-11-01", weekday: "周日", theme: "安静是一种被低估的力量", modules: 5 },
   { date: "2026-11-02", weekday: "周一", theme: "把一件事做到笨拙", modules: 5 },
-  { date: "2026-11-03", weekday: "周二", theme: "名字是归途，也是出发", modules: 5 }
+  { date: "2026-11-03", weekday: "周二", theme: "名字是归途，也是出发", modules: 5 },
+  { date: "2026-11-04", weekday: "周三", theme: "名字是归处，也是远行的起点", modules: 5 }
 ];

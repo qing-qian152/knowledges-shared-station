@@ -275,5 +275,99 @@ window.LEARN_FRONTIER = {
     ],
     "note": "榜单热度与 star 数不等于效果，先跑通再判断。",
     "updated": "2026-11-03T00:01:31.408Z"
+  },
+  "2026-11-04": {
+    "lead": "今天的主线是「模型之外的东西」开始被认真对待：研究者不再只比分数，而是考察模型是否具备人类的研究品味、能否把历史信息真正用于长程生成、能否直接读页面图像而非 OCR 文本；工程侧则围绕本地推理、权重可解释性与数据边界展开争论，工具链正把前沿模型搬到个人电脑上。",
+    "items": [
+      {
+        "title": "IdeaTaste：用 2025 文献快照考模型的研究品味",
+        "url": "https://huggingface.co/papers/2611.03424",
+        "source": "Hugging Face 每日论文 · 25 赞",
+        "publishedAt": "2026-11-02 上榜",
+        "meta": "文献快照冻结于 2025 年，对照 2026 年同社区实际发表",
+        "takeaway": "衡量 AI 科学家不只看执行力，还要看它选题、选方法的方向感。",
+        "why": "它把「研究品味」拆成可打分任务：只给模型截至 2025 年的文献，让它写研究提案，再与同一社区 2026 年真正发表的工作比对。这绕开了「会不会做实验」，直接测判断力，也为评估 AI 科研助手提供了一个可复现的基准设定。"
+      },
+      {
+        "title": "Order-Only 蒸馏：只学教师偏好哪个词",
+        "url": "https://huggingface.co/papers/2611.02112",
+        "source": "Hugging Face 每日论文 · 27 赞",
+        "publishedAt": "2026-11-01 上榜",
+        "meta": "",
+        "takeaway": "教师概率里混着「偏好」和「自信」，后者小模型学不来也不必学。",
+        "why": "在策略蒸馏中，学生模型匹配教师 token 概率，但概率同时编码了教师偏好哪些词与教师有多自信；后者反映教师自身容量与校准，小模型难以复现。作者据此只保留排序信息，把「学什么」与「学多准」解耦，是蒸馏目标设计上一个干净的切口。"
+      },
+      {
+        "title": "History Forcing：让视频世界模型记住消失的画面",
+        "url": "https://huggingface.co/papers/2611.02782",
+        "source": "Hugging Face 每日论文 · 5 赞",
+        "publishedAt": "2026-11-02 上榜",
+        "meta": "",
+        "takeaway": "长程视频生成的一致性，取决于能否把历史帧压成对当前预测的约束。",
+        "why": "少步自回归视频扩散能高效生成，但主体或场景离开视野再回来时容易前后不一致。作者指出已有蒸馏方法没有充分利用更丰富的历史信息去约束学生模型的当前预测，并提出相应蒸馏方案，问题设定直指长 rollout 的一致性瓶颈。"
+      },
+      {
+        "title": "DR Pixel：让 VLM 直接读论文页面图像",
+        "url": "https://huggingface.co/papers/2611.03097",
+        "source": "Hugging Face 每日论文 · 5 赞",
+        "publishedAt": "2026-11-02 上榜",
+        "meta": "",
+        "takeaway": "深度研究代理不必先把论文压成 OCR 文本，表格公式可留在原版面里。",
+        "why": "现有深度研究代理通常把论文降维成 OCR 抽取的纯文本，表格、图与公式的信息在预处理阶段就丢了。DR Pixel 改为直接检索并推理渲染后的页面图像，据其摘要称为首个开源端到端多模态方案，把「读文档」的粒度从字符提升到版面。"
+      }
+    ],
+    "repos": [
+      {
+        "name": "Niko1221/Strata",
+        "url": "https://github.com/Niko1221/Strata",
+        "stars": 39336,
+        "lang": "C++",
+        "what": "把 Qwen3.8-Flash-Next 装到普通消费级硬件上，一键安装后在本地起一个兼容 OpenAI 与 Anthropic 的接口。",
+        "tryThis": "按仓库说明下载 Windows 或 Linux 安装包，启动后在终端执行 curl 请求 http://localhost 的 /v1/chat/completions，确认能返回文本。",
+        "minutes": 20
+      },
+      {
+        "name": "yetone/magpie",
+        "url": "https://github.com/yetone/magpie",
+        "stars": 29098,
+        "lang": "Go",
+        "what": "在菜单栏里统一管理各家编码代理，把 Codex 接到 DeepSeek、Claude Code 接到 Kimi 这类组合集中配置。",
+        "tryThis": "克隆仓库后按 README 编译或安装，打开菜单栏图标，新增一个模型配置并填入自己的 API Key，然后发一条测试对话。",
+        "minutes": 15
+      },
+      {
+        "name": "deepseek-ai/DeepInfer",
+        "url": "https://github.com/deepseek-ai/DeepInfer",
+        "stars": 25236,
+        "lang": "Python",
+        "what": "DeepSeek 官方开源的大规模高性能推理框架，用来在自有硬件上部署其模型。",
+        "tryThis": "先读 README 的硬件要求与快速开始，按示例命令拉起最小配置的服务，再用自带脚本发一次推理请求看吞吐日志。",
+        "minutes": 20
+      }
+    ],
+    "task": {
+      "title": "今天上手做这一件",
+      "goal": "在本地跑通一个兼容 OpenAI 接口的推理服务，并用 curl 打通一次请求。",
+      "time": "约 20 分钟",
+      "url": "https://github.com/Niko1221/Strata",
+      "steps": [
+        "按仓库说明完成一键安装，确认进程已启动并监听本地端口",
+        "用 curl 向 localhost 的 /v1/chat/completions 发送一条简单提问",
+        "把返回的 JSON 里的回复内容打印出来，并记录首次响应耗时"
+      ],
+      "done": "终端能稳定返回模型回复，且你知道该服务的端口与接口路径。",
+      "output": "一份可复用的本地调用命令与一条耗时记录。"
+    },
+    "concept": {
+      "term": "研究品味（research taste）",
+      "line": "指判断该读什么、该攻哪个问题、该试哪种方法的取向，如今被当作可测量的模型能力。"
+    },
+    "keywords": [
+      "研究品味评测",
+      "策略蒸馏",
+      "页面级深度研究"
+    ],
+    "note": "榜单点赞数只反映当天关注度，不代表论文结论已被复现。",
+    "updated": "2026-11-04T01:55:25.940Z"
   }
 };
