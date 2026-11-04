@@ -183,98 +183,98 @@ window.LEARN_FRONTIER = {
     "note": "31.1% 这个数字提醒你：看到「任务成功率 90%」，先问一句——它是怎么做到的，中间有没有偷工。"
   },
   "2026-11-03": {
-    "lead": "今天的主线是「把模型内部与训练过程变成可读、可改的对象」：有人直接读写权重来改模型行为，有人用梯度反查是哪些训练样本悄悄削弱了安全对齐，也有单研究者从零搭出的混合架构小模型。工具侧则继续把前沿模型塞进本地与菜单栏，让个人机器也能跑起推理。",
+    "lead": "今天的素材指向同一件事：模型能力不再只靠堆参数和堆上下文，成本与判断正在被重新分配。论文在压缩推理、压缩上下文、按需调用算力，工程侧则把前沿模型塞进本地、插件和菜单栏，连磁带这种老存储也因归档需求回潮。",
     "items": [
       {
-        "title": "Astra 直接读写权重改造 Qwen",
-        "url": "https://rikiyat.github.io/blog/weight-space-programming/",
-        "source": "Hacker News · 1707 分",
-        "publishedAt": "2026-11-02 上榜",
-        "meta": "1707 分、550 条评论",
-        "takeaway": "把「改模型」从改提示词、改数据，推进到直接在权重空间里做程序化编辑。",
-        "why": "作者把权重当成可读写的对象，试图不经过再训练就改变 Qwen 的行为。相比微调和提示工程，这条路线若成立，模型修改会变成类似打补丁的操作；但它目前是个人博客的探索，效果边界和可复现性都还需要读者自己验证。"
+        "title": "短上下文频繁压实，长任务精度几乎不掉",
+        "url": "https://huggingface.co/papers/2611.05306",
+        "source": "Hugging Face 每日论文 · 第 4 名（1 赞）",
+        "publishedAt": "2026-11-03 上榜",
+        "meta": "前沿开源权重模型后段 token 成本最高可达前段 7 倍",
+        "takeaway": "长上下文不是免费的，反复压实到短上下文可能更划算。",
+        "why": "作者抓住一个常被忽略的成本结构：越靠后的 token 生成越贵，于是用频繁压实把上下文维持在短窗口，在长程与长输入任务上测精度损失。它挑战的是「上下文越长越好」的默认设定，但摘要未给出具体任务清单，结论仍需按场景验证。"
       },
       {
-        "title": "用梯度追出削弱安全性的训练样本",
-        "url": "https://huggingface.co/papers/2610.37481",
-        "source": "Hugging Face 每日论文 · 25 赞",
-        "publishedAt": "2026-10-27 发布",
-        "meta": "提出 SimpleLoRIF 梯度嵌入方法",
-        "takeaway": "安全退化可以追溯到看起来无害的指令微调样本，而非某条明显的坏数据。",
-        "why": "论文指出，指令微调会让模型安全性悄悄下降，而问题样本在内容上并不违规，常规内容过滤抓不到。作者用梯度嵌入找出与不安全行为方向对齐的训练样本，把「哪条数据有害」从人工判断变成可计算的信号，这是数据审计思路上的关键换位。"
+        "title": "让模型自己判断何时停止推理",
+        "url": "https://huggingface.co/papers/2611.04814",
+        "source": "Hugging Face 每日论文 · 第 3 名（6 赞）",
+        "publishedAt": "2026-11-03 上榜",
+        "meta": "作者：Muyao Yuan、Liyan Xu、Weizhan Zhang",
+        "takeaway": "推理压缩的着力点从整条轨迹移到每一步的局部决策。",
+        "why": "现有推理压缩多在整条思维链上做删减，这篇把问题改写成「当前状态下还需不需要继续想」的局部判断，用偏好学习训练这个决策。问题设定更贴近推理成本的真实来源，但摘要截断，压缩率与精度权衡的具体数据尚不完整。"
       },
       {
-        "title": "单研究者从零造出两个混合架构模型",
-        "url": "https://huggingface.co/papers/2610.37903",
-        "source": "Hugging Face 每日论文 · 4 赞",
-        "publishedAt": "2026-10-27 发布",
-        "meta": "Praxis 2.94B／激活 0.46B，Logos 10.23B／激活 1.18B",
-        "takeaway": "小参数加好数据与混合架构，被当作对抗堆参数的一条低成本路线。",
-        "why": "Metis-1.6 由一位研究者独立完成，采用 Mamba-2 与注意力混合的 MoE 堆叠，两个模型都强调每轮激活参数远小于总参数。它的问题设定是：在有限算力下，数据质量、训练方法和架构选择能否补上参数规模的差距；结论仍需社区复现。"
+        "title": "城市级模拟器评测模型做刑侦与监控",
+        "url": "https://huggingface.co/papers/2611.04785",
+        "source": "Hugging Face 每日论文 · 上榜（0 赞）",
+        "publishedAt": "2026-11-03 上榜",
+        "meta": "构建城市级模拟引擎 Kierston 与配套基准 KierstonBench",
+        "takeaway": "把「模型能否胜任办案」变成可打分的问题，而不是演示。",
+        "why": "真实警务部署缺少可对照的标准答案，无法给模型结论打分。作者据其摘要搭建了 Allentown, PA 的城市级模拟环境，让记录收集与分析任务在已知真相下被评测。价值在于补上评测空白，但模拟环境与真实办案的差距仍是核心疑问。"
       },
       {
-        "title": "研究智能体有没有「品味」",
-        "url": "https://huggingface.co/papers/2610.40488",
-        "source": "Hugging Face 每日论文 · 2 赞",
-        "publishedAt": "2026-10-29 发布",
-        "meta": "6 个前沿模型 × 7 篇近期 NLP 论文",
-        "takeaway": "评估重点从「能不能做实验」转向「能不能判断哪个实验值得做」。",
-        "why": "做法是给模型近期论文，让它提出最小可行实验、预测能否过阈值并排序，再由独立执行器把包括排在最后的实验全部跑一遍，用结果反推判断质量。这把研究判断力拆成可测量的预测任务，但样本只有 7 篇论文，规模偏小。"
+        "title": "Postman 被指静默装 AI 插件并试图上传 API 数据",
+        "url": "https://github.com/postmanlabs/postman-app-support/issues/14370",
+        "source": "Hacker News · 1319 分",
+        "publishedAt": "2026-11-03 上榜",
+        "meta": "447 条评论",
+        "takeaway": "开发工具的默认行为正在成为数据边界的新风险点。",
+        "why": "帖子指向 Postman 应用支持仓库的 issue，称其自动安装 AI 插件并尝试共享全部 API 数据。API 调试工具天然握着密钥与请求样本，一旦默认开启外传，影响面远超单个插件。讨论热度说明开发者对「静默变更」的容忍度很低。"
       }
     ],
     "repos": [
       {
-        "name": "deepseek-ai/DeepInfer",
-        "url": "https://github.com/deepseek-ai/DeepInfer",
-        "stars": 25026,
-        "lang": "Python",
-        "what": "DeepSeek 官方的高性能大模型推理框架，解决本地或集群上跑 DeepSeek 模型时吞吐和显存利用的问题。",
-        "tryThis": "克隆仓库后按 README 安装依赖，用自带示例脚本加载一个小尺寸模型，观察启动日志里的显存占用与首 token 延迟。",
+        "name": "Niko1221/Strata",
+        "url": "https://github.com/Niko1221/Strata",
+        "stars": 39645,
+        "lang": "C++",
+        "what": "在普通消费级硬件上一键跑 Qwen3.8-Flash-Next，并在本地起一个兼容 OpenAI 与 Anthropic 的接口。",
+        "tryThis": "按 README 下载 Windows 或 Linux 安装包，启动后在 localhost 用 curl 调一次 chat completions，确认返回正常。",
         "minutes": 20
       },
       {
         "name": "yetone/magpie",
         "url": "https://github.com/yetone/magpie",
-        "stars": 28384,
+        "stars": 29527,
         "lang": "Go",
-        "what": "把 Codex、Claude Code 等客户端的后端模型统一到一个菜单栏入口，解决多工具多密钥来回切换的问题。",
-        "tryThis": "下载对应平台的安装包启动，在菜单栏里填一个已有模型的 API Key，选一个客户端试跑一次代码补全。",
-        "minutes": 15
+        "what": "把各家编码代理和模型接到一个菜单栏入口，比如让 Codex 跑在 DeepSeek 上、Claude Code 跑在 Kimi 上。",
+        "tryThis": "克隆仓库后按 README 编译并启动，在菜单栏里填入一个已有模型的 Key，切换一次后端再发一条测试请求。",
+        "minutes": 20
       },
       {
         "name": "Gathin23/cleanyourtv",
         "url": "https://github.com/Gathin23/cleanyourtv",
-        "stars": 50411,
+        "stars": 51673,
         "lang": "Python",
-        "what": "通过 Wi-Fi 用 ADB 清理 Android TV 和 Google TV 的预装应用，并换成接近 Apple TV 的简洁桌面。",
-        "tryThis": "在电视上打开开发者模式与网络调试，电脑执行仓库里的连接脚本，先只禁用一两个预装应用看桌面变化。",
+        "what": "通过 Wi-Fi 用 adb 清理 Android TV 或 Google TV 的预装应用，换成接近 Apple TV 的简洁桌面。",
+        "tryThis": "在电视上打开开发者调试并记下 IP，运行仓库脚本连接设备，先只列出可卸载包，确认清单后再执行清理。",
         "minutes": 20
       }
     ],
     "task": {
-      "title": "用梯度视角检查一次微调数据",
-      "goal": "理解「无害样本也可能削弱安全对齐」这一机制，并知道如何定位可疑样本。",
+      "title": "今天上手做这一件",
+      "goal": "用本地推理引擎在 20 分钟内跑通一次兼容 OpenAI 格式的调用。",
       "time": "约 20 分钟",
-      "url": "https://huggingface.co/papers/2610.37481",
+      "url": "https://github.com/Niko1221/Strata",
       "steps": [
-        "读论文摘要与方法部分，记下 SimpleLoRIF 用什么信号给样本打分。",
-        "对照自己的微调数据集，列出内容合规但风格强指令化的样本作为候选。",
-        "在笔记里写下：如果按梯度对齐度排序，你会先复查哪几条，以及复查标准是什么。"
+        "下载并安装 Strata 对应平台版本，启动服务",
+        "确认本地端口已监听，记下 base URL",
+        "用 curl 向 chat completions 发一条短提示并查看返回"
       ],
-      "done": "能说清梯度对齐度与不安全行为的对应关系，并列出至少 3 条待复查样本。",
-      "output": "一份针对自己数据集的「安全退化可疑样本」初筛清单。"
+      "done": "收到结构完整的 JSON 响应，且模型名与本地加载的一致。",
+      "output": "一份可复用的本地调用命令，之后可替换进任何兼容 OpenAI 的客户端。"
     },
     "concept": {
-      "term": "权重空间编程",
-      "line": "不重新训练，而是把模型参数当作可直接读取和写入的数据结构来编辑。"
+      "term": "上下文压实（context compaction）",
+      "line": "把已积累的长对话定期摘要成短上下文，用少量信息损失换更低的生成成本。"
     },
     "keywords": [
-      "权重编辑",
-      "梯度归因",
-      "混合架构"
+      "推理压缩",
+      "上下文成本",
+      "本地推理"
     ],
-    "note": "榜单热度与 star 数不等于效果，先跑通再判断。",
-    "updated": "2026-11-03T00:01:31.408Z"
+    "note": "论文榜点赞数普遍很低，热度不等于结论可靠，先看方法再看数字。",
+    "updated": "2026-11-04T11:42:00.229Z"
   },
   "2026-11-04": {
     "lead": "今天的主线是「模型之外的东西」开始被认真对待：研究者不再只比分数，而是考察模型是否具备人类的研究品味、能否把历史信息真正用于长程生成、能否直接读页面图像而非 OCR 文本；工程侧则围绕本地推理、权重可解释性与数据边界展开争论，工具链正把前沿模型搬到个人电脑上。",

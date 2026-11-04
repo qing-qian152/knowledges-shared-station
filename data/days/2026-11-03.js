@@ -1,601 +1,593 @@
 /* 2026-11-03 · 周二 —— 由 scripts/generate.mjs 生成 */
 window.LEARN_DAY = {
-  "theme": "名字是归途，也是出发",
+  "theme": "远处的风景与近处的路",
   "quote": {
-    "text": "父母在，不远游，游必有方。",
-    "author": "孔子",
-    "source": "论语·里仁"
+    "text": "不积跬步，无以至千里；不积小流，无以成江海。",
+    "author": "荀子",
+    "source": "荀子·劝学"
   },
   "chinese": {
-    "title": "那件大衣与一袋橘子",
+    "title": "窗外的山与脚下的砖",
     "author": "本站原创",
-    "tag": "现代散文 · 亲情",
-    "readingTime": "约 7 分钟",
-    "image": "lamp",
-    "imageCaption": "站台灯下，父亲抱着橘子转身",
+    "tag": "现代散文 · 叙事说理",
+    "readingTime": "约 8 分钟",
+    "image": "tower",
+    "imageCaption": "远处山影淡淡，近处砖石斑驳",
     "body": [
-      "我始终记得那件紫毛大衣。它挂在我十八岁那年的冬天里，像一块被灯照旧的布，颜色褪了，可还倔强地紫着。父亲把它从柜子最底下拽出来时，抖起一层细灰，在灯下慢慢飘，飘得满屋都是旧年的味道。",
-      "那年我要去很远的地方读书。父亲说送我到车站，我说不用，他说顺路。其实不顺路，他在城西做事，车站在城东。我后来才知道，他请了半天假，扣了半天的工钱。",
-      "出发那天下小雨，站台上湿漉漉的，人挤着人。父亲穿着那件紫毛大衣，领子竖起，一手提我的箱子，一手拎一袋橘子。他说路上吃，橘子上火，一天别超过三个。我说知道了。他又说，到了记得来信。我说知道了。他说着，我应着，话像雨点落在水泥地上，很快就没了。",
-      "检票的时候，人往前涌。父亲被挤到一边，忽然把橘子递过来，自己转身往站台那头走。我喊他，他没听见。我看见他走到铁轨边的台阶上，先把大衣下摆撩起来，再探脚试了试，才一级一级往下挪。他胖，弯腰很吃力，那件紫毛大衣在他背上绷成一张小小的弓。",
-      "他下去，又上来，手里多了一小包东西。走近了才看清，是几块烤红薯，用纸包着，还烫手。他把红薯塞进我怀里，说车上冷。我低头看那纸包，油渍洇出来，像一小片深色的地图。那一刻我忽然觉得，自己是要走远的那个人，他却像是被留在原地的人。",
-      "车开了很久。我剥橘子，橘皮的气味在车厢里散开，涩而清。我想起他撩大衣的样子，想起他背上那张弓。我原以为离别是大哭，是拥抱，是说得出口的千言万语；原来离别是这样笨拙的、不说一句话的、把红薯塞进你怀里的一下子。",
-      "后来我也送过人。站在站台上，看车走远，才知道送的人比走的人更难受——走的人前方有新事，送的人身后只剩空站台。父亲当年站在那里，看我的车拐过弯，然后一个人穿着紫毛大衣回去，回去的路上也许什么都没想，也许想了很多。",
-      "那件大衣现在还挂在我家柜子里。我不穿，也不扔。每年入冬，我打开柜门，闻见一点点旧布的味道，就想起站台的灯，想起那袋橘子。橘子早就吃完了，可那股涩而清的气味，一直留在我的记忆里，像一个名字，叫一声，就有人应。"
+      "我住的这间屋子，朝西的墙上有一扇窄窗。窗框漆成墨绿色，年岁久了，边角磨出木头的黄。每天下午四点半，太阳斜到那山脊上，窗玻璃便像被谁呵了一口气，整片亮起来。那座山其实远得很，隔着三条街、一片旧厂区，还有说不清多少层的空气。可它偏偏每天准时出现，像一位不请自来的客人，安安静静坐在窗子里。",
+      "父亲在楼下修整那条水泥路。路不长，从单元门口到铁栅栏，统共十七步。前些日子下过几场雨，路面起了皮，碎成大大小小的薄片，脚踩上去咯吱咯吱的。他于是拖来一袋水泥，蹲下身，用一把旧泥抹子一下一下地抹。我倚在窗边看他，看他的背弯成一张弓，看那抹子推出去，又收回来，推出去，又收回来。水泥的灰色慢慢盖住原先的裂痕，像有人在纸上耐心地涂改错字。",
+      "“你看山上那塔，”他忽然抬头，冲我喊，“塔尖上是不是有块亮东西？”我眯眼望过去，果然，山脊上那座小塔的尖顶，正被夕阳镀出一星金。我说：“是塔刹，铜的。”他哦了一声，低下头继续抹他的水泥，过一会儿又说：“我年轻时候去过那山，爬了一整天，到跟前才晓得，那塔小得很，还没咱家水缸粗。”说完自己笑了，抹子却没停。",
+      "我一时说不上话。那塔在我的窗子里立了好几年，我一直当它是一处风景，一处可以指给人看、可以写进信里的远方。父亲却用一整天爬上去，摸到了它的粗，它的旧，它砖缝里钻出来的草。他把远方走成了近处，而我，把近处看成了远方。",
+      "那天傍晚，我下楼去，站在他刚抹好的水泥边上。路面还是湿的，颜色深得像一块新砚台。父亲直起腰，捶了两下后背，说：“这路管不了几年，踩的人多，又得坏。”我说：“那你年年修？”他说：“年年修呗。人总得走这条路。”",
+      "我忽然想起小时候。那时我在这条路上学骑车，摔过一跤，膝盖磕出个口子，哭得惊天动地。父亲从楼上跑下来，没抱我，只蹲在路边，指着我膝盖说：“你看，皮破了，过几天长出新皮，就比原来的还结实。”我当时不懂，只觉得他心硬。如今看着这新抹的路面，才明白他一直在做同一件事：不指望一劳永逸，只做眼前这一遍，坏了再修，修了再坏。",
+      "天色暗下来，山脊上的金慢慢褪成灰。父亲收拾工具上楼，我跟着他，一级一级踩过楼道里声控灯忽明忽暗的光。窗子还亮着最后一小片天，那塔已经看不清了。可我站在楼道里，脚底下的水泥台阶硬邦邦的，一步一步，都踩得实在。",
+      "后来我常想，人大概都是这样：眼睛生来朝前看，心却要一步一步才走得动。远处的风景再好看，也是给眼睛的；近处的路再不好走，却是给脚的。父亲未必读过什么书，可他懂得一袋水泥的分量，懂得十七步之内的事，得由自己弯下腰去，一下一下地抹平。"
     ],
     "explain": [
       {
-        "line": "它挂在我十八岁那年的冬天里，像一块被灯照旧的布，颜色褪了，可还倔强地紫着。",
-        "note": "「挂」字把大衣写成有生命的东西；<b>「倔强地紫着」</b>用形容词作动词，写出颜色的固执，也暗暗写出父亲的性格。"
+        "line": "窗玻璃便像被谁呵了一口气，整片亮起来。",
+        "note": "“呵了一口气”把夕阳反光写成人的动作，<b>比拟</b>让静物有了温度；句末“整片亮起来”用短促的四字收束，节奏由缓转急，像光突然铺满。"
       },
       {
-        "line": "他说着，我应着，话像雨点落在水泥地上，很快就没了。",
-        "note": "两个短句对举，节奏轻快；比喻把父子间那些琐碎的叮嘱写得很轻，<b>轻才显出后面的重</b>。"
+        "line": "看他的背弯成一张弓，看那抹子推出去，又收回来，推出去，又收回来。",
+        "note": "“弯成一张弓”是明喻，写劳动的弧度；后半句<b>反复</b>同一动作，不厌其烦，正对应父亲抹墙的耐心，读时自然放慢。"
       },
       {
-        "line": "他胖，弯腰很吃力，那件紫毛大衣在他背上绷成一张小小的弓。",
-        "note": "<b>「绷成一张弓」</b>是全篇的核心比喻：弓是弯的，是吃力的，也是射向远方的——父亲弯下腰，儿子才走得更远。"
+        "line": "他把远方走成了近处，而我，把近处看成了远方。",
+        "note": "一句对仗，<b>“远方”与“近处”互换位置</b>，形成回环；中间用逗号断开“而我”，语气一顿，是全文的认知转折点。"
       },
       {
-        "line": "我原以为离别是大哭，是拥抱，是说得出口的千言万语；原来离别是这样笨拙的、不说一句话的、把红薯塞进你怀里的一下子。",
-        "note": "分号前后一虚一实；<b>三个「的」字短语层层叠加</b>，把「笨拙」具体化，「一下子」收得干脆，情绪不铺张。"
+        "line": "路面还是湿的，颜色深得像一块新砚台。",
+        "note": "喻体选“新砚台”，既写色深，又暗含“书写、打磨”之意，与后文“涂改错字”呼应，<b>意象前后勾连</b>。"
       },
       {
-        "line": "橘子早就吃完了，可那股涩而清的气味，一直留在我的记忆里，像一个名字，叫一声，就有人应。",
-        "note": "结尾由物及名，<b>「叫一声，就有人应」</b>照应「名字与归属」，不说思念而思念自现，收得住。"
+        "line": "远处的风景再好看，也是给眼睛的；近处的路再不好走，却是给脚的。",
+        "note": "两个分句结构对称，<b>“眼睛”与“脚”</b>对举，把抽象道理落到身体器官上，收尾不喊口号，靠对比站住。"
       }
     ],
     "words": [
       {
-        "w": "倔强",
-        "meaning": "强硬不屈，这里形容颜色固执地不退",
-        "use": "形容颜色、性格、神情都可以，比「顽固」多一分可敬"
+        "w": "咯吱",
+        "meaning": "拟声词，形容踩在碎薄片上的声响",
+        "use": "叠韵拟声，读来有摩擦感，适合写旧物、碎屑。"
       },
       {
-        "w": "顺路",
-        "meaning": "路程相同，可以顺便同行",
-        "use": "口语常用，表面轻描淡写，实则常是善意的托词"
+        "w": "泥抹子",
+        "meaning": "泥瓦匠抹灰用的工具",
+        "use": "具体器物名比“工具”更有画面，写作时多留心行业词。"
       },
       {
-        "w": "洇",
-        "meaning": "液体落在纸上向四周散开",
-        "use": "写墨、油、水渍极传神，如「墨迹洇开」"
+        "w": "镀",
+        "meaning": "把金属附着在别的物体表面",
+        "use": "此处活用为“被夕阳镀出金”，把光写成金属，有质感。"
       },
       {
-        "w": "涩",
-        "meaning": "不滑润，带一点苦味",
-        "use": "写橘皮、茶、柿子都可，兼可写声音与表情"
+        "w": "塔刹",
+        "meaning": "塔顶的装饰部分",
+        "use": "冷僻专名要放在人物对话里自然带出，避免掉书袋。"
       },
       {
-        "w": "笨拙",
-        "meaning": "不灵巧，不圆滑",
-        "use": "写动作，也写不善表达的感情，褒贬随语境"
+        "w": "一劳永逸",
+        "meaning": "辛苦一次，把事情办好，以后不再费力",
+        "use": "成语，常与“不指望”搭配，写务实态度。"
       },
       {
-        "w": "空落",
-        "meaning": "心里或眼前空荡荡的",
-        "use": "常写送别后的站台、房间，比「空虚」更具体"
+        "w": "惊天动地",
+        "meaning": "形容声音或声势极大",
+        "use": "此处写小孩哭闹，略带夸张，有自嘲的幽默。"
       },
       {
-        "w": "照应",
-        "meaning": "前后呼应，彼此关照",
-        "use": "写作术语，也指人与人之间的照看"
+        "w": "声控灯",
+        "meaning": "靠声音触发开关的灯",
+        "use": "现代生活细节，能让散文不悬空。"
       }
     ],
     "expressions": [
       {
-        "s": "他下去，又上来，手里多了一小包东西。",
-        "why": "不写「买红薯」，只写「下去」「上来」「多了一包」，动作留白，读者自己补出父亲挤过人群的背影。"
+        "s": "水泥的灰色慢慢盖住原先的裂痕，像有人在纸上耐心地涂改错字。",
+        "why": "把修补路面比作改错字，动作慢、心思细，一个“耐心”把父亲的性格写出来了。"
       },
       {
-        "s": "走的人前方有新事，送的人身后只剩空站台。",
-        "why": "对句工整，一「新」一「空」，把离别的不对等说透，句子短，分量重。"
+        "s": "他把远方走成了近处，而我，把近处看成了远方。",
+        "why": "对仗加换位，一句话点破全文题旨，干净，不啰嗦。"
       },
       {
-        "s": "橘子早就吃完了，可那股涩而清的气味，一直留在我的记忆里。",
-        "why": "由味觉转到记忆，感官是通道，不是装饰，气味成了情感的容器。"
-      },
-      {
-        "s": "像一个名字，叫一声，就有人应。",
-        "why": "用最日常的动作解释抽象的归属感，比喻轻，落点准。"
+        "s": "远处的风景再好看，也是给眼睛的；近处的路再不好走，却是给脚的。",
+        "why": "用身体部位作比，道理落地，结尾有分量而不空喊。"
       }
     ],
     "techniques": [
       {
-        "name": "细节聚焦",
-        "desc": "不写宏大离别，只写撩大衣、试台阶、塞红薯等小动作",
-        "example": "先把大衣下摆撩起来，再探脚试了试"
+        "name": "以小见大",
+        "desc": "从修一条十七步的路写起，引出对远方与脚下的思考。",
+        "example": "路不长，从单元门口到铁栅栏，统共十七步。"
       },
       {
-        "name": "物象贯穿",
-        "desc": "紫毛大衣与橘子反复出现，成为情感的线索",
-        "example": "那件紫毛大衣在他背上绷成一张小小的弓"
+        "name": "对比",
+        "desc": "父亲的“走上去”与我的“看过去”形成对照，凸显认知差异。",
+        "example": "他把远方走成了近处，而我，把近处看成了远方。"
       },
       {
-        "name": "视角转换",
-        "desc": "由「被送的人」转到「送人的人」，完成认知转折",
-        "example": "后来我也送过人。站在站台上，看车走远"
+        "name": "细节描写",
+        "desc": "用工具、动作、声音等具体细节支撑人物，不直接抒情。",
+        "example": "用一把旧泥抹子一下一下地抹。"
       },
       {
-        "name": "以轻写重",
-        "desc": "用轻描淡写的句子承载最重的情感",
-        "example": "他说着，我应着，话像雨点落在水泥地上"
+        "name": "伏笔与照应",
+        "desc": "前文写“涂改错字”，后文写“新砚台”，意象前后勾连。",
+        "example": "颜色深得像一块新砚台。"
       },
       {
-        "name": "首尾照应",
-        "desc": "开头的紫毛大衣在结尾的柜门里再次出现",
-        "example": "那件大衣现在还挂在我家柜子里"
+        "name": "欲扬先抑",
+        "desc": "先写觉得父亲“心硬”，后文理解其务实，情感有转折。",
+        "example": "我当时不懂，只觉得他心硬。"
       }
     ],
     "imitation": {
-      "prompt": "写一段 300 字左右的文字，写一个「送别」的场面，只用一个反复出现的物件贯穿全文。",
+      "prompt": "写一段 300 字左右的文字，写你身边一个人做一件具体小事（修东西、做饭、整理），用一件器物和一组重复动作，最后落到一个关于“远与近”的小感悟。",
       "steps": [
-        "先定物件：一件衣服、一个饭盒、一把伞都行，写清它的颜色或质感。",
-        "只写三个动作细节，不写「舍不得」「难过」这类词。",
-        "结尾回到这件物件，让读者感到时间过去了，感情还在。"
+        "先选定一个人和一件小事，列出三样具体器物（如抹子、锅铲、针线）。",
+        "用“推出去，又收回来”式的反复动作写两到三行，制造节奏。",
+        "结尾用一句对仗或对比收束，不要直接写“我明白了什么”。"
       ]
     }
   },
   "poem": {
-    "title": "游子吟",
-    "author": "孟郊",
+    "title": "登鹳雀楼",
+    "author": "王之涣",
     "dynasty": "唐",
-    "tag": "乐府诗",
-    "image": "lamp",
-    "imageCaption": "灯下母亲缝衣，针脚细密",
+    "tag": "五言绝句",
+    "image": "tower",
+    "imageCaption": "落日依山，黄河入海，楼头一人远望",
     "body": [
-      "慈母手中线，游子身上衣。",
-      "临行密密缝，意恐迟迟归。",
-      "谁言寸草心，报得三春晖。"
+      "白日依山尽，",
+      "黄河入海流。",
+      "欲穷千里目，",
+      "更上一层楼。"
     ],
     "notes": [
       {
-        "line": "游子",
-        "note": "离家远游的人，这里指诗人自己。"
+        "line": "鹳雀楼",
+        "note": "在今山西永济，因常有鹳雀栖息得名，唐代登临胜地。"
       },
       {
-        "line": "临行",
-        "note": "将要出发的时候。"
+        "line": "白日",
+        "note": "夕阳。用“白”写日光，见其明亮，也见其将尽。"
       },
       {
-        "line": "意恐",
-        "note": "心里担心。意，心中；恐，担忧。"
+        "line": "依山尽",
+        "note": "紧贴着山峦慢慢沉落。“依”字写出缓缓挨近的情态。"
       },
       {
-        "line": "寸草",
-        "note": "小草，比喻子女微薄的心意。"
+        "line": "穷",
+        "note": "穷尽，看到底。"
       },
       {
-        "line": "三春晖",
-        "note": "春天三个月的阳光，比喻母亲深厚的恩情。晖，阳光。"
+        "line": "千里目",
+        "note": "极远的视野。"
+      },
+      {
+        "line": "更",
+        "note": "再、又，表示在原有基础上更进一步。"
       }
     ],
-    "translation": "慈爱的母亲手里拿着针线，缝的是远行儿子身上的衣服。临出发前，她一针一线缝得又密又牢，心里怕的是儿子迟迟不能回家。谁能说子女那一点像小草一样微薄的心意，报答得了母亲如春天阳光般深厚的恩情呢？",
+    "translation": "夕阳挨着群山缓缓沉落，黄河朝着大海奔流而去。要想把千里之外的风光看个够，那就再登上一层高楼。",
     "appreciation": [
-      "全诗只有六句，前四句全是白描，不着一字抒情。「手中线」与「身上衣」两个日常物件一对照，母子之间的距离就出来了：线在母亲手里，衣在儿子身上，中间连着的是看不见的牵挂。",
-      "「密密缝」三个字最见功力。缝得密，是怕衣服不结实；衣服结实，是盼儿子在外久一点也穿得暖。可下一句「意恐迟迟归」又翻出一层：缝得越密，越说明母亲心里怕的是儿子回不来。动作与心理在这里打了个结。",
-      "最后两句忽然拔高，用「寸草」比子女、用「三春晖」比母爱，一大一小，悬殊得让人心惊。妙在不作结论，只用反问收束，把答案留给读者——报答不了，才要一辈子记着。",
-      "这首诗语言近乎口语，没有典故，也没有华丽辞藻，却成了写母爱的绝唱。原因在于它写的是动作，不是概念：天下的母亲都缝过衣，天下的儿女都穿过那件衣。"
+      "前两句写景，一横一纵。“白日依山尽”是横向的、缓慢的沉落，“黄河入海流”是纵向的、奔腾的远去。一个是收束，一个是展开；一个近在眼前，一个远在天边。二十个字里，天地的空间被撑开了。",
+      "后两句由景入理，却不说破。“欲穷千里目”是愿望，“更上一层楼”是行动。诗人没有讲“站得高看得远”的大道理，只把登楼这个动作写出来，道理自然藏在动作里。这正是唐诗的高明：理在事中，不在言中。",
+      "“更”字是全诗的枢纽。它不是“再上一层”的简单重复，而是承认脚下已有高度，仍不满足。这种不满足不是贪心，而是对更远风景的诚实向往，与今日主题“远处的风景与近处的路”正相呼应：想看得远，先得抬脚。",
+      "全诗四句两两对仗，却自然得不见斧痕。前联对景，后联对理，景理相生。读来节奏明快，朗朗上口，是五绝中少见的“以理入诗而不觉其枯”的佳作。"
     ],
-    "recite": "记住三组镜头：线—衣（起笔）、密密缝—迟迟归（转折）、寸草—春晖（收束）。先背动作，再背心理，最后背比喻，六句一气呵成。"
+    "recite": "记住“两景两理”的结构：先背“白日—黄河”一横一纵，再背“欲穷—更上”一愿一行。抓住“依、入、穷、更”四个动词，句句就串起来了。"
   },
   "english": {
-    "title": "What Your Name Says About You",
+    "title": "Why We Romanticise Places We Have Never Been",
     "level": "IELTS 7.0",
-    "words": 520,
+    "words": 540,
     "body": [
-      "Few of us choose the name we are given, yet almost all of us spend a lifetime living with it. A name is the first piece of information strangers receive about us, and it is often the one they remember longest. It is also, quietly, a claim about where we belong: to a family, a language, a generation, a place.",
-      "Psychologists have found that names carry more weight than we tend to assume. Studies suggest that teachers may unconsciously expect more from children whose names sound familiar or conventional, while employers reading identical CVs have been shown to favor applicants with names that match the dominant culture. Whether or not such biases are deliberate, they shape the opportunities people encounter long before any interview takes place.",
-      "This does not mean that a name determines a life. Many people shorten, translate or entirely replace their names when they move to a new country, and for some this is a pragmatic decision rather than a surrender. Others insist on keeping the original pronunciation, even when it costs them a small moment of awkwardness at every introduction. Both choices involve a negotiation between belonging and self-respect, and neither is simply right or wrong.",
-      "What is striking is how early the attachment forms. Children who are teased about an unusual name may grow up wishing it away, yet the same adults often rediscover that name with pride in their thirties or forties. A name that once felt like a burden can become evidence of heritage, a link to grandparents, or a reason to learn a language they had almost forgotten.",
-      "In an age of global mobility, names are increasingly mixed, misspelled and reinvented. A person may answer to one name at work, another at home and a third in official documents, shifting between them as easily as between languages. Rather than signaling confusion, this flexibility suggests that identity is not a fixed label but a set of relationships that we keep renewing.",
-      "So the question “what does your name say about you” may be less interesting than its reverse: what do you say about your name? Every time we introduce ourselves, correct a pronunciation or choose not to, we are quietly deciding how much of our history to carry forward. A name is not a verdict. It is an invitation, and the answer is ours to give."
+      "There is a particular kind of pleasure in imagining a place we have never visited. A photograph of a narrow street in Lisbon, a documentary about the Icelandic coast, a friend’s casual remark about a village in Yunnan — any of these can set off a chain of mental images that feel almost like memories. We furnish the unknown with the colours we happen to like, and the result is usually more beautiful than anything reality could supply.",
+      "Psychologists have a name for part of this tendency: the peak-end rule. When we recall an experience, we tend to remember its most intense moment and its ending rather than its average. Imagination works in a similar way. Because we have no ordinary, boring details to weigh down our mental picture, the imagined place consists entirely of peaks. We do not picture the delayed train, the overpriced coffee or the afternoon spent searching for a lost key; we picture the sunset and the quiet square.",
+      "This is not simply a failure of judgement. Romanticising the unfamiliar can serve a practical purpose. It gives us a reason to travel, to study, to move; it supplies the emotional fuel that a long and uncertain project requires. Without some idealised image of what lies ahead, few people would bother to leave home at all. In this sense, the imagined distance is not an obstacle to action but a precondition for it.",
+      "Yet the same mechanism can quietly mislead us. Social media rewards the spectacular and hides the mundane, so that the places we scroll past are curated versions of themselves. The gap between the imagined and the actual may then produce disappointment, not because the destination is inferior, but because our expectations were assembled from fragments. We are, in effect, comparing a highlight reel with a full-length film.",
+      "A more useful approach is to treat imagination as a map rather than a destination. A map is valuable precisely because it is incomplete: it shows the route without pretending to reproduce the terrain. If we accept that the imagined place is a sketch, we can enjoy it for what it is — a prompt, a direction, a reason to set out — while remaining open to the ordinary details that will eventually replace it.",
+      "Perhaps the healthiest attitude is neither to distrust our fantasies nor to surrender to them, but to hold both the far-off image and the near-at-hand path in view at once. The distant landscape gives us direction; the road beneath our feet gives us progress. Those who manage to keep the two in balance tend to arrive with fewer illusions and more curiosity — which is, after all, the better equipment for any journey."
     ],
     "translation": [
-      "我们几乎没有人能选择自己被给予的名字，却几乎所有人都要与之相处一生。名字是陌生人得到的关于我们的第一条信息，也往往是他们记得最久的一条。它同时还在无声地宣告我们属于哪里：属于一个家庭、一种语言、一代人、一个地方。",
-      "心理学家发现，名字承载的分量比我们通常以为的更重。研究表明，教师可能会不自觉地对名字听起来熟悉或常规的孩子抱有更高期待；而在阅读完全相同的简历时，雇主也被证明会偏爱名字与主流文化相符的求职者。无论这些偏见是否有意为之，它们都在面试发生之前很久就塑造了人们遇到的机会。",
-      "这并不意味着名字决定一生。许多人移居他国时会缩短、翻译甚至完全更换自己的名字，对一些人来说这是务实的决定，而非屈服。另一些人则坚持保留原来的发音，哪怕这意味着每次自我介绍都要经历一小段尴尬。两种选择都涉及归属感与自尊之间的权衡，也都不能简单地判定对错。",
-      "引人注意的是，这种依恋形成得极早。因名字特别而被取笑的孩子，可能从小就希望摆脱它；然而同样是这些人，往往在三十多岁或四十多岁时又带着骄傲重新发现那个名字。曾经像负担一样的名字，可以成为族裔传承的凭证、与祖辈的连接，或一个去学那门几乎已经遗忘的语言的理由。",
-      "在全球流动的时代，名字越来越混杂、被拼错、被重新创造。一个人可能在工作时用一个名字，在家用另一个，在官方文件里又是第三个，在它们之间切换，就像在语言之间切换一样自如。这并非混乱的信号，反而说明身份不是一个固定的标签，而是一组我们不断更新的关系。",
-      "因此，「你的名字说明了你是谁」这个问题，也许不如它的反面有趣：你如何说明你的名字？每当我们自我介绍、纠正一个发音或选择不去纠正，我们都在悄悄决定要把多少历史带在身上。名字不是判决，而是一份邀请，答案由我们自己给出。"
+      "想象一个从未去过的地方，自有一种特别的乐趣。里斯本一条窄巷的照片、一部关于冰岛海岸的纪录片、朋友随口提到云南某个村庄的一句话——这些都可能引发一连串几乎像记忆一样逼真的心理画面。我们用自己恰好喜欢的色彩去装点未知，而结果往往比现实所能提供的任何东西都更美。",
+      "心理学家为这种倾向的一部分起了个名字：峰终定律。当我们回忆一段经历时，往往记住的是最强烈的时刻和结尾，而不是平均水平。想象的作用方式类似。由于没有任何平淡无聊的细节来压住我们心中的画面，想象中的地方完全由“峰值”构成。我们不会去想象晚点的火车、贵得离谱的咖啡，或是一个下午都在找丢失的钥匙；我们想象的是日落和安静的广场。",
+      "这并不只是判断力的失误。把陌生的事物浪漫化，可以有其实际用处。它给我们旅行的理由、学习的理由、搬家的理由；它为一项漫长而不确定的计划提供情感燃料。若对前方没有任何理想化的图景，很少有人会费心离开家。从这个意义上说，想象中的远方不是行动的障碍，而是行动的前提。",
+      "然而，同样的机制也可能悄悄误导我们。社交媒体奖励壮观、隐藏平淡，于是我们刷到的那些地方，都是经过精心修饰的版本。想象与现实之间的落差便可能带来失望——不是因为目的地更差，而是因为我们的期待是由碎片拼凑而成的。实际上，我们是在拿一段精彩集锦去比一部完整长片。",
+      "更有用的做法，是把想象当作地图，而不是目的地。地图之所以有价值，恰恰因为它是不完整的：它显示路线，却不假装复制地形。如果我们接受想象中的地方只是一张草图，就能享受它本来的样子——一个提示、一个方向、一个出发的理由——同时对终将取代它的那些平凡细节保持开放。",
+      "也许最健康的态度，既不是怀疑自己的幻想，也不是向它投降，而是同时把远方的图景和脚下的路放在视野里。远处的风景给我们方向；脚下的路给我们进展。能把二者保持平衡的人，抵达时往往少一些幻想、多一些好奇——这毕竟才是任何旅程更好的装备。"
     ],
     "vocab": [
       {
-        "w": "conventional",
-        "pos": "adj.",
-        "cn": "传统的，常规的",
-        "ex": "She chose a conventional name to avoid unwanted attention."
+        "w": "romanticise",
+        "pos": "v.",
+        "cn": "使浪漫化，理想化",
+        "ex": "We tend to romanticise places we have never been."
       },
       {
-        "w": "bias",
+        "w": "furnish",
+        "pos": "v.",
+        "cn": "布置，为……提供",
+        "ex": "We furnish the unknown with the colours we happen to like."
+      },
+      {
+        "w": "peak-end rule",
         "pos": "n.",
-        "cn": "偏见，偏向",
-        "ex": "The study revealed a subtle bias in hiring decisions."
+        "cn": "峰终定律",
+        "ex": "The peak-end rule explains why we remember highlights."
       },
       {
-        "w": "deliberate",
+        "w": "mundane",
         "pos": "adj.",
-        "cn": "故意的，有意的",
-        "ex": "It was a deliberate attempt to mislead the public."
+        "cn": "平凡的，单调的",
+        "ex": "Social media hides the mundane details of daily life."
       },
       {
-        "w": "pragmatic",
+        "w": "curated",
         "pos": "adj.",
-        "cn": "务实的，讲求实际的",
-        "ex": "Adopting a new name was a pragmatic choice for her career."
+        "cn": "精心挑选的，策划过的",
+        "ex": "The places we scroll past are curated versions of themselves."
+      },
+      {
+        "w": "inferior",
+        "pos": "adj.",
+        "cn": "较差的，次等的",
+        "ex": "The destination is not inferior; our expectations are simply unrealistic."
+      },
+      {
+        "w": "fragment",
+        "pos": "n.",
+        "cn": "碎片，片段",
+        "ex": "Our expectations were assembled from fragments."
+      },
+      {
+        "w": "precondition",
+        "pos": "n.",
+        "cn": "先决条件",
+        "ex": "The imagined distance is a precondition for action."
+      },
+      {
+        "w": "idealised",
+        "pos": "adj.",
+        "cn": "理想化的",
+        "ex": "Without some idealised image of what lies ahead, few would leave home."
+      },
+      {
+        "w": "terrain",
+        "pos": "n.",
+        "cn": "地形，地势",
+        "ex": "A map shows the route without reproducing the terrain."
+      },
+      {
+        "w": "illusion",
+        "pos": "n.",
+        "cn": "幻想，错觉",
+        "ex": "They arrive with fewer illusions and more curiosity."
       },
       {
         "w": "surrender",
-        "pos": "n.",
-        "cn": "屈服，放弃",
-        "ex": "Changing his accent felt like a surrender of identity."
-      },
-      {
-        "w": "negotiation",
-        "pos": "n.",
-        "cn": "协商，权衡",
-        "ex": "Learning a language involves a constant negotiation between accuracy and fluency."
-      },
-      {
-        "w": "attachment",
-        "pos": "n.",
-        "cn": "依恋，情感联系",
-        "ex": "Early attachment to a name can last a lifetime."
-      },
-      {
-        "w": "heritage",
-        "pos": "n.",
-        "cn": "遗产，传承",
-        "ex": "The festival is part of our cultural heritage."
-      },
-      {
-        "w": "mobility",
-        "pos": "n.",
-        "cn": "流动性，迁移",
-        "ex": "Global mobility has changed how we think about names."
-      },
-      {
-        "w": "reinvent",
         "pos": "v.",
-        "cn": "重新创造，彻底改变",
-        "ex": "Many immigrants reinvent themselves in a new country."
+        "cn": "屈服，投降",
+        "ex": "Neither distrust our fantasies nor surrender to them."
       },
       {
-        "w": "flexibility",
+        "w": "curiosity",
         "pos": "n.",
-        "cn": "灵活性",
-        "ex": "Flexibility in naming reflects a more fluid identity."
-      },
-      {
-        "w": "verdict",
-        "pos": "n.",
-        "cn": "裁决，定论",
-        "ex": "Your background is not a verdict on your future."
-      },
-      {
-        "w": "reverse",
-        "pos": "n.",
-        "cn": "相反，反面",
-        "ex": "The reverse is also true: effort matters more than talent."
+        "cn": "好奇心",
+        "ex": "Curiosity is the better equipment for any journey."
       }
     ],
     "collocations": [
       {
-        "phrase": "live with a name",
-        "cn": "与一个名字相伴一生",
-        "ex": "Most of us spend a lifetime living with the name we were given."
+        "phrase": "set off a chain of",
+        "cn": "引发一连串",
+        "ex": "A single photograph can set off a chain of mental images."
       },
       {
-        "phrase": "carry weight",
-        "cn": "有分量，有影响力",
-        "ex": "Names carry more weight than we tend to assume."
+        "phrase": "weigh down",
+        "cn": "压住，使沉重",
+        "ex": "Ordinary details weigh down our mental picture."
       },
       {
-        "phrase": "shape opportunities",
-        "cn": "塑造机会",
-        "ex": "Such biases shape opportunities long before an interview takes place."
+        "phrase": "serve a practical purpose",
+        "cn": "有实际用处",
+        "ex": "Romanticising the unfamiliar can serve a practical purpose."
       },
       {
-        "phrase": "a pragmatic decision",
-        "cn": "务实的决定",
-        "ex": "For some, shortening a name is a pragmatic decision."
+        "phrase": "a precondition for",
+        "cn": "……的先决条件",
+        "ex": "Imagination is a precondition for action."
       },
       {
-        "phrase": "insist on doing sth",
-        "cn": "坚持做某事",
-        "ex": "Others insist on keeping the original pronunciation."
+        "phrase": "produce disappointment",
+        "cn": "带来失望",
+        "ex": "The gap may produce disappointment rather than delight."
       },
       {
-        "phrase": "a negotiation between A and B",
-        "cn": "A 与 B 之间的权衡",
-        "ex": "Every introduction involves a negotiation between belonging and self-respect."
+        "phrase": "in effect",
+        "cn": "实际上，本质上",
+        "ex": "We are, in effect, comparing a highlight reel with a film."
       },
       {
-        "phrase": "wish sth away",
-        "cn": "希望某事物消失",
-        "ex": "Children may wish an unusual name away."
+        "phrase": "remain open to",
+        "cn": "对……保持开放",
+        "ex": "We should remain open to the ordinary details."
       },
       {
-        "phrase": "a link to",
-        "cn": "与……的连接",
-        "ex": "A name can become a link to grandparents."
+        "phrase": "hold both ... and ... in view",
+        "cn": "同时兼顾",
+        "ex": "Hold both the far-off image and the near path in view."
       },
       {
-        "phrase": "signal confusion",
-        "cn": "显示出困惑",
-        "ex": "Switching names does not necessarily signal confusion."
+        "phrase": "keep ... in balance",
+        "cn": "保持平衡",
+        "ex": "Those who keep the two in balance arrive with fewer illusions."
       },
       {
-        "phrase": "carry forward",
-        "cn": "传承，带下去",
-        "ex": "We decide how much of our history to carry forward."
+        "phrase": "after all",
+        "cn": "毕竟",
+        "ex": "Curiosity is, after all, the better equipment."
       }
     ],
     "phrases": [
       {
-        "p": "tend to assume",
-        "cn": "倾向于认为",
-        "ex": "We tend to assume that a name is a neutral label."
-      },
-      {
-        "p": "whether or not",
-        "cn": "无论是否",
-        "ex": "Whether or not the bias is deliberate, it matters."
+        "p": "tend to",
+        "cn": "倾向于",
+        "ex": "We tend to remember the most intense moment."
       },
       {
         "p": "rather than",
         "cn": "而不是",
-        "ex": "This is a pragmatic decision rather than a surrender."
+        "ex": "We remember the ending rather than the average."
       },
       {
-        "p": "be teased about",
-        "cn": "因……被取笑",
-        "ex": "He was teased about his name at school."
+        "p": "not simply",
+        "cn": "不仅仅是",
+        "ex": "This is not simply a failure of judgement."
       },
       {
-        "p": "in an age of",
-        "cn": "在……的时代",
-        "ex": "In an age of global mobility, names are increasingly mixed."
+        "p": "in this sense",
+        "cn": "从这个意义上说",
+        "ex": "In this sense, the imagined distance is a precondition."
       },
       {
-        "p": "shift between A and B",
-        "cn": "在 A 与 B 之间切换",
-        "ex": "She shifts between two names as easily as between languages."
+        "p": "precisely because",
+        "cn": "恰恰因为",
+        "ex": "A map is valuable precisely because it is incomplete."
       },
       {
-        "p": "be ours to give",
-        "cn": "由我们自己给出",
-        "ex": "The answer is ours to give."
+        "p": "for what it is",
+        "cn": "按它本来的样子",
+        "ex": "We can enjoy it for what it is."
+      },
+      {
+        "p": "at once",
+        "cn": "同时",
+        "ex": "Hold both images in view at once."
       }
     ],
     "patterns": [
       {
-        "s": "Few of us choose the name we are given, yet almost all of us spend a lifetime living with it.",
-        "cn": "我们几乎没人能选择被给予的名字，却几乎所有人都要与之相处一生。",
-        "note": "Few…yet… 构成让步转折，前半否定、后半肯定，适合写议论文开头。"
+        "s": "There is a particular kind of pleasure in imagining a place we have never visited.",
+        "cn": "想象一个从未去过的地方，自有一种特别的乐趣。",
+        "note": "There is ... in doing 句式，把抽象感受具体化，适合开头。"
       },
       {
-        "s": "Whether or not such biases are deliberate, they shape the opportunities people encounter.",
-        "cn": "无论这些偏见是否有意为之，它们都塑造了人们遇到的机会。",
-        "note": "Whether or not 引导让步状语从句，主句用一般现在时陈述普遍事实。"
+        "s": "Not because the destination is inferior, but because our expectations were assembled from fragments.",
+        "cn": "不是因为目的地更差，而是因为我们的期待是由碎片拼凑的。",
+        "note": "not because ... but because ... 对比因果，逻辑清晰。"
       },
       {
-        "s": "What is striking is how early the attachment forms.",
-        "cn": "引人注意的是，这种依恋形成得极早。",
-        "note": "What 引导主语从句，后接 how 引导的表语从句，适合用来引出观察。"
+        "s": "The same mechanism can quietly mislead us.",
+        "cn": "同样的机制也可能悄悄误导我们。",
+        "note": "情态动词 + 副词 + 动词，语气克制，留有余地。"
       },
       {
-        "s": "Rather than signaling confusion, this flexibility suggests that identity is not a fixed label.",
-        "cn": "这并非混乱的信号，反而说明身份不是固定标签。",
-        "note": "Rather than + 动名词置于句首，表示「与其说……不如说……」，比 instead of 更书面。"
-      },
-      {
-        "s": "So the question may be less interesting than its reverse.",
-        "cn": "因此这个问题也许不如它的反面有趣。",
-        "note": "less…than… 比较结构，用于委婉地转移论述重心。"
+        "s": "Those who manage to keep the two in balance tend to arrive with fewer illusions.",
+        "cn": "能把二者保持平衡的人，抵达时往往少一些幻想。",
+        "note": "Those who ... tend to ... 概括性主语，适合结论句。"
       }
     ],
     "grammar": [
       {
         "point": "现在完成时的被动语态",
-        "explain": "强调「被证明、被发现」的客观研究结论，主语是受事者。",
-        "example": "Employers reading identical CVs have been shown to favor applicants with matching names."
-      },
-      {
-        "point": "非限制性定语从句",
-        "explain": "which 指代前面整个主句或某个名词，补充说明而不限定。",
-        "example": "A name that once felt like a burden can become evidence of heritage, a link to grandparents."
-      },
-      {
-        "point": "动名词作主语",
-        "explain": "用动名词短语充当主语，使论述显得客观、抽象。",
-        "example": "Rather than signaling confusion, this flexibility suggests that identity is not a fixed label."
+        "explain": "强调“从未被访问”的状态，比一般过去时更贴近“至今为止”的语境。",
+        "example": "a place we have never visited"
       },
       {
         "point": "让步状语从句",
-        "explain": "whether or not 引导的从句表示「无论……与否」，主句不受其影响。",
-        "example": "Whether or not such biases are deliberate, they shape the opportunities people encounter."
+        "explain": "while 表对比或让步，使句子有张力，不把话说死。",
+        "example": "while remaining open to the ordinary details"
+      },
+      {
+        "point": "非限定性定语从句",
+        "explain": "which 指代前文整句内容，用于总结评价。",
+        "example": "which is, after all, the better equipment for any journey"
+      },
+      {
+        "point": "虚拟条件句",
+        "explain": "与现在事实相反，用 would + 动词原形。",
+        "example": "few people would bother to leave home at all"
       }
     ],
-    "summary": "文章从「名字是陌生人得到的第一条信息」入手，指出名字不仅标识身份，还宣告归属。心理学研究显示，名字会引发教师与雇主的无意识偏见，从而影响机会分配。但作者强调名字并不决定人生：改名与否都是归属感与自尊之间的权衡。名字的依恋形成极早，童年想摆脱的名字，成年后常被重新认领为 heritage。在全球流动时代，一人多名并不等于混乱，而说明身份是不断更新的关系。结尾把问题反转：不是名字说明你，而是你如何说明你的名字。",
+    "summary": "本文探讨人们为何会把从未到过的地方浪漫化。作者指出，想象之所以比现实更美，是因为它只保留“峰值”，滤去了琐碎细节；这种理想化并非全无用处，它能为旅行、学习等长期行动提供情感动力。但社交媒体放大了这一倾向，使期待由碎片拼成，容易带来失望。作者建议把想象当作地图而非目的地，既享受它提供的方向，也对终将到来的平凡细节保持开放，在远方图景与脚下道路之间保持平衡。",
     "questions": [
       {
-        "q": "What does the author suggest about the information a name conveys?",
+        "q": "What does the author suggest about the images we form of unvisited places?",
         "options": [
-          "It is usually chosen by the person who bears it.",
-          "It is the first and often the most lasting impression strangers receive.",
-          "It reveals a person's income and education level.",
-          "It is less important than appearance in first meetings."
+          "They are usually based on reliable information.",
+          "They tend to be more attractive than reality.",
+          "They are formed mainly through direct experience.",
+          "They rarely influence our decisions."
         ],
         "answer": 1,
-        "explain": "第一段明确说名字是陌生人得到的第一条信息，也往往是记得最久的。A 与原文「几乎没人能选择」相反；C、D 文中未提。"
+        "explain": "首段末句说结果“往往比现实所能提供的更美”，故选 B。A 与“由碎片拼成”矛盾；C 与“从未去过”矛盾；D 与第三段“提供行动理由”矛盾。"
       },
       {
-        "q": "Why does the author mention studies about teachers and employers?",
+        "q": "The peak-end rule is mentioned to explain why imagined places ______.",
         "options": [
-          "To prove that names determine people's careers.",
-          "To show that unconscious bias linked to names affects opportunities.",
-          "To criticize teachers and employers directly.",
-          "To argue that conventional names are always better."
+          "are remembered in great detail",
+          "consist mainly of highlights",
+          "are compared with real memories",
+          "change as we grow older"
         ],
         "answer": 1,
-        "explain": "第二段用研究说明名字相关偏见塑造机会。A 过于绝对，第三段明确说名字不决定人生；C 曲解作者意图；D 文中无此结论。"
+        "explain": "第二段说回忆偏向最强烈时刻与结尾，想象“完全由峰值构成”，故选 B。A 与“没有平淡细节”相反；C、D 文中未提。"
       },
       {
-        "q": "According to the passage, changing one's name when moving abroad is…",
+        "q": "According to the author, romanticising the unfamiliar can be useful because it ______.",
         "options": [
-          "always a sign of giving up one's identity.",
-          "a choice that may be pragmatic rather than a surrender.",
-          "strongly discouraged by the author.",
-          "only done by people who dislike their families."
+          "prevents us from making mistakes",
+          "replaces the need for careful planning",
+          "provides motivation for long projects",
+          "guarantees a satisfying journey"
         ],
-        "answer": 1,
-        "explain": "第三段说对一些人改名是务实决定而非屈服。A 是作者明确反对的看法；C、D 文中均无依据。"
+        "answer": 2,
+        "explain": "第三段说它为漫长而不确定的计划“提供情感燃料”，故选 C。A、D 过于绝对；B 文中未说取代计划。"
       },
       {
-        "q": "What point does the author make about children with unusual names?",
+        "q": "What problem does social media create in this context?",
         "options": [
-          "They never accept their names.",
-          "They may later rediscover the name with pride.",
-          "They always change their names as adults.",
-          "They are less likely to learn their heritage language."
+          "It makes travel more expensive.",
+          "It presents only selected, attractive aspects of places.",
+          "It discourages people from travelling abroad.",
+          "It replaces real experience with virtual reality."
         ],
         "answer": 1,
-        "explain": "第四段说这些人常在三十多岁或四十多岁时带着骄傲重新发现那个名字。A、C 用 never、always 绝对化；D 与原文「成为学那门语言的理由」相反。"
+        "explain": "第四段说社交媒体“奖励壮观、隐藏平淡”，呈现的是“精心修饰的版本”，故选 B。A、C、D 均属无中生有。"
       },
       {
-        "q": "What does the phrase “a negotiation between belonging and self-respect” imply?",
+        "q": "The comparison with a map in paragraph 5 is intended to show that imagination ______.",
         "options": [
-          "Names are decided by legal negotiation.",
-          "Keeping or changing a name involves weighing two competing values.",
-          "Belonging and self-respect can never coexist.",
-          "People should always keep their original names."
+          "should be completely ignored",
+          "is valuable despite being incomplete",
+          "can reproduce reality accurately",
+          "is less useful than direct experience"
         ],
         "answer": 1,
-        "explain": "negotiation 在此为比喻，指在归属感与自尊之间权衡取舍。A 字面误解；C 过于绝对；D 作者明确说两种选择都无对错。"
+        "explain": "第五段说地图“恰恰因为它不完整”而有价值，想象应被当作草图，故选 B。A 与“享受它”矛盾；C 与“不假装复制地形”矛盾；D 文中未作高低比较。"
       },
       {
-        "q": "What is the main purpose of the final paragraph?",
+        "q": "What is the author’s final recommendation?",
         "options": [
-          "To summarize the research findings mentioned earlier.",
-          "To reverse the question and stress personal agency.",
-          "To recommend a particular naming policy.",
-          "To compare naming practices in different countries."
+          "To trust our fantasies without question.",
+          "To abandon distant dreams for practical goals.",
+          "To balance imagined destinations with present action.",
+          "To travel only to places we know well."
         ],
-        "answer": 1,
-        "explain": "末段把问题反转：不是名字说明你，而是你如何说明名字，强调主动权在自己。A 是前文功能；C、D 文中未提。"
+        "answer": 2,
+        "explain": "末段主张同时兼顾“远方的图景”与“脚下的路”，故选 C。A 是“向幻想投降”，B 是走向另一极端，D 与全文鼓励出发相悖。"
       }
     ],
     "output": {
-      "prompt": "写一篇 220—260 词的短文，谈谈你自己的名字（或你熟悉的某个名字）与归属感的关系。",
+      "prompt": "Write a short essay (180–220 words) about a place you once romanticised and later visited, or a place you dream of visiting.",
       "tasks": [
-        "开头用一个具体场景引入，例如一次被念错名字的经历。",
-        "中间至少使用三个本文学过的搭配，如 carry weight、a link to、carry forward。",
-        "结尾把「名字不是判决，而是邀请」改写成你自己的说法，不要照抄原句。"
+        "用至少三个具体细节写出你想象中的画面（声音、颜色、气味）。",
+        "用 not because ... but because ... 写一句解释失望或惊喜的原因。",
+        "结尾用 hold both ... and ... in view 或 keep ... in balance 收束。"
       ]
     }
   },
   "listening": {
-    "title": "Introducing Yourself in a New Team",
+    "title": "At the Train Station Information Desk",
     "level": "慢速美音",
-    "words": 215,
-    "topic": "日常叙事 · 新团队里的第一次自我介绍",
+    "words": 210,
+    "topic": "日常对话 · 车站问询",
     "lines": [
       {
-        "en": "On my first Monday at the new office, I arrived forty minutes early.",
-        "cn": "到新办公室的第一个周一，我提前四十分钟就到了。"
+        "en": "Good morning. I’m afraid I’ve missed my connection to Chicago.",
+        "cn": "早上好。恐怕我错过了去芝加哥的换乘列车。"
       },
       {
-        "en": "I sat in the lobby with a paper cup of coffee, practicing my introduction in my head.",
-        "cn": "我坐在大厅里，捧着一纸杯咖啡，在心里练习自我介绍。"
+        "en": "Let me check that for you. What time was your train supposed to leave?",
+        "cn": "我帮您查一下。您那趟车本来应该几点开？"
       },
       {
-        "en": "My name is a little hard for some people here, so I had already decided to shorten it.",
-        "cn": "我的名字对这里的一些人来说有点难念，所以我早就决定把它缩短。"
+        "en": "It was the nine fifteen, but the first train was twenty minutes late.",
+        "cn": "是九点十五分那趟，但第一趟车晚了二十分钟。"
       },
       {
-        "en": "At nine, our manager walked me to a small meeting room and asked me to say a few words.",
-        "cn": "九点，经理把我带到一间小会议室，让我说几句。"
+        "en": "I see. The next one leaves at eleven forty from platform six.",
+        "cn": "明白了。下一趟十一点四十从六号站台发车。"
       },
       {
-        "en": "I gave the short version of my name, and everyone smiled and nodded.",
-        "cn": "我说了名字的短版本，大家都笑着点头。"
+        "en": "Is there any extra charge? I already paid for the nine fifteen.",
+        "cn": "需要另外付费吗？我已经付过九点十五分那趟的钱了。"
       },
       {
-        "en": "Then a woman across the table said, \"Actually, I'd love to learn the full one.\"",
-        "cn": "这时桌子对面的一位女士说：「其实我很想学念完整版。」"
+        "en": "No, since the delay was our fault, we’ll put you on the next train at no cost.",
+        "cn": "不用，因为晚点是我们的责任，我们会免费安排您坐下一趟。"
       },
       {
-        "en": "So I said it slowly, syllable by syllable, and she repeated it after me.",
-        "cn": "于是我一个音节一个音节地慢慢念，她跟着我重复。"
+        "en": "That’s a relief. Could you also tell me where I can grab a quick breakfast?",
+        "cn": "那就放心了。您还能告诉我哪里可以快速吃个早饭吗？"
       },
       {
-        "en": "It took her three tries, and when she got it right, the whole room clapped.",
-        "cn": "她试了三次，念对的时候，整个房间都鼓起掌来。"
+        "en": "Sure. There’s a café by the main entrance, and their coffee is pretty good.",
+        "cn": "当然。正门旁边有家咖啡馆，他们的咖啡很不错。"
       },
       {
-        "en": "I laughed, and something tight in my chest finally let go.",
-        "cn": "我笑了，胸口那点绷紧的东西终于松开了。"
+        "en": "Great. And do I need to show this ticket again at the platform?",
+        "cn": "太好了。我在站台还需要再出示这张票吗？"
       },
       {
-        "en": "I had thought belonging meant fitting in quietly.",
-        "cn": "我原以为归属就是安静地融入。"
-      },
-      {
-        "en": "It turned out it could also mean being asked to say your own name out loud.",
-        "cn": "原来它也可以意味着，有人请你把自己的名字大声说出来。"
+        "en": "Just scan it at the gate, and keep it with you until you reach Chicago.",
+        "cn": "在闸机扫码就行，然后一直带着它，直到您抵达芝加哥。"
       }
     ],
-    "note": "先盲听两遍抓大意，再对照译文听第三遍，最后跟读模仿语调。"
+    "note": "先盲听两遍抓大意，再看译文；第三遍跟读，注意“nine fifteen”“eleven forty”等时间的读法。"
   },
   "ai": {
-    "term": "Evaluation（评测）",
-    "oneLiner": "评测就是用一套固定的题目和标准，给 AI 系统的表现打分，判断它到底行不行。",
+    "term": "MCP（模型上下文协议）",
+    "oneLiner": "一套让 AI 模型用统一方式连接外部工具与数据源的开放协议。",
     "explain": [
-      "模型训练完，我们只能知道它「读了很多」，却不知道它「会不会用」。评测就是给它出一套考卷：题目固定、评分规则固定，跑一遍得出分数，才能比较两个模型谁更好。",
-      "评测要有标准答案或评分标准。选择题看对错，写作题看要点是否齐全、语气是否得体，开放式任务则常让另一个模型或人来当裁判，按细则打分。",
-      "更重要的是，评测集必须和训练数据分开，否则模型等于提前看过答案。真正有用的评测还要贴近你的真实场景——通用榜单第一，未必等于在你的业务里好用。"
+      "过去，每让 AI 读取一个新系统（日历、数据库、代码仓库），开发者就得为它单独写一套对接代码，接口各不相同，重复劳动极多。",
+      "MCP 把这件事标准化：外部系统按协议暴露自己的能力，AI 端按同一套规则去发现和调用，就像所有电器都用同一种插座。",
+      "它的核心价值是“一次接入、多处复用”：一个数据源接好 MCP，任何支持该协议的模型或客户端都能用，权限与调用边界也更清晰。"
     ],
-    "analogy": "评测就像体检：不是看你读了多少书，而是量血压、验血、测视力，用一套固定项目把「健康」变成可比较的数字。",
-    "example": "你说：「用这 200 条客服对话测一下新模型。」系统把每条对话喂给模型，按「是否解决问题、语气是否礼貌、有没有编造信息」三项打分，最后输出准确率 82%、编造率 3%，并列出答错的 36 条供你逐条看。",
-    "takeaway": "没有评测，就没有进步的方向；先定标准，再谈优化。",
+    "analogy": "就像 USB-C 接口：以前每种设备一根专用线，现在一根线通用，插上就能用。",
+    "example": "你问 AI“帮我查下周三下午的空闲时间并订会议室”。AI 通过 MCP 连接公司日历与会议室系统，先读取日程，再按规则创建预订，最后把结果返回给你，全程不用你手动切换软件。",
+    "takeaway": "MCP 是 AI 世界的通用插座：让模型安全、标准化地接上外部世界。",
     "quiz": {
-      "q": "下面哪种做法最可能让评测结果虚高、失去参考价值？",
+      "q": "MCP 主要解决什么问题？",
       "options": [
-        "把评测题目和训练数据严格分开",
-        "用同一套题目反复比较不同模型",
-        "把训练时用过的题目放进评测集",
-        "让评审按统一细则打分"
+        "提升模型参数规模",
+        "统一 AI 与外部工具、数据源的连接方式",
+        "替代所有数据库",
+        "自动生成训练数据"
       ],
-      "answer": 2,
-      "explain": "训练时见过的题目再拿来考，模型等于提前看过答案，分数自然虚高。A 是正确做法；B 只要题目固定，反而便于横向比较；D 是保证评分一致的必要手段。"
+      "answer": 1,
+      "explain": "MCP 是连接协议，不负责扩大模型或替代数据库；它的目标是标准化接入，减少重复对接。"
     },
-    "next": "明天学 Prompt Injection（提示词注入）"
+    "next": "明天学：RAG（检索增强生成）"
   },
   "checklist": [
     {
-      "text": "读完《那件大衣与一袋橘子》，圈出三个动作细节",
-      "tip": "只圈动作，不圈抒情句，体会「以轻写重」"
+      "text": "读完散文《窗外的山与脚下的砖》，标出那处认知转折的句子。",
+      "tip": "重点看第四段“他把远方走成了近处”一句。"
     },
     {
-      "text": "背下《游子吟》全诗",
-      "tip": "按「线—衣／缝—归／草—晖」三组线索记"
+      "text": "背下《登鹳雀楼》，按“两景两理”的结构默写一遍。",
+      "tip": "抓住“依、入、穷、更”四个动词串联全诗。"
     },
     {
-      "text": "做完英文阅读 6 道题并回原文找依据",
-      "tip": "每道错题标出原文对应句"
+      "text": "精读英文文章，整理 8 个搭配并各造一句。",
+      "tip": "优先背 set off a chain of、a precondition for 这类能直接用的。"
     },
     {
-      "text": "听三遍《Introducing Yourself in a New Team》并跟读",
-      "tip": "第三遍模仿语调，注意句尾升降"
+      "text": "听两遍车站问询对话，跟读并记下三个时间表达。",
+      "tip": "先盲听抓大意，再看译文核对数字。"
     },
     {
-      "text": "讲清「评测」是什么，并举一个自己场景的例子",
-      "tip": "用「考卷」或「体检」的比喻讲给身边人听"
+      "text": "用一句话向朋友讲清 MCP 是什么。",
+      "tip": "用“USB-C 通用插座”的比喻开口。"
     },
     {
-      "text": "写 220—260 词短文，谈谈名字与归属",
-      "tip": "至少用上三个本文搭配，写完朗读一遍"
+      "text": "完成 300 字仿写：写身边一个人做一件小事。",
+      "tip": "先列三样器物，再写一组重复动作。"
     }
   ],
   "date": "2026-11-03",
