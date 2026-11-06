@@ -464,5 +464,99 @@ window.LEARN_FRONTIER = {
     ],
     "note": "热度与星数只是注意力信号，论文结论请回到原文与实验设置核对。",
     "updated": "2026-11-05T02:00:30.992Z"
+  },
+  "2026-11-06": {
+    "lead": "今天的主线是推理效率与推理成本的再拆解：论文侧有人把投机解码的草稿阶段从串行依赖里解放出来，有人给稀疏注意力的索引器做多层重叠，还有人试图给每个 token 的能耗写出闭式公式；工程侧则出现把前沿模型塞进本地菜单栏、把大模型推理搬上消费级硬件的项目。",
+    "items": [
+      {
+        "title": "D3D：让扩散草稿器不再等目标模型",
+        "url": "https://huggingface.co/papers/2611.06425",
+        "source": "Hugging Face 每日论文 · 第 1 名（3 赞）",
+        "publishedAt": "2026-11-04 发布",
+        "meta": "",
+        "takeaway": "投机解码的草稿与验证可以脱钩，加速不再被轮次依赖吃掉。",
+        "why": "据其摘要，目标条件扩散草稿器虽能并行出候选 token，但每个新块都要等目标模型更新隐状态，导致草稿与验证只能串行。D3D 把块级去噪与辅助自回归结合，做成独立草稿器以切断轮间依赖，问题设定直指投机解码的实际瓶颈。"
+      },
+      {
+        "title": "多层索引器改进 DeepSeek 稀疏注意力",
+        "url": "https://huggingface.co/papers/2611.03768",
+        "source": "Hugging Face 每日论文 · 第 2 名（3 赞）",
+        "publishedAt": "2026-11-02 发布",
+        "meta": "每层保留 k=2048 个最高分 token",
+        "why": "据其摘要，DeepSeek Sparse Attention 在每层前放一个 lightning indexer 给整个缓存打分、只保留前 2048 个。该文研究多层索引器的重叠选择与注意力关系，属于对已上线生产模型注意力机制的解剖式改进，关注长上下文推理成本的人值得看。",
+        "takeaway": "稀疏注意力的选谁来看，本身可以跨层设计而非逐层独立。"
+      },
+      {
+        "title": "给 LLM 推理能耗写一条闭式定律",
+        "url": "https://huggingface.co/papers/2611.03330",
+        "source": "Hugging Face 每日论文 · 第 5 名（9 赞）",
+        "publishedAt": "2026-11-02 发布",
+        "meta": "",
+        "takeaway": "token 不等价，能耗随序列非线性增长，可以解析表达而非拟合。",
+        "why": "据其摘要，每个 token 进入 KV-cache 都会抬高后续 token 的成本，而现有最准的 SOTA 模型只是拟合，把架构差异吸收进系数、需逐模型重新拟合。该文推出闭式表达，把「按 token 计费」背后的能量不对称讲清楚，对推理部署与计费都有直接含义。"
+      },
+      {
+        "title": "重启 AI 智能体：监控准确率不是答案",
+        "url": "https://huggingface.co/papers/2610.36544",
+        "source": "Hugging Face 每日论文 · 第 7 名（2 赞）",
+        "publishedAt": "2026-10-27 发布",
+        "meta": "固定 90% 准确率的监控",
+        "why": "据其摘要，仅看分类准确率与真阳/假阳率无法判断重启智能体是否提升成功率。作者用精确的告警到动作恒等式分析独立干净重启，发现同一 90% 准确率的监控可因替换策略不同，从成功率损失 5 个百分点翻转为提升 35 个百分点，把评估口径从准确率转向决策价值。",
+        "takeaway": "监控好不好，要看重启后的决策收益，而不是分类准确率。"
+      }
+    ],
+    "repos": [
+      {
+        "name": "yetone/magpie",
+        "url": "https://github.com/yetone/magpie",
+        "stars": 30520,
+        "lang": "Go",
+        "what": "把 Codex、Claude Code 等编码智能体接到 DeepSeek、Kimi 等模型上，从菜单栏统一切换，省去逐个改配置。",
+        "tryThis": "按 README 安装后启动，在菜单栏图标里选一个智能体与一个模型，发一句「列出当前目录结构」看是否正常返回。",
+        "minutes": 15
+      },
+      {
+        "name": "Niko1221/Strata",
+        "url": "https://github.com/Niko1221/Strata",
+        "stars": 40601,
+        "lang": "C++",
+        "what": "在普通消费级硬件上一键跑 Qwen3.8-Flash-Next，并在本地起 OpenAI/Anthropic 兼容接口，方便接现成客户端。",
+        "tryThis": "下载 Windows 或 Linux 一键安装包，启动后在 localhost 调一次 /v1/models 确认服务起来，再用 curl 发一条对话请求。",
+        "minutes": 20
+      },
+      {
+        "name": "Gathin23/cleanyourtv",
+        "url": "https://github.com/Gathin23/cleanyourtv",
+        "stars": 52679,
+        "lang": "Python",
+        "what": "通过 Wi-Fi 用 adb 给 Android TV 或 Google TV 卸载预装应用，换成类似 Apple TV 的简洁桌面。",
+        "tryThis": "在电视上打开开发者调试并记下 IP，按 README 运行脚本连接，先只执行列表命令看清将卸载哪些包再动手。",
+        "minutes": 20
+      }
+    ],
+    "task": {
+      "title": "今天上手做这一件",
+      "goal": "用本地 OpenAI 兼容接口跑通一次 Qwen3.8-Flash-Next 对话",
+      "time": "约 20 分钟",
+      "url": "https://github.com/Niko1221/Strata",
+      "steps": [
+        "从 Strata 仓库下载对应系统的一键安装包并启动",
+        "确认本地 localhost 服务已监听，请求一次模型列表接口",
+        "用 curl 向对话接口发一条简短提问，检查返回内容"
+      ],
+      "done": "终端里拿到一条结构完整的模型回复",
+      "output": "一个可被现有客户端直接调用的本地推理端点"
+    },
+    "concept": {
+      "term": "投机解码",
+      "line": "用小而快的草稿模型先猜若干 token，再让大模型一次性验证，猜对就省下逐字生成的开销。"
+    },
+    "keywords": [
+      "投机解码",
+      "稀疏注意力",
+      "推理能耗"
+    ],
+    "note": "论文榜点赞数普遍很低，热度不等于分量，先看问题设定再决定要不要读全文。",
+    "updated": "2026-11-06T02:01:34.680Z"
   }
 };
