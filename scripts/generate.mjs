@@ -370,7 +370,7 @@ async function updateIndex(day) {
   let m;
   while ((m = re.exec(text))) entries.push({ date: m[1], weekday: m[2], theme: m[3], modules: Number(m[4]) });
 
-  const item = { date: day.date, weekday: day.weekday || weekdayOf(day.date), theme: day.theme || '', modules: 5 };
+  const item = { date: day.date, weekday: day.weekday || weekdayOf(day.date), theme: day.theme || '', modules: 4 };
   const i = entries.findIndex((x) => x.date === item.date);
   if (i >= 0) entries[i] = item; else entries.push(item);
   entries.sort((a, b) => a.date.localeCompare(b.date));
