@@ -10,9 +10,6 @@
     { id: 'poem',      name: '古文', icon: '📜', kicker: '02 · 古诗文' },
     { id: 'english',   name: '英文', icon: '🔤', kicker: '03 · 英文精读' },
     { id: 'listening', name: '听力', icon: '🎧', kicker: '04 · 英语听力' },
-    { id: 'ai',        name: 'AI',   icon: '✦',  kicker: '05 · AI 一小时' },
-    { id: 'frontier',  name: '前沿', icon: '⚡', kicker: '06 · AI 前沿' },
-    { id: 'invest',    name: '投资', icon: '📈', kicker: '07 · 投资' },
   ];
 
   const Store = {
@@ -38,7 +35,6 @@
     { text: '背下今天的古诗文', tip: '先理解再背，比死记快十倍' },
     { text: '做完英文阅读题', tip: '错题会自动进错题本' },
     { text: '听今天的听力材料', tip: '先盲听两遍再看文本' },
-    { text: '学一个 AI 概念', tip: '能用一句话讲给别人听才算会' },
   ];
 
   /* ---------------- 小工具 ---------------- */
@@ -80,29 +76,9 @@
 
   function dayProgress(date) { return progress[date] || (progress[date] = {}); }
 
-  /* 前沿板块存在 data/frontier.js，按日期取；取不到就整块不出现，
-     这样没写前沿的旧日期仍然是 5 个板块，进度分母不会变成 6。 */
-  function frontierFor(date) {
-    const all = window.LEARN_FRONTIER || {};
-    const f = all[date];
-    return f && Array.isArray(f.items) && f.items.length ? f : null;
-  }
 
-  /* 投资板块同理：data/invest.js 里没有当天的行情或消息，就不出现。 */
-  function investFor(date) {
-    const all = window.LEARN_INVEST || {};
-    const v = all[date];
-    if (!v) return null;
-    const hasIdx = Array.isArray(v.indices) && v.indices.length;
-    const hasNews = Array.isArray(v.news) && v.news.length;
-    const hasKnow = v.knowledge && v.knowledge.term;
-    return hasIdx || hasNews || hasKnow ? v : null;
-  }
-
-  function activeSections() {
-    const avail = { frontier: !!frontierFor(state.date), invest: !!investFor(state.date) };
-    return SECTIONS.filter((s) => !(s.id in avail) || avail[s.id]);
-  }
+  /* 四个板块固定都在，不再有按天出现的板块 */
+  function activeSections() { return SECTIONS; }
 
   function doneCount(date) {
     const p = progress[date] || {};
@@ -387,11 +363,6 @@
     main.append(renderPoem(d.poem));
     main.append(renderEnglish(d.english));
     main.append(renderListening(d.listening));
-    main.append(renderAI(d.ai));
-    const fr = frontierFor(state.date);
-    if (fr) main.append(renderFrontier(fr));
-    const inv = investFor(state.date);
-    if (inv) main.append(renderInvest(inv));
     main.append(renderChecklist(d.checklist));
 
     decorateArt();
@@ -426,9 +397,6 @@
     poem: ['snow-peak', 'plum', 'tower', 'autumn-river', 'pine-valley', 'border'],
     english: ['bloom', 'rain-window', 'pastoral', 'dunes'],
     listening: ['desk', 'lamp', 'rain-window', 'paper'],
-    ai: ['orbit', 'signal', 'paper'],
-    frontier: ['signal', 'orbit', 'tower'],
-    invest: ['market', 'signal'],
   };
 
   function strHash(s) {
@@ -875,211 +843,7 @@
     return card;
   }
 
-  /* ---- 05 AI ---- */
-  function renderAI(a) {
-    const { card, body } = sectionCard(SECTIONS[4]);
-    body.append(
-      h('div', { class: 'kicker' }, '今日概念'),
-      h('div', { class: 'ai-term' }, a.term),
-      h('div', { class: 'ai-oneliner' }, h('b', null, '一句话：'), a.oneLiner));
-
-    if (a.explain?.length) {
-      body.append(block('讲清楚', h('div', { class: 'prose', style: 'font-family:var(--ff-sans);font-size:15px;line-height:1.9' },
-        a.explain.map((p) => h('p', { style: 'text-indent:0;margin-bottom:12px' }, p)))));
-    }
-
-    if (a.analogy) body.append(block('打个比方', h('div', { class: 'callout teal' }, a.analogy)));
-    if (a.example) body.append(block('实际长什么样', h('div', { class: 'callout' }, a.example)));
-    if (a.takeaway) body.append(block('记这一句就够', h('div', { class: 'callout gold' }, h('b', null, '要点：'), a.takeaway)));
-
-    if (a.quiz) {
-      const q = a.quiz;
-      body.append(block('小测一下', quizCard({ ...q, _single: true }, 0, 'ai')));
-    }
-
-    if (a.next) body.append(h('div', { class: 'save-hint', style: 'margin-top:14px' }, '明天：' + a.next));
-
-    return card;
-  }
-
-  /* ---- 06 前沿：AI 前沿速递 + 今日上手任务 ---- */
-  function extLink(url, text, cls) {
-    return h('a', { href: url, target: '_blank', rel: 'noopener noreferrer', class: cls || null }, text);
-  }
-
-  function renderFrontier(f) {
-    const { card, body } = sectionCard(SECTIONS[5]);
-
-    body.append(h('div', { class: 'byline' },
-      f.updated ? `今日速递 · 更新于 ${f.updated}` : '今日速递'));
-
-    if (f.lead) {
-      body.append(h('div', { class: 'callout teal', style: 'margin-bottom:6px' },
-        h('b', null, '今天在发生什么：'), f.lead));
-    }
-
-    (f.items || []).forEach((it) => {
-      const title = it.url ? extLink(it.url, it.title) : h('span', null, it.title);
-      const meta = [it.source, it.meta].filter(Boolean).join(' · ');
-      body.append(h('div', { class: 'item' },
-        h('div', { class: 'item-q' }, title),
-        it.takeaway
-          ? h('div', { class: 'item-a', style: 'margin:8px 0' }, h('b', null, '一句记住：'), it.takeaway)
-          : null,
-        h('div', { class: 'item-a' }, h('b', null, '为什么值得看：'), it.why || ''),
-        it.publishedAt ? h('div', { class: 'byline', style: 'margin:8px 0 0' }, '发布：' + it.publishedAt) : null,
-        meta ? h('div', { class: 'byline', style: 'margin:2px 0 0' }, '来源：' + meta) : null));
-    });
-
-    if ((f.repos || []).length) {
-      body.append(block('🛠 今天可以动手的 GitHub 项目',
-        h('div', { class: 'byline', style: 'margin-bottom:4px' },
-          '星数是抓取那一刻的快照，只说明「很多人看过」；能不能学到东西，取决于你有没有真的跑一次。'),
-        ...f.repos.map((r) => h('div', { class: 'item' },
-          h('div', { class: 'item-q' }, extLink(r.url, r.name),
-            r.stars ? h('span', { class: 'stars' }, `★ ${Number(r.stars).toLocaleString('en-US')}`) : null,
-            r.lang ? h('span', { class: 'pill', style: 'margin-left:8px' }, r.lang) : null),
-          h('div', { class: 'item-a' }, r.what || ''),
-          r.tryThis
-            ? h('div', { class: 'item-a', style: 'margin-top:6px' },
-                h('b', null, `怎么试${r.minutes ? `（约 ${r.minutes} 分钟）` : ''}：`), r.tryThis)
-            : null))));
-    }
-
-    const t = f.task;
-    if (t) {
-      const steps = (t.steps || []).map((s, i) =>
-        h('p', { style: 'text-indent:0;margin:0 0 8px' }, `${i + 1}. ${s}`));
-      body.append(block(`今天上手做这一件${t.time ? `（${t.time}）` : ''}`,
-        h('div', { class: 'callout teal' },
-          h('b', null, t.title || ''),
-          t.goal ? ` —— ${t.goal}` : ''),
-        t.url ? h('div', { class: 'byline', style: 'margin-top:8px' }, '材料：', extLink(t.url, t.url)) : null,
-        steps.length
-          ? h('div', { style: 'font-family:var(--ff-sans);font-size:15px;line-height:1.85;margin-top:12px' }, ...steps)
-          : null,
-        t.done
-          ? h('div', { class: 'callout', style: 'margin-top:8px' }, h('b', null, '做完的标准：'), t.done)
-          : null,
-        t.output
-          ? h('div', { class: 'callout gold', style: 'margin-top:8px' }, h('b', null, '产出：'), t.output)
-          : null,
-        textareaFor('frontier-log', '做完写三行：我做了什么 / 卡在哪 / 下次怎么改…')));
-    }
-
-    if (f.concept && f.concept.term) {
-      body.append(block('顺手补一个概念',
-        h('div', { class: 'item' },
-          h('div', { class: 'item-q' }, f.concept.term),
-          h('div', { class: 'item-a' }, f.concept.line || ''))));
-    }
-
-    if ((f.keywords || []).length) {
-      body.append(block('今天记住这三个词',
-        h('div', null, ...f.keywords.map((k) => h('span', { class: 'pill', style: 'font-size:14px' }, k)))));
-    }
-
-    if (f.note) body.append(h('div', { class: 'save-hint', style: 'margin-top:14px' }, f.note));
-
-    return card;
-  }
-
-  /* ---- 07 投资：一个知识 + 今日行情 + 带来源的消息 ---- */
-
-  function sparkline(series) {
-    const pts = (series || []).filter((p) => Array.isArray(p) && isFinite(Number(p[1])));
-    if (pts.length < 2) return null;
-    const W = 300, H = 64, P = 4;
-    const vals = pts.map((p) => Number(p[1]));
-    const min = Math.min(...vals), max = Math.max(...vals);
-    const span = max - min || 1;
-    const x = (i) => P + (i * (W - P * 2)) / (pts.length - 1);
-    const y = (v) => H - P - ((v - min) / span) * (H - P * 2);
-    const line = vals.map((v, i) => `${i ? 'L' : 'M'}${x(i).toFixed(1)},${y(v).toFixed(1)}`).join(' ');
-    const area = `${line} L${x(vals.length - 1).toFixed(1)},${H - P} L${x(0).toFixed(1)},${H - P} Z`;
-    const color = vals[vals.length - 1] >= vals[0] ? 'var(--accent)' : 'var(--ok)';
-    const label = `${pts[0][0]} 至 ${pts[pts.length - 1][0]}，共 ${pts.length} 个交易日`;
-    return h('div', { class: 'spark', title: label, html:
-      `<svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="none" role="img" aria-label="${label}">` +
-      `<path d="${area}" fill="${color}" opacity="0.1"/>` +
-      `<path d="${line}" fill="none" stroke="${color}" stroke-width="1.6" stroke-linejoin="round" stroke-linecap="round"/>` +
-      `<circle cx="${x(vals.length - 1).toFixed(1)}" cy="${y(vals[vals.length - 1]).toFixed(1)}" r="2.6" fill="${color}"/>` +
-      `</svg>` });
-  }
-
-  function indexCard(x) {
-    const pct = Number(x.pct);
-    const cls = pct > 0 ? 'up' : pct < 0 ? 'down' : '';
-    const sign = pct > 0 ? '+' : '';
-    const vals = (x.series || []).map((p) => Number(p[1])).filter((n) => isFinite(n));
-    const fmt = (n) => Number(n).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-    const first = (x.series || [])[0];
-    const last = (x.series || [])[(x.series || []).length - 1];
-
-    return h('div', { class: 'idx' },
-      h('div', { class: 'idx-name' }, x.name + (x.code ? ` · ${x.code}` : '')),
-      h('div', { class: 'idx-val' }, fmt(x.last)),
-      h('div', { class: 'idx-chg ' + cls }, `${sign}${Number(x.chg).toFixed(2)}（${sign}${Number(x.pct).toFixed(2)}%）`),
-      sparkline(x.series),
-      vals.length > 1 && first && last
-        ? h('div', { class: 'idx-range' },
-            h('span', null, `${String(first[0]).slice(5)} – ${String(last[0]).slice(5)}`),
-            h('span', null, `${fmt(Math.min(...vals))} ~ ${fmt(Math.max(...vals))}`))
-        : null,
-      x.asof ? h('div', { class: 'idx-range' }, h('span', null, x.asof)) : null,
-      x.source
-        ? h('div', { class: 'idx-range' }, h('span', null, '来源：'),
-            x.url ? extLink(x.url, x.source) : h('span', null, x.source))
-        : null);
-  }
-
-  function renderInvest(v) {
-    const { card, body } = sectionCard(SECTIONS[6]);
-
-    body.append(h('div', { class: 'byline' },
-      [v.asof ? `数据截至 ${v.asof}` : '', v.updated ? `更新于 ${v.updated}` : ''].filter(Boolean).join(' · ')));
-
-    if (v.brief) {
-      body.append(h('div', { class: 'callout teal', style: 'margin-bottom:6px' },
-        h('b', null, '今天一眼：'), v.brief));
-    }
-
-    const k = v.knowledge;
-    if (k && k.term) {
-      body.append(block('今天一个投资知识',
-        h('div', { class: 'ai-term' }, k.term),
-        k.plain ? h('div', { class: 'item-a', style: 'font-size:15px;margin-bottom:10px' },
-          h('b', null, '说人话：'), k.plain) : null,
-        k.example ? h('div', { class: 'callout', style: 'margin-bottom:8px' },
-          h('b', null, '举个例子：'), k.example) : null,
-        k.pitfall ? h('div', { class: 'callout gold', style: 'margin-bottom:10px' },
-          h('b', null, '最容易踩的坑：'), k.pitfall) : null,
-        k.quiz ? quizCard({ ...k.quiz, _single: true }, 0, 'invest') : null));
-    }
-
-    if ((v.indices || []).length) {
-      body.append(block('今日市场', h('div', { class: 'idx-grid' }, ...v.indices.map(indexCard))));
-    }
-
-    const news = (v.news || []).slice()
-      .sort((a, b) => String(b.time || '').localeCompare(String(a.time || '')));
-    if (news.length) {
-      body.append(block('最近的消息（点标题看原文）',
-        ...news.map((n) => h('div', { class: 'item' },
-          h('div', { class: 'item-q' }, n.url ? extLink(n.url, n.title) : h('span', null, n.title)),
-          h('div', { class: 'byline', style: 'margin:8px 0 0' },
-            [n.time, n.source].filter(Boolean).join(' · ')),
-          n.gist ? h('div', { class: 'item-a', style: 'margin-top:4px' }, n.gist) : null))));
-    }
-
-    if (v.disclaimer) {
-      body.append(h('div', { class: 'save-hint', style: 'margin-top:14px' }, v.disclaimer));
-    }
-
-    return card;
-  }
-
-  /* ---- 07 今日清单 ---- */
+  /* ---- 05 今日清单 ---- */
   function renderChecklist(list) {
     const date = state.date;
     const items = (Array.isArray(list) && list.length ? list : DEFAULT_TASKS)
@@ -1355,78 +1119,8 @@
     out.push((Array.isArray(l.lines) ? l.lines : []).map((x) => `<p class="en">${esc(x.en)}</p>${x.cn ? `<p class="cn">${esc(x.cn)}</p>` : ''}`).join(''));
     if (l.note) out.push(`<p class="dim">${esc(l.note)}</p>`);
 
-    const a = d.ai || {};
-    out.push('<h3>05 · AI 一小时</h3>');
-    out.push(`<p class="meta"><b>${esc(a.term || '')}</b>${a.oneLiner ? ' · ' + esc(a.oneLiner) : ''}</p>`);
-    if (Array.isArray(a.explain)) out.push(pgh(a.explain));
-    if (a.analogy) out.push(`<p><b>打个比方</b>　${esc(a.analogy)}</p>`);
-    if (a.example) out.push(`<p><b>实际例子</b>　${esc(a.example)}</p>`);
-    if (a.takeaway) out.push(`<p><b>一句话记住</b>　${esc(a.takeaway)}</p>`);
-    if (a.quiz && a.quiz.q) {
-      const opts = (a.quiz.options || []).map((o, j) => `<p class="opt${j === a.quiz.answer ? ' right' : ''}">${'ABCDEFG'[j]}. ${esc(o)}</p>`).join('');
-      out.push(`<div class="qbox"><p class="qt"><b>小测</b>　${esc(a.quiz.q)}</p>${opts}${a.quiz.explain ? `<p class="dim">解析：${esc(a.quiz.explain)}</p>` : ''}</div>`);
-    }
-    if (a.next) out.push(`<p class="dim">${esc(a.next)}</p>`);
-
-    const fr = (window.LEARN_FRONTIER || {})[d.date];
-    if (fr && Array.isArray(fr.items) && fr.items.length) {
-      out.push('<h3>06 · AI 前沿</h3>');
-      if (fr.updated) out.push(`<p class="meta">更新于 ${esc(fr.updated)}</p>`);
-      if (fr.lead) out.push(`<p><b>今天在发生什么：</b>${esc(fr.lead)}</p>`);
-      out.push(fr.items.map((it) => {
-        const head = it.url ? `<a href="${esc(it.url)}" rel="noopener">${esc(it.title)}</a>` : esc(it.title);
-        const meta = [it.source, it.meta, it.publishedAt].filter(Boolean).join(' · ');
-        return `<p class="item"><b>${head}</b>${it.takeaway ? `<br>一句记住：${esc(it.takeaway)}` : ''}${it.why ? `<br>为什么值得看：${esc(it.why)}` : ''}${meta ? `<br><span class="dim">${esc(meta)}</span>` : ''}</p>`;
-      }).join(''));
-      if (Array.isArray(fr.repos) && fr.repos.length) {
-        out.push('<h4>今天可以动手的 GitHub 项目</h4>');
-        out.push(fr.repos.map((r) => `<p><b><a href="${esc(r.url)}" rel="noopener">${esc(r.name)}</a></b>${r.stars ? ` ★ ${esc(r.stars)}` : ''}${r.lang ? ` · ${esc(r.lang)}` : ''}<br>${esc(r.what || '')}${r.tryThis ? `<br>怎么试${r.minutes ? `（约 ${esc(r.minutes)} 分钟）` : ''}：${esc(r.tryThis)}` : ''}</p>`).join(''));
-      }
-      if (fr.task) {
-        const t = fr.task;
-        out.push(`<h4>今天上手做这一件${t.time ? '（' + esc(t.time) + '）' : ''}</h4>`);
-        out.push(`<p><b>${esc(t.title || '')}</b>${t.goal ? ' —— ' + esc(t.goal) : ''}</p>`);
-        if (t.url) out.push(`<p class="dim">材料：${esc(t.url)}</p>`);
-        if (Array.isArray(t.steps)) out.push(`<ol>${t.steps.map((s) => `<li>${esc(s)}</li>`).join('')}</ol>`);
-        if (t.done) out.push(`<p class="dim">做完的标准：${esc(t.done)}</p>`);
-      }
-    }
-
-    const inv = (window.LEARN_INVEST || {})[d.date];
-    if (inv) {
-      out.push('<h3>07 · 投资</h3>');
-      const line = [inv.asof ? `数据截至 ${inv.asof}` : '', inv.updated ? `更新于 ${inv.updated}` : ''].filter(Boolean).join(' · ');
-      if (line) out.push(`<p class="meta">${esc(line)}</p>`);
-      if (inv.brief) out.push(`<p><b>今天一眼：</b>${esc(inv.brief)}</p>`);
-      const k = inv.knowledge;
-      if (k && k.term) {
-        out.push('<h4>今天一个投资知识</h4>');
-        out.push(`<p><b>${esc(k.term)}</b>${k.plain ? `<br>说人话：${esc(k.plain)}` : ''}${k.example ? `<br>举个例子：${esc(k.example)}` : ''}${k.pitfall ? `<br>最容易踩的坑：${esc(k.pitfall)}` : ''}</p>`);
-        if (k.quiz && k.quiz.q) {
-          const opts = (k.quiz.options || []).map((o, j) => `<p class="opt${j === k.quiz.answer ? ' right' : ''}">${'ABCDEFG'[j]}. ${esc(o)}</p>`).join('');
-          out.push(`<div class="qbox"><p class="qt">${esc(k.quiz.q)}</p>${opts}${k.quiz.explain ? `<p class="dim">解析：${esc(k.quiz.explain)}</p>` : ''}</div>`);
-        }
-      }
-      if (Array.isArray(inv.indices) && inv.indices.length) {
-        out.push('<h4>今日市场</h4>');
-        out.push(inv.indices.map((x) => {
-          const pts = (x.series || []).map((p) => Number(p[1])).filter((n) => isFinite(n));
-          const range = pts.length ? `　区间 ${Math.min(...pts).toFixed(2)} ~ ${Math.max(...pts).toFixed(2)}` : '';
-          return `<p><b>${esc(x.name)}</b>${x.code ? ' · ' + esc(x.code) : ''}　${esc(x.last)}　${Number(x.chg) > 0 ? '+' : ''}${esc(x.chg)}（${Number(x.pct) > 0 ? '+' : ''}${esc(x.pct)}%）<span class="dim">${esc(range)}${x.asof ? '　' + esc(x.asof) : ''}${x.source ? '　来源：' + esc(x.source) : ''}</span></p>`;
-        }).join(''));
-      }
-      const news = (inv.news || []).slice().sort((a, b) => String(b.time || '').localeCompare(String(a.time || '')));
-      if (news.length) {
-        out.push('<h4>最近的消息</h4>');
-        out.push(news.map((n) => {
-          const t = n.url ? `<a href="${esc(n.url)}" rel="noopener">${esc(n.title)}</a>` : esc(n.title);
-          return `<p><b>${t}</b>${[n.time, n.source].filter(Boolean).length ? `<br><span class="dim">${esc([n.time, n.source].filter(Boolean).join(' · '))}</span>` : ''}${n.note ? `<br>${esc(n.note)}` : ''}</p>`;
-        }).join(''));
-      }
-    }
-
     if (Array.isArray(d.checklist) && d.checklist.length) {
-      out.push('<h3>08 · 今日清单</h3><ul class="tasks">');
+      out.push('<h3>05 · 今日清单</h3><ul class="tasks">');
       out.push(d.checklist.map((x) => `<li>☐ ${esc(typeof x === 'string' ? x : x.text)}${x.tip ? '<br><span class="dim">' + esc(x.tip) + '</span>' : ''}</li>`).join(''));
       out.push('</ul>');
     }
