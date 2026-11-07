@@ -1,6 +1,6 @@
 # 每日一学 · Daily Learn
 
-一个**纯静态**的每日学习站点：每天一页，五个固定板块——晨读、古诗文、英文精读、英语听力、AI 知识，外加两个按天出现的板块：AI 前沿、投资。
+一个**纯静态**的每日学习站点：每天一页，四个板块——晨读、古诗文、英文精读、英语听力。
 内容由模型每天自动生成并提交到仓库，页面本身不需要任何后端服务。
 
 > 打开就是一个网页，没有登录、没有数据库、没有服务器账单。你的学习进度存在浏览器本地。
@@ -9,7 +9,7 @@
 
 ## 它长什么样
 
-打开先是一句**名言**（大字号、衬线体），再往下是五个固定板块（前沿、投资有当天的数据才出现）：
+打开先是一句**名言**（大字号、衬线体），再往下是四个板块：
 
 | 板块 | 内容 |
 | --- | --- |
@@ -17,9 +17,6 @@
 | **古诗文** | 一首与当日主题呼应的诗词：应景插画、注释、白话译文、结构赏析、背诵提示 |
 | **英文精读** | 480–600 词原创文章（IELTS 7.0 难度）+ **一键显示逐段译文** + 生词、**地道搭配**、短语、句式、语法点 + 中文摘要 + 6 道单选题 + 输出任务 |
 | **英语听力** | 每天一篇**原创英文短文**（180–260 词），页面内用浏览器语音合成**逐句朗读**（三种朗读风格、多音色可选、按标点切短句留气口）+ 高亮跟读 + 原文/译文切换；不依赖任何外链 |
-| **AI 知识** | 每天一个 AI 概念（智能体 → Token → 上下文窗口 → 幻觉 → RAG …），配类比、场景和小测 |
-| **AI 前沿** | 当天真正发生的事（论文榜、模型发布、开源动态），每条带**发布时间**、**一句记住**、为什么值得看；再给几个真实星数的 **GitHub 可动手项目**、一件**今天就能上手做完**的任务（带「做完的标准」和做完记录框）和一个顺带的概念。有这天的数据才出现，没有就整块不显示 |
-| **投资** | 每天一个投资知识（术语 / 说人话 / 举例 / 最容易踩的坑 / 小测）+ 今日指数收盘与**自绘 SVG 走势图** + 带**发布时间和原文链接**的市场消息 + 免责声明。有这天的数据才出现 |
 | **今日清单** | 当天的可勾选任务清单，勾选即保存，全部勾完会提示休息 |
 
 互动部分：选择题答错自动进错题本（带中文解析）、生词卡点击显隐、英文全文朗读、**英文逐段译文开关**、**听力逐句朗读与译文开关**、笔记自动保存、板块标记完成、清单打勾、每日打卡与连续天数、深浅色切换、按日期回看历史。
@@ -87,35 +84,6 @@ node scripts/generate.mjs        # 默认生成今天，自动挑主题池里的
 
 ---
 
-## 每日自动抓取（前沿 / 投资）
-
-`node scripts/fetch-extra.mjs` 负责把两个「会过期」的板块变成自动的：
-
-| 板块 | 抓什么 | 从哪抓 |
-|---|---|---|
-| AI 前沿 | 每日论文榜、Hacker News 热帖、近 60 天新冒头的仓库 | `huggingface.co/api/daily_papers`、Hacker News Firebase API、GitHub Search API |
-| 投资 | 6 个指数（含近 30 日走势）、7×24 快讯 | 腾讯行情 `qt.gtimg.cn` + `web.ifzq.gtimg.cn`、东方财富 `np-listapi.eastmoney.com` |
-
-抓到的只是素材，中文的「今天在发生什么 / 为什么值得看 / 今天一个投资知识」仍由模型写，
-写进 `data/frontier.js` 与 `data/invest.js`（按日期存，和每日正文一样是永久保留的）。
-
-```bash
-node scripts/fetch-extra.mjs                # 抓今天的两栏
-node scripts/fetch-extra.mjs --date 2026-11-03 --force
-node scripts/fetch-extra.mjs --only invest  # 只抓投资
-node scripts/fetch-extra.mjs --dump         # 只打印素材，不写文件（排查数据源）
-node scripts/fetch-extra.mjs --mock         # 写占位条目，验收页面用
-```
-
-三道安全阀：
-
-1. **链接白名单**：正文里出现的 url 必须在抓取结果里真实存在，模型自己编的链接会被丢掉，条数不足 2 条就整天跳过；
-2. **数字以抓取为准**：指数表由脚本填写，模型只写文字，避免把 -1.33% 写成 -1.13%；
-3. **失败不阻塞正文**：任一栏抓取失败只跳过那一栏（页面上没有当天数据就不显示该板块），日志里会写清原因。
-
-GitHub Actions 里这一步排在正文生成之后、提交之前，并且 `continue-on-error: true`——
-所以就算行情源临时抽风，当天的晨读、古文、英文、听力、AI 照样会发出来。
-
 ## 目录结构
 
 ```
@@ -127,15 +95,11 @@ daily-learn/
 │   ├── fonts/                  # 中文网络字体子集（song 思源宋、wenkai 霞鹜文楷、kai2 文鼎 PL 楷、fangsong 朱雀仿宋，均 OFL/Arphic 授权）
 │   └── app.js                  # 全部交互（渲染、答题、清单、打卡、笔记、TTS、外观面板）
 ├── data/
-│   ├── frontier.js             # AI 前沿板块（按日期，agent 写，不归生成脚本管）
-│   ├── invest.js               # 投资板块（按日期，agent 写，不归生成脚本管）
 │   └── days/
 │       ├── index.js            # 日期索引（脚本自动维护）
 │       └── 2026-10-27.js       # 一天的内容：window.LEARN_DAY = {...}
 ├── scripts/
 │   ├── generate.mjs            # 生成脚本（调用模型 → 校验 → 写文件 → 更新索引）
-│   ├── check-frontier.mjs      # 前沿数据体检（字段、日期对应、链接、真实星数）
-│   ├── check-invest.mjs        # 投资数据体检（字段 + 现价/涨跌幅/走势末点是否自洽）
 │   └── check-themes.mjs        # 外观体检（每套主题变量是否齐全、字体变量是否只定义一次）
 ├── topics.json                 # 主题池（30 天一轮，可自由增删）
 ├── .github/workflows/daily.yml # 每天自动生成 + 提交
@@ -148,7 +112,7 @@ daily-learn/
 
 ## 内容数据结构
 
-`data/days/<日期>.js` 里是一个对象，五个板块 + 名言 + 清单：
+`data/days/<日期>.js` 里是一个对象，四个板块 + 名言 + 清单：
 
 ```js
 window.LEARN_DAY = {
@@ -161,67 +125,11 @@ window.LEARN_DAY = {
   english:   { title, level, words, body[], translation[], vocab[], collocations[], phrases[], patterns[], grammar[],
                summary, questions[], output{} },
   listening: { title, level, words, topic, lines[{ en, cn }], note },  // 自创短文 + 浏览器美音朗读
-  ai:        { term, oneLiner, explain[], analogy, example, takeaway, quiz{}, next },
   checklist: [{ text, tip }]                                 // 今日任务清单
 }
 ```
 
 `questions[].answer` 是 **0 起始的下标**（0 = A）。生成脚本会校验题量与下标合法性，不合法直接报错而不是写出坏数据；`english.translation` 段数对不上会按正文补齐；`image` 不认识时自动退回 `paper`（素纸）。
-
-### AI 前沿板块：`data/frontier.js`
-
-前沿内容必须联网核实，而 `scripts/generate.mjs` 在 GitHub Actions 里**没有联网能力**（让它写只会编），所以这块单独放在 `data/frontier.js`，由带联网检索的 agent（或你自己）按天写入，生成脚本不碰它：
-
-```js
-window.LEARN_FRONTIER = {
-  "2026-10-27": {
-    updated: "2026-10-27 21:30",              // 写入时间，卡片上会显示
-    lead:    "今天整体在发生什么（一句）",
-    items:  [{ title, url, source, publishedAt, meta, takeaway, why }],
-    //        3–4 条；publishedAt = 信息发布时间，takeaway = 一句记住，why = 为什么值得看
-    repos:  [{ name, url, stars, lang, what, tryThis, minutes }],
-    //        GitHub 高星项目：stars 必须是抓到的真实星数，tryThis = 现在就能试的一步
-    task:   { title, goal, time, url, steps[], done, output },
-    //        done = 做完的标准（没有它，「看完就等于学了」；页面上还配了做完记录输入框）
-    concept:{ term, line },                    // 顺手补一个概念
-    keywords: ["今天", "记住", "三个词"],       // 2–5 个
-    note:   "今天最该记住的一句"
-  }
-};
-```
-
-- **取不到就整块隐藏**：`frontierFor(date)` 返回空时，页面只有原来 5 个板块，标签栏和进度分母（`activeSections()`）会跟着变成 5，旧日期不会出现「永远差一格」的进度。
-- **写之前先体检**：`node scripts/check-frontier.mjs` 会检查 lead / 每条是否有标题·链接·https·来源·**发布时间**·**一句记住**·理由、repos 的星数是否为真实正数、task 是否有 ≥3 步和 **done 验收标准** 与产出、日期是否有对应的 `data/days/<日期>.js`。
-- **维护节奏**：先有当天的 `data/days/<日期>.js`（生成脚本产出），再补 `data/frontier.js` 里同一天的一期；两者是分开的，谁先写都不影响谁。
-
-### 投资板块：`data/invest.js`
-
-同样由带联网检索的 agent 写入（行情和消息都不能编），和前沿一起放在 `data/` 下：
-
-```js
-window.LEARN_INVEST = {
-  "2026-10-27": {
-    updated: "2026-10-27 21:48（北京时间）",
-    asof:    "2026-10-27 收盘；纳斯达克为盘中数据",
-    brief:   "今天一眼：一句话说清四个市场在做什么",
-    knowledge: {                                // 每天一个投资知识
-      term, plain, example, pitfall,            // 术语 / 说人话 / 举例 / 最容易踩的坑
-      quiz: { q, options[], answer, explain }   // 可选小测，answer 是 0 起始下标
-    },
-    indices: [{ name, code, last, chg, pct, series: [["YYYY-MM-DD", 收盘]], asof, source, url }],
-    news:    [{ time: "YYYY-MM-DD HH:mm", title, source, gist, url }],
-    disclaimer: "只做信息整理与知识科普，不构成投资建议"
-  }
-};
-```
-
-- **走势图零依赖**：`sparkline()` 直接用内联 SVG 画最近 20 多个交易日的收盘线（不引入图表库，`file://` 也能看），下方标出区间最高 / 最低、数据截至时间和来源链接。
-- **数字要自洽**：`node scripts/check-invest.mjs` 不只查字段，还会核对「`last` = 走势末点」「`pct` / `chg` = 末两点算出来的值」（容差 0.02），错了直接 FAIL——防止手抄行情时抄错一位。
-- **消息必须带发布时间与原文链接**，页面上按时间倒序排列。
-- **没有就隐藏**：没有 `indices` / `news` / `knowledge` 的日期，投资卡片整块不出现，进度分母同理。
-
-
----
 
 ## 配图
 
@@ -237,9 +145,7 @@ window.LEARN_INVEST = {
 | `tower` | 登高 | `plum` | 寒梅 |
 | `autumn-river` | 秋江芦荻 | `pine-valley` | 松间清泉 |
 | `lamp` | 灯下 | `paper` | 素纸（兜底） |
-| `orbit` | 星轨（AI 用） | `signal` | 数据流（前沿用） |
-| `market` | 市况（投资用） | `desk` | 书桌（听力用） |
-| `bloom` | 花枝（英文用） | | |
+| `desk` | 书桌（听力用） | `bloom` | 花枝（英文用） |
 
 不只是语文和古文有图：**每个板块都会自动配一张**——数据里没写 `image` 时，`app.js` 的 `SECTION_ART` 会按「日期 + 板块」稳定地挑一张（同一天刷新多少次都一样），顶部还有一张通栏大图（`.hero-art`）。插图颜色跟着主题走，换主题时画也跟着变色。
 
@@ -272,7 +178,6 @@ window.LEARN_INVEST = {
   "chinese": "语文方向，如「现代散文 · 写景 · 朱自清」",
   "poem": "诗词方向，如「王维《山居秋暝》」",
   "english": "英文题材，如「科技与生活 · 讨论 AI 助手」",
-  "ai": "当天要讲的 AI 概念",
   "listening": "听力方向，如「日常叙事 · 一段关于地铁的观察」（会写成自创英文短文）"
 }
 ```
@@ -292,7 +197,6 @@ window.LEARN_INVEST = {
 - **网络字体**：`assets/fonts/` 下两份中文字体子集分别是**思源宋体**（SIL OFL 1.1）与**霞鹜文楷**（SIL OFL 1.1），允许再分发，已按本站用字子集化。
 - **配图**：`assets/art.js` 用代码画的水墨插画，无第三方素材。
 - **名言**：中外名人语句，均为公版内容并标注作者与出处。
-- **AI 知识**：原创讲解。
 
 模型生成的内容**可能有事实或表述错误**，尤其古诗文注释和语法讲解，请以自己的判断为准；发现问题欢迎提 Issue 或 PR 修正。
 
