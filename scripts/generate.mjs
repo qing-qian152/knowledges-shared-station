@@ -68,7 +68,6 @@ function buildPrompt(topic) {
 - 语文：${topic.chinese}
 - 古诗文：${topic.poem}
 - 英文：${topic.english}
-- AI 知识：${topic.ai}
 - 听力：${topic.listening}
 
 只输出一个 JSON 对象，不要任何解释、不要 markdown 代码围栏。字段结构必须严格如下（缺字段视为不合格）：
@@ -130,16 +129,6 @@ function buildPrompt(topic) {
     ],
     "note": "一句话使用说明（怎么听、听几遍）"
   },
-  "ai": {
-    "term": "AI 概念名",
-    "oneLiner": "一句话定义",
-    "explain": ["讲清楚1", "讲清楚2", "讲清楚3"],
-    "analogy": "一个生活化的比喻",
-    "example": "真实场景举例",
-    "takeaway": "一句话记住它",
-    "quiz": { "q": "单选题干", "options": ["A", "B", "C", "D"], "answer": 1, "explain": "中文解析" },
-    "next": "明天学什么"
-  },
   "checklist": [
     { "text": "今天要做的一件事（一句话）", "tip": "怎么做的提示（可空字符串）" }
   ]
@@ -157,10 +146,9 @@ lotus-moon（荷塘月色）｜autumn-mountain（空山新雨）｜bamboo（竹�
 3. 古诗文：与今日主题呼应的整首（词要整阕），注释 4-6 条，译文一段，赏析 3-4 段（讲结构、讲字眼、讲情感转折），背诵提示给结构线索。
 4. 英文：你必须原创，480-600 词，5-6 段，**雅思 6.5-7.5 水平**：要有抽象概念、解释性从句、让步与对比，避免四六级模板腔和口语化表达。**translation 必须与 body 段数完全一致、逐段对应**，是给读者对照阅读用的中文翻译（准确、通顺，不要写成摘要）。生词 12-15 个（含例句），**地道搭配 8-10 个**（collocations，如 "pose a threat to"、"a growing body of evidence"这种真正能背下来用的），短语 6-8 个，句式 4-5 个，语法点 3-4 个（都要从本篇原文里举例）。摘要 120-160 字中文。阅读题 5-6 道单选，answer 用 0 起始的下标，解析用中文说清错项为什么错。输出任务要求读者真正动笔。
 5. 听力：**自己写一篇英文听力短文**，180-260 词，拆成 6-10 句（每句一行，长度适合朗读，不要太长）。体裁自选：日常叙事、小科普、一段对话、一则观察都可以，但必须完整、有开头结尾、内容自洽有趣，用标准美式英语书写（美式拼写与用词，如 color、apartment、gotten）。每句都要给对应的中文翻译（cn 与 en 一一对应，数量必须相等）。note 写一句怎么用（例如"先盲听两遍抓大意，再看译文"）。**不要给任何外部链接**。
-6. AI：每天一个概念，从基础往上走（Agent、Token、上下文窗口、幻觉、RAG、微调、Skill、MCP、评测……）。explain 三段要有递进，example 要具体到"你说什么、它做什么"。quiz 四个选项，answer 为下标。
-7. 清单：5-6 项，覆盖五个板块，每项一句话、动词开头（读完/背下/做完/听/讲），tip 给一句方法提示，不要空话。
-8. 全部内容使用中文全角标点；字符串内部需要引号时用中文引号“”或「」，不要用 ASCII 双引号。
-9. JSON 必须能被 JSON.parse 直接解析。`;
+6. 清单：5-6 项，覆盖四个板块（晨读、古诗文、英文、听力），每项一句话、动词开头（读完/背下/做完/听），tip 给一句方法提示，不要空话。
+7. 全部内容使用中文全角标点；字符串内部需要引号时用中文引号“”或「」，不要用 ASCII 双引号。
+8. JSON 必须能被 JSON.parse 直接解析。`;
 }
 
 function stub(topic) {
@@ -208,12 +196,6 @@ function stub(topic) {
         { en: 'Configure API_KEY to get a real passage.', cn: '配置 API_KEY 即可得到真正的短文。' },
       ],
       note: '占位。',
-    },
-    ai: {
-      term: '（占位）' + topic.ai, oneLiner: '占位。',
-      explain: ['占位。', '占位。', '占位。'], analogy: '—', example: '—', takeaway: '—',
-      quiz: { q: '占位？', options: ['A', 'B', 'C', 'D'], answer: 0, explain: '占位。' },
-      next: '—',
     },
     checklist: [{ text: '读完今天的晨读文章', tip: '出声读一遍' }],
   };
@@ -302,7 +284,7 @@ async function callModel(prompt) {
 }
 
 function validate(day) {
-  const need = ['chinese', 'poem', 'english', 'listening', 'ai'];
+  const need = ['chinese', 'poem', 'english', 'listening'];
   const missing = need.filter((k) => !day[k] || typeof day[k] !== 'object');
   if (missing.length) throw new Error('缺少字段: ' + missing.join(', '));
   const e = day.english;
@@ -469,11 +451,9 @@ const poemTitleOf = (s) => {
   const m = /《([^》]+)》/.exec(s || '');
   return m ? m[1].trim() : '';
 };
-const aiKeyOf = (s) => String(s || '').split(/[（(]/)[0].trim().toLowerCase();
-
-/** 一个主题的内容指纹：用「古文篇名 + AI 概念」，两者都撞了才算重复 */
+/** 一个主题的内容指纹：只看古文篇名（AI 板块已下线，不再参与判重） */
 function fingerprint(t) {
-  return poemTitleOf(t.poem) + '|' + aiKeyOf(t.ai);
+  return poemTitleOf(t.poem);
 }
 
 /** 读目标日期前最近几天已生成的内容，收集它们的内容指纹 */
@@ -485,9 +465,7 @@ async function recentFingerprints(date, howMany = 4) {
       const txt = await readFile(path.join(DAYS_DIR, f), 'utf8');
       const poem = /"poem"\s*:\s*\{[\s\S]{0,400}?"title"\s*:\s*"([^"]*)"/.exec(txt)
         || /poem\s*:\s*\{[\s\S]{0,400}?title\s*:\s*"([^"]*)"/.exec(txt);
-      const ai = /"ai"\s*:\s*\{[\s\S]{0,200}?"term"\s*:\s*"([^"]*)"/.exec(txt)
-        || /ai\s*:\s*\{[\s\S]{0,200}?term\s*:\s*"([^"]*)"/.exec(txt);
-      used.add(poemTitleOf(poem ? poem[1] : '') + '|' + aiKeyOf(ai ? ai[1] : ''));
+      used.add(poemTitleOf(poem ? poem[1] : ''));
     } catch { /* 读不到就跳过 */ }
   }
   return used;
