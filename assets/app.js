@@ -74,6 +74,22 @@
     });
   }
 
+  /* 把顶栏真实高度写进 --topbar-h，吸顶导航和锚点偏移都靠它。
+     刘海屏的 safe-area、不同字号、系统字体差异都会改变顶栏高度，
+     写死 51px 会让板块导航被顶栏压住。 */
+  function syncTopbarHeight() {
+    const bar = document.querySelector('.topbar');
+    if (!bar) return;
+    const apply = () => {
+      const h2 = Math.round(bar.getBoundingClientRect().height);
+      document.documentElement.style.setProperty('--topbar-h', h2 + 'px');
+    };
+    apply();
+    if (typeof ResizeObserver === 'function') new ResizeObserver(apply).observe(bar);
+    window.addEventListener('resize', apply);
+    window.addEventListener('orientationchange', apply);
+  }
+
   function dayProgress(date) { return progress[date] || (progress[date] = {}); }
 
 
@@ -127,6 +143,17 @@
     { id: 'l', label: '大' },
   ];
 
+  /* 字体预览用的「永」字轮廓。
+     直接从四套 woff2 里取的字形路径（fontTools 导出），一共约 4.5KB。
+     以前预览是给 chip 真套 font-family，面板一打开就把 4 套 CJK 字体全下下来（约 6.5MB）。
+     现在用矢量字形，预览效果一致且零字体请求。fill 走 currentColor，跟着主题变色。 */
+  const YONG = {
+    song: '<svg viewBox="34 -834 935 910" aria-hidden="true"><path transform="scale(1,-1)" d="M57 437H361V409H66ZM203 617H528V587H212ZM318 437H308L350 477L420 415Q414 408 405.5 405.5Q397 403 380 402Q355 321 311.5 245.5Q268 170 202.5 106Q137 42 43 -4L34 11Q111 60 168 128Q225 196 262.5 275.5Q300 355 318 437ZM820 595 909 540Q904 533 896 530.5Q888 528 871 533Q841 505 799 471.5Q757 438 708 406Q659 374 611 347L600 360Q640 393 682 434.5Q724 476 760.5 518.5Q797 561 820 595ZM328 834Q417 827 476 810.5Q535 794 570 772.5Q605 751 620 729.5Q635 708 634 691.5Q633 675 620.5 668Q608 661 588 667Q569 691 531.5 718.5Q494 746 441.5 772.5Q389 799 324 819ZM474 617H464L498 659L585 594Q580 587 568 581.5Q556 576 540 573V20Q540 -5 532.5 -25Q525 -45 501.5 -58Q478 -71 427 -76Q425 -60 419.5 -48Q414 -36 403 -28Q389 -19 366.5 -13Q344 -7 306 -2V14Q306 14 324 12.5Q342 11 367.5 9Q393 7 416 5.5Q439 4 448 4Q464 4 469 10Q474 16 474 28ZM540 570Q565 460 609 378Q653 296 711 236.5Q769 177 834.5 135Q900 93 969 64L966 54Q945 51 929.5 35.5Q914 20 907 -4Q839 35 779.5 85Q720 135 671.5 201Q623 267 587 356Q551 445 529 563Z"/></svg>',
+    kai: '<svg viewBox="28 -800 946 896" aria-hidden="true"><path transform="scale(1,-1)" d="M360 743Q341 749 341 762Q341 768 344 777Q352 800 365 800Q389 800 576 724Q603 713 620.5 705Q638 697 638 682.5Q638 668 628.5 652.5Q619 637 611 637Q603 637 543.5 669.5Q484 702 360 743ZM219 598Q239 594 254 594L512 613Q526 613 543.5 603Q561 593 561 576L556 552V451Q598 384 623 349Q730 423 792 500Q807 519 809 536Q811 553 819.5 553Q828 553 840 542Q873 512 873 493Q873 481 819 433Q723 349 657 305Q788 143 956 53Q974 44 974 37Q974 34 964 24Q937 -5 913 -5Q906 -5 898 1Q802 65 713 156Q624 247 555 350L554 -2L555 -40Q555 -68 539.5 -82Q524 -96 509 -96Q494 -96 469 -84.5Q444 -73 415 -55Q386 -37 359.5 -17Q333 3 316 19Q299 35 299 43Q299 51 308 51Q317 51 362 29.5Q407 8 486 -14L488 552L300 538Q280 536 263.5 536Q247 536 234.5 548.5Q222 561 216 574.5Q210 588 210 591Q210 598 219 598ZM97 424Q129 420 144 420H157L370 438Q374 439 377 439H388Q397 439 414.5 427.5Q432 416 432 403.5Q432 391 426 385Q420 379 418 376Q353 222 241 115Q155 32 77 -4Q47 -18 37.5 -18Q28 -18 28 -12Q28 -2 45 9Q141 78 221 174Q301 270 346 379L178 365Q160 363 150 363Q140 363 124 369.5Q108 376 92 410Q89 416 89 420Q89 424 97 424Z"/></svg>',
+    kai2: '<svg viewBox="68 -853 904 897" aria-hidden="true"><path transform="scale(1,-1)" d="M459 803Q513 751 552 737Q571 736 580 752Q586 768 581 788Q571 816 548 830Q509 852 453 853Q444 853 439 850Q432 847 436 833Q439 820 459 803ZM123 401Q110 401 108 392Q107 385 123 377Q169 352 198 363Q315 397 326 395Q336 391 324 370Q273 264 225 213Q177 156 90 98Q74 86 84 83Q94 82 115 89Q193 122 257 177Q318 228 395 360Q407 382 419 393Q434 403 426 415Q416 428 379 443Q358 455 311 434Q221 412 123 401ZM572 430Q553 452 537 472Q537 550 552 575Q565 596 551 607Q529 626 489 643Q462 653 424 624Q387 606 311 589Q295 588 305 578Q315 568 331 562Q346 559 414 581Q459 599 470 592Q480 582 479 547Q483 277 468 114Q467 84 457 72Q451 65 429 71Q404 77 379 82Q357 89 358 79Q415 25 445 -13Q458 -34 476 -40Q486 -44 495 -34Q543 26 542 79Q535 215 537 425Q561 388 624 306Q703 201 763 142Q790 112 815 114Q888 126 951 134Q978 138 977 145Q978 152 947 166Q785 232 741 267Q675 321 586 414Q776 541 799 550Q824 560 813 581Q798 600 770 619Q745 635 730 633Q715 632 719 616Q722 583 631 490Q601 463 572 430Z"/></svg>',
+    fangsong: '<svg viewBox="34 -791 930 912" aria-hidden="true"><path transform="scale(1,-1)" d="M385 773 392 791Q424 786 492 770.5Q560 755 579 745Q597 736 597 722Q598 680 586 653Q583 646 576 641.5Q569 637 561 637Q549 637 541 648Q514 685 476 715Q438 745 385 773ZM498 -121Q490 -121 484 -111Q453 -71 417 -36Q381 -1 314 52L323 65L482 -4Q490 17 497 488L498 538Q418 523 314 497L238 534L244 549Q295 547 338 553Q381 559 449 573Q466 577 479 583Q492 589 507 601Q538 585 567 566Q574 560 574 556Q574 552 569 547Q559 537 555 525.5Q551 514 549 497Q545 448 544 387L592 336Q636 370 673 411Q710 452 734 489Q742 502 744 515Q746 528 744 551L761 563Q813 516 847 479L828 466L788 437L746 406Q709 379 675 354.5Q641 330 614 313Q719 204 794 147Q829 121 863.5 102.5Q898 84 964 64V43Q891 41 810 34L798 33Q778 33 769 45Q690 157 543 339Q542 303 542 224Q542 109 545 1Q546 -28 538 -58.5Q530 -89 513 -112Q506 -121 498 -121ZM363 346Q285 332 185 305L114 340L118 354Q129 353 149 353Q190 353 221 358Q252 363 303 374Q328 379 343 386Q358 393 379 410Q398 400 417.5 388.5Q437 377 448 369Q456 363 456 359Q456 355 448 349Q437 341 428.5 331Q420 321 407 300Q356 218 316 165.5Q276 113 211 61.5Q146 10 47 -36L34 -14Q162 62 239 147Q316 232 363 346Z"/></svg>',
+  };
+
   const look = {
     theme: meta.theme || '',
     zh: meta.zh || 'song',
@@ -179,6 +206,16 @@
     });
   }
 
+  /* 字体预览样式：有矢量轮廓的用内联 SVG，没有的（黑体，系统自带）用文字「永」 */
+  function glyphPreview(id) {
+    if (YONG[id]) return h('i', { class: 'chip-glyph', html: YONG[id] });
+    return h('i', {
+      class: 'chip-glyph',
+      style: 'display:grid;place-items:center;font-size:15px;line-height:1;font-family:var(--ff-hei)',
+      text: '永',
+    });
+  }
+
   function chipRow(group, list, opt) {
     const row = h('div', { class: 'look-chips' });
     list.forEach((item) => {
@@ -186,8 +223,10 @@
         class: 'chip', type: 'button',
         'data-group': group, 'data-value': item.id,
         title: item.desc || item.label,
-        style: opt && opt.fontFamily ? `font-family:${item.preview}` : null,
-      }, item.label);
+        // 英文字体全是系统字体，直接套 font-family 不产生任何下载；
+        // 中文的预览改用字形轮廓，绝不真加载字体。
+        style: opt && opt.fontFamily && group === 'en' ? `font-family:${item.preview}` : null,
+      }, group === 'zh' ? glyphPreview(item.id) : null, item.label);
       b.addEventListener('click', () => applyLook({ [group]: item.id }));
       row.append(b);
     });
@@ -232,6 +271,7 @@
   async function init() {
     buildLook();
     applyLook();
+    syncTopbarHeight();
 
     try {
       await loadScript('data/days/index.js');
@@ -317,8 +357,11 @@
   function buildTabs() {
     const nav = $('#tabs');
     nav.innerHTML = '';
-    activeSections().forEach((s) => {
-      const a = h('a', { class: 'tab', href: `#sec-${s.id}`, 'data-id': s.id },
+    activeSections().forEach((s, i) => {
+      const a = h('a', {
+        class: 'tab' + (i === 0 ? ' active' : ''), href: `#sec-${s.id}`, 'data-id': s.id,
+        'aria-current': i === 0 ? 'true' : null,
+      },
         h('span', { class: 'tab-name' }, `${s.icon} ${s.name}`));
       a.addEventListener('click', (ev) => {
         ev.preventDefault();
@@ -366,6 +409,7 @@
     main.append(renderChecklist(d.checklist));
 
     decorateArt();
+    syncMeta(d);
     renderFooter(d);
     observeSections();
     refreshProgress();
@@ -1206,6 +1250,204 @@ ${days.map(exportDayHtml).join('\n')}
     if (btn) btn.textContent = `✓ 已导出 ${days.length} 天`;
   }
 
+  /* ---------------- 每页的标题 / 描述 / 分享卡片 ----------------
+     原来全站共用一个 <title>，19 天内容在搜索结果里长得一模一样；
+     og:* 一个都没有，分享到微信/微博不会出卡片。这里按当天内容同步更新。 */
+  const SITE_URL = 'https://qing-qian152.github.io/knowledges-shared-station/';
+
+  function upsertMeta(selector, attrs) {
+    let el = document.head.querySelector(selector);
+    if (!el) {
+      el = document.createElement(selector.startsWith('link') ? 'link' : 'meta');
+      const m = selector.match(/\[(name|property|rel)="([^"]+)"\]/);
+      if (m) el.setAttribute(m[1], m[2]);
+      document.head.appendChild(el);
+    }
+    Object.entries(attrs || {}).forEach(([k, v]) => { if (v) el.setAttribute(k, v); });
+    return el;
+  }
+
+  function daySummary(d) {
+    const parts = [];
+    if (d.quote && d.quote.text) parts.push(d.quote.text);
+    if (d.chinese && d.chinese.title) parts.push(`晨读《${d.chinese.title}》`);
+    if (d.poem && d.poem.title) parts.push(`古诗《${d.poem.title}》`);
+    if (d.english && d.english.title) parts.push(`英文精读 ${d.english.title}`);
+    if (d.listening && d.listening.title) parts.push(`听力 ${d.listening.title}`);
+    return parts.join(' · ');
+  }
+
+  function syncMeta(d) {
+    const dt = parseDate(state.date);
+    const md = `${dt.getMonth() + 1} 月 ${dt.getDate()} 日`;
+    const theme = (d && d.theme) || '每日一学';
+    const title = `${md} · ${theme} — 每日一学`;
+    const desc = daySummary(d || {}) || '每天一篇原创散文、一首古诗、一篇雅思级英文精读、一段自创美音听力。';
+    const url = `${SITE_URL}?d=${state.date}`;
+    const img = new URL('assets/icon-512.png', SITE_URL).href;
+
+    document.title = title;
+    upsertMeta('meta[name="description"]', { content: desc.slice(0, 150) });
+    upsertMeta('link[rel="canonical"]', { href: url });
+    upsertMeta('meta[property="og:title"]', { content: title });
+    upsertMeta('meta[property="og:description"]', { content: desc.slice(0, 150) });
+    upsertMeta('meta[property="og:url"]', { content: url });
+    upsertMeta('meta[property="og:type"]', { content: 'article' });
+    upsertMeta('meta[property="og:image"]', { content: img });
+    upsertMeta('meta[name="twitter:card"]', { content: 'summary_large_image' });
+    upsertMeta('meta[name="twitter:title"]', { content: title });
+    upsertMeta('meta[name="twitter:description"]', { content: desc.slice(0, 150) });
+
+    /* 结构化数据：让搜索引擎知道这是一篇带日期的阅读内容 */
+    let ld = document.getElementById('ld-json');
+    if (!ld) {
+      ld = document.createElement('script');
+      ld.type = 'application/ld+json';
+      ld.id = 'ld-json';
+      document.head.appendChild(ld);
+    }
+    ld.textContent = JSON.stringify({
+      '@context': 'https://schema.org',
+      '@type': 'Article',
+      headline: `${md} · ${theme}`,
+      description: desc.slice(0, 150),
+      datePublished: state.date,
+      inLanguage: 'zh-CN',
+      image: img,
+      url,
+      isPartOf: { '@type': 'WebSite', name: '每日一学', url: SITE_URL },
+      author: { '@type': 'Person', name: '每日一学作者' },
+      publisher: { '@type': 'Organization', name: '每日一学' },
+      articleSection: ['语文晨读', '古诗文', '英文精读', '英语听力'],
+    });
+  }
+
+  /* ---------------- 分享 / 个人数据搬家 ---------------- */
+
+  function toast(msg) {
+    let t = document.querySelector('.toast');
+    if (!t) {
+      t = h('div', { class: 'toast', role: 'status', 'aria-live': 'polite' });
+      document.body.append(t);
+    }
+    t.textContent = msg;
+    t.classList.add('show');
+    clearTimeout(toast._t);
+    toast._t = setTimeout(() => t.classList.remove('show'), 2200);
+  }
+
+  async function shareToday() {
+    const url = `${SITE_URL}?d=${state.date}`;
+    const title = document.title;
+    const text = daySummary(state.day || {});
+    if (navigator.share) {
+      try {
+        await navigator.share({ title, text, url });
+        return;
+      } catch (e) {
+        if (e && e.name === 'AbortError') return;  // 用户自己取消，不必兜底
+      }
+    }
+    try {
+      await navigator.clipboard.writeText(`${title}\n${url}`);
+      toast('链接已复制，去粘贴给朋友吧');
+    } catch (e) {
+      window.prompt('复制下面这个链接分享：', url);
+    }
+  }
+
+  /* 笔记 / 错题本 / 打卡这些只存在浏览器里，清缓存或换设备就没了 —— 给一个搬家的出口 */
+  const DATA_KEYS = ['dl.progress', 'dl.notes', 'dl.answers', 'dl.wrong', 'dl.meta', 'dl.tasks', 'dl.listen'];
+
+  function exportData() {
+    const dump = { app: '每日一学', version: 1, exportedAt: new Date().toISOString(), data: {} };
+    DATA_KEYS.forEach((k) => {
+      const raw = Store.get(k, null);
+      if (raw !== null) dump.data[k] = raw;
+    });
+    const blob = new Blob([JSON.stringify(dump, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = h('a', { href: url, download: `每日一学-我的数据-${fmtDate(new Date())}.json` });
+    document.body.append(a);
+    a.click();
+    setTimeout(() => { a.remove(); try { URL.revokeObjectURL(url); } catch (e) { /* 忽略 */ } }, 5000);
+    const n = Object.keys(dump.data).length;
+    toast(n ? '已导出你的学习记录' : '还没有可导出的记录');
+  }
+
+  function importData() {
+    const input = h('input', { type: 'file', accept: 'application/json,.json', style: 'display:none' });
+    document.body.append(input);
+    input.addEventListener('change', () => {
+      const file = input.files && input.files[0];
+      if (!file) { input.remove(); return; }
+      const fr = new FileReader();
+      fr.onload = () => {
+        input.remove();
+        let dump;
+        try { dump = JSON.parse(String(fr.result)); } catch (e) { toast('这个文件不是有效的 JSON'); return; }
+        if (!dump || !dump.data || typeof dump.data !== 'object') { toast('文件格式不对，缺少 data 字段'); return; }
+        const keys = Object.keys(dump.data).filter((k) => DATA_KEYS.includes(k));
+        if (!keys.length) { toast('文件里没有可识别的记录'); return; }
+        if (!window.confirm(`将导入 ${keys.length} 类记录（${keys.join('、')}），同名的现有记录会被覆盖。继续吗？`)) return;
+        keys.forEach((k) => Store.set(k, dump.data[k]));
+        toast('导入完成，正在刷新…');
+        setTimeout(() => location.reload(), 600);
+      };
+      fr.readAsText(file);
+    });
+    input.click();
+  }
+
+  /* ---------------- 往期存档 ----------------
+     以前历史日期只能靠 <select> 切换，页面里一个指向历史内容的链接都没有，
+     搜索引擎永远只看到一个首页。这里输出真实的 a[href="?d=日期"]，
+     既不依赖 JS 也能打开，也让每天的内容都能被抓到。 */
+  function renderArchive() {
+    const idx = new Map((window.LEARN_INDEX || []).map((x) => [x.date, x]));
+    const groups = new Map();
+    state.dates.forEach((d) => {
+      const key = d.slice(0, 7);
+      if (!groups.has(key)) groups.set(key, []);
+      groups.get(key).push(d);
+    });
+
+    const box = h('nav', { class: 'archive', 'aria-label': '往期内容' },
+      h('h3', { class: 'archive-h' }, '往期'));
+
+    [...groups.keys()].forEach((key, gi) => {
+      const [y, m] = key.split('-').map(Number);
+      const list = groups.get(key);
+      const det = h('details', { class: 'archive-month' });
+      if (gi === 0) det.setAttribute('open', '');
+      det.append(h('summary', null, `${y} 年 ${m} 月 · ${list.length} 天`));
+
+      const ul = h('ul', { class: 'archive-list' });
+      list.forEach((d) => {
+        const dt = parseDate(d);
+        const theme = (idx.get(d) || {}).theme || '';
+        const cur = d === state.date;
+        const a = h('a', {
+          href: `?d=${d}`,
+          class: cur ? 'on' : null,
+          'aria-current': cur ? 'true' : null,
+        },
+          h('b', null, `${dt.getMonth() + 1}/${dt.getDate()}`),
+          ` ${WEEK[dt.getDay()]}${theme ? ' · ' + theme : ''}`);
+        /* 站内跳转仍然走无刷新，但 href 保留给爬虫和无 JS 环境 */
+        a.addEventListener('click', (ev) => {
+          if (ev.metaKey || ev.ctrlKey || ev.shiftKey || ev.button !== 0) return;
+          ev.preventDefault();
+          switchDay(d);
+        });
+        ul.append(h('li', null, a));
+      });
+      det.append(ul);
+      box.append(det);
+    });
+    return box;
+  }
+
   function renderFooter(day) {
     const f = $('#footer');
     if (!f) return;
@@ -1267,6 +1509,18 @@ ${days.map(exportDayHtml).join('\n')}
           ? `把 ${year} 年的 ${state.dates.filter((x) => x.startsWith(year + '-')).length} 天内容打包成一个网页文件，断网也能读`
           : '把这一年所有内容打包成一个网页文件，断网也能读'));
     f.append(row);
+
+    /* 分享 + 个人学习记录的搬家通道 */
+    const shareBtn = h('button', { class: 'btn small ghost' }, '↗ 分享今天');
+    shareBtn.addEventListener('click', shareToday);
+    const expDataBtn = h('button', { class: 'btn small ghost' }, '⤓ 导出我的记录');
+    expDataBtn.addEventListener('click', exportData);
+    const impDataBtn = h('button', { class: 'btn small ghost' }, '⤒ 导入记录');
+    impDataBtn.addEventListener('click', importData);
+    f.append(h('div', { class: 'export-row' }, shareBtn, expDataBtn, impDataBtn,
+      h('span', { class: 'export-hint' },
+        '笔记、错题本、打卡都存在这台设备上，换设备前先导出')));
+    f.append(renderArchive());
   }
 
   function calcStreak() {
@@ -1286,7 +1540,13 @@ ${days.map(exportDayHtml).join('\n')}
       entries.forEach((en) => {
         if (!en.isIntersecting) return;
         const id = en.target.id.replace('sec-', '');
-        document.querySelectorAll('.tab').forEach((t) => t.classList.toggle('active', t.dataset.id === id));
+        document.querySelectorAll('.tab').forEach((t) => {
+          const on = t.dataset.id === id;
+          t.classList.toggle('active', on);
+          /* 屏幕阅读器需要知道当前停在哪一段 */
+          if (on) t.setAttribute('aria-current', 'true');
+          else t.removeAttribute('aria-current');
+        });
       });
     }, { rootMargin: '-120px 0px -70% 0px', threshold: 0 });
     document.querySelectorAll('.card').forEach((c) => io.observe(c));

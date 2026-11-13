@@ -32,8 +32,11 @@
 - **移动优先**：手机上比例舒服，适合每天通勤看。
 - **6 套配色 + 中英文字体 + 3 档字号**：右上角 ◐ 随时换，存在本机；首次访问跟随系统深浅色。每个板块都自动配水墨插图（21 幅内置、随主题变色），不下载任何图片。
 - **可当 App 用（PWA）**：带 `manifest.json` + Service Worker，手机浏览器里点「安装到桌面 / 添加到主屏幕」后就是独立图标、全屏无地址栏、断网也能打开昨天读过的内容；安卓与桌面 Chrome 会出现「安装到桌面」按钮，iPhone 上是「分享 → 添加到主屏幕」。
-- **翻旧账不费劲**：日期下拉按「年月」分组，`‹ ›` 一按就切前一天/后一天；每一天的地址都带 `?d=2026-11-02`，可以直接分享或收藏某一天。
+- **翻旧账不费劲**：日期下拉按「年月」分组，`‹ ›` 一按就切前一天/后一天；每一天的地址都带 `?d=2026-11-02`，可以直接分享或收藏某一天。页脚另有「往期」按月折叠的真实链接（对搜索引擎友好，关掉 JS 也能点）。
 - **一键导出全年**：页脚「⤓ 导出 20XX 年（离线 HTML）」把这一年所有内容拼成一个自带样式的网页文件，断网、换设备、存档都能读。
+- **学习记录可搬家**：「⤓ 导出我的记录 / ⤒ 导入记录」把笔记、错题本、打卡、进度打包成一份 JSON，换设备或清缓存前先导出，之后导回来即可。
+- **分享**：「↗ 分享今天」优先走系统分享面板（手机直接发微信/短信），桌面降级为复制带日期的链接。
+- **SEO**：每天一个 `?d=` 地址，`sitemap.xml` + `robots.txt` + 页脚往期链接都是真链接，标题与描述按当天内容动态更新，另带 JSON-LD 结构化数据。
 - **自动更新**：GitHub Actions 每天定时生成 → 自动提交 → 静态站点自动重新发布。
 
 ---
@@ -100,13 +103,32 @@ daily-learn/
 │       └── 2026-10-27.js       # 一天的内容：window.LEARN_DAY = {...}
 ├── scripts/
 │   ├── generate.mjs            # 生成脚本（调用模型 → 校验 → 写文件 → 更新索引）
+│   ├── build-seo.mjs           # 生成 sitemap.xml / robots.txt + 往期兜底链接
 │   └── check-themes.mjs        # 外观体检（每套主题变量是否齐全、字体变量是否只定义一次）
+├── sitemap.xml                 # 由 build-seo.mjs 生成
+├── robots.txt                  # 由 build-seo.mjs 生成
 ├── topics.json                 # 主题池（30 天一轮，可自由增删）
 ├── .github/workflows/daily.yml # 每天自动生成 + 提交
 └── README.md
 ```
 
 数据用 `<script>` 注入 `window.LEARN_DAY`，而不是 `fetch` JSON —— 这样 `file://` 直接双击打开也不会被 CORS 拦住。
+
+### 关于 SEO
+
+页面是纯前端渲染，服务端 HTML 里没有正文，历史日期原来也只能靠下拉框切换。
+为了别让搜索引擎只看到一个首页：
+
+- `scripts/build-seo.mjs` 会从日期索引生成 `sitemap.xml`，并把往期写成 `index.html` 里
+  `<noscript>` 中的真实链接（`<!--ARCHIVE:START-->` 与 `<!--ARCHIVE:END-->` 之间，勿手动改）。
+- 每天生成内容后跑一次，`daily.yml` 里已经接上了。
+- 页脚另有一份「往期」导航（`?d=日期` 形式的真链接），既是给读者的，也是给爬虫的。
+
+```bash
+node scripts/build-seo.mjs     # 新增内容后执行，重建 sitemap 和静态链接
+```
+
+⚠️ `index.html` 里 `<noscript>` 的归档区是脚本生成的，手改会被下次运行覆盖。
 
 ---
 
@@ -158,8 +180,11 @@ window.LEARN_DAY = {
 右上角的 ◐ 打开外观面板，三项都可选，选择存在本机（`localStorage` 的 `dl.meta`），下次打开照旧：
 
 - **配色 6 套**：素纸 `light`、竹青 `green`、天青 `sky`、茶褐 `sepia`、墨夜 `ink`、暮色 `dusk`。第一次访问跟随系统深浅色（`prefers-color-scheme`），之后以你的选择为准。旧的 `data-theme="dark"` 仍然有效，等价于 `ink`。
-- **中文字体 5 种**：黑体 `hei`（系统栈、零下载）、宋体 `song`、楷书 `kai2`、仿宋 `fangsong`、文楷 `kai`。手机上系统没有「宋体 / 楷书 / 仿宋」，所以这四款各自**自带一份开源字体子集**（`assets/fonts/song.woff2` 思源宋体 1.27 MB、`kai2.woff2` 文鼎 PL 楷 2.02 MB、`fangsong.woff2` 朱雀仿宋 2.58 MB、`wenkai.woff2` 霞鹜文楷 1.55 MB；字符集为 GB2312 全字表 + ASCII + 常用标点），**选中哪款才下载哪款**，之后由 Service Worker 缓存；桌面端仍优先用系统同名/近名，缺字才回落到自带子集。
-- 想加字体：把子集化的 woff2 放进 `assets/fonts/`，在 `assets/style.css` 加一段 `@font-face` + 一个 `:root[data-zh="xxx"]` 规则，再在 `assets/app.js` 的 `ZH_FONTS` 里加一行即可。
+- **中文字体 5 种**：黑体 `hei`（系统栈、零下载）、宋体 `song`、楷书 `kai2`、仿宋 `fangsong`、文楷 `kai`。手机上系统没有「宋体 / 楷书 / 仿宋」，所以这四款各自**自带一份开源字体子集**（`assets/fonts/song.woff2` 思源宋体 1.27 MB、`kai2.woff2` 文鼎 PL 楷 2.02 MB、`fangsong.woff2` 朱雀仿宋 2.58 MB、`wenkai.woff2` 霞鹜文楷 1.55 MB；字符集为 GB2312 全字表 + ASCII + 常用标点）。
+  - **宋体走系统优先**：`--ff-song` 里先找 `Songti SC / STSong / 思源宋体 / Noto Serif SC`，都没有才回落到 `DLSong`。iOS / macOS 自带宋体，一个字节都不用下（默认字体就是宋体，所以这项省下的流量最大）。
+  - **楷书 / 文楷 / 仿宋 仍 webfont 优先**：这三款的差别只有靠自带字体才看得出来，用系统楷体顶替会让三个选项长得一样；而且它们是用户主动选的，选中哪款才下载哪款。
+  - **面板里的字体预览不加载字体**：`app.js` 的 `YONG` 里存了四套字体「永」字的矢量轮廓（fontTools 导出，共约 4.5 KB），预览用内联 SVG 渲染。以前是给 chip 真套 `font-family`，一打开面板就会把四套 CJK 字体全下下来（约 6.5 MB）。
+- 想加字体：把子集化的 woff2 放进 `assets/fonts/`，在 `assets/style.css` 加一段 `@font-face` + 一个 `:root[data-zh="xxx"]` 规则，再在 `assets/app.js` 的 `ZH_FONTS` 里加一行即可（想让它有字形预览，就往 `YONG` 里补一条同名字形的 path）。
 - **英文字体 3 种**：衬线 `serif`、无衬线 `sans`、等宽 `mono`。
 - **字号 3 档**：小 15px / 标准 16px / 大 17.5px（改的是 `--fs`，全局跟着缩放）。
 

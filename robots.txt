@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://qing-qian152.github.io/knowledges-shared-station/sitemap.xml

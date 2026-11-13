@@ -54,11 +54,14 @@ jobs:
           echo "参数: ${ARGS[*]:-（无，按今天自动生成）}"
           node scripts/generate.mjs "${ARGS[@]}"
 
+      - name: Rebuild sitemap / robots / 往期兜底链接
+        run: node scripts/build-seo.mjs
+
       - name: Commit
         run: |
           git config user.name  "daily-learn-bot"
           git config user.email "daily-learn-bot@users.noreply.github.com"
-          git add data
+          git add data sitemap.xml robots.txt index.html
           if git diff --cached --quiet; then
             echo "今天没有新内容，跳过提交"
             exit 0
