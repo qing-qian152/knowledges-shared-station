@@ -400,13 +400,14 @@
     const main = $('#main');
     main.innerHTML = '';
 
-    main.append(renderQuote(d.quote));
     main.append(renderHero(d));
     main.append(renderChinese(d.chinese));
     main.append(renderPoem(d.poem));
     main.append(renderEnglish(d.english));
     main.append(renderListening(d.listening));
     main.append(renderChecklist(d.checklist));
+    const closing = renderClosing();
+    if (closing) main.append(closing);
 
     decorateArt();
     syncMeta(d);
@@ -455,7 +456,9 @@
     return list[strHash(`${seed || ''}|${id}`) % list.length];
   }
 
-  /* 给还没有插图的板块补一张：放在标题/副标题之后、正文之前 */
+  /* 给还没有插图的板块补一张：放在标题/副标题之后、正文之前。
+     英文板块没有 byline，原来会被插到 body 最前面 —— 变成"图在标题上"，
+     跟其它三块不一致。这里改成找第一个正文节点，插在它前面。 */
   function decorateArt() {
     const cards = document.querySelectorAll('#main .card');
     cards.forEach((card) => {
@@ -466,27 +469,44 @@
       if (!fig) return;
       const body = card.querySelector('.card-body');
       if (!body) return;
-      const ref = body.querySelector('.byline');
-      if (ref) body.insertBefore(fig, ref.nextSibling);
-      else body.insertBefore(fig, body.firstChild);
+      const anchor = body.querySelector('.prose, .en-prose, .poem-body, .listen-lines, .block, .tasks');
+      if (anchor) body.insertBefore(fig, anchor);
+      else body.append(fig);
     });
   }
 
+  /* ---- 00 今日开篇 ----
+     原来顺序是「大引言（135px）→ 主题 → 大封面（146px）」，第一段正文要到 908px 才出现。
+     现在合并成一张开篇：日期 → 主题 → 引言（小一号，仍在）→ 进度与打卡 → 正文。 */
   function renderHero(d) {
-    const p = dayProgress(state.date);
+    const q = d.quote;
     const bar = h('i');
-    const txt = h('span', { id: 'progText' });
+    const txt = h('span', { class: 'hero-prog-text', id: 'progText' });
+    const isEn = q && q.text && !/[\u4e00-\u9fa5]/.test(q.text);
+    const by = q && q.author ? (q.source ? `${q.author}《${q.source}》` : q.author) : '';
+
     const sec = h('section', { class: 'hero' },
       h('div', { class: 'hero-date' }, `${d.date} · ${d.weekday || WEEK[parseDate(d.date).getDay()]}`),
       h('h1', { class: 'hero-title' }, d.theme || '今日一学'),
-      h('div', { class: 'hero-meta' }, txt, h('div', { class: 'hero-bar' }, bar)));
-
-    const heroArt = artFigure(pickArt('hero', state.date), null, `${state.date}|hero`);
-    if (heroArt) {
-      heroArt.classList.add('hero-art');
-      sec.append(heroArt);
-    }
+      q && q.text
+        ? h('div', { class: 'hero-quote' },
+          h('span', { class: 'hero-quote-text' + (isEn ? ' en' : '') }, q.text),
+          by ? h('span', { class: 'hero-quote-by' }, by) : null)
+        : null,
+      h('div', { class: 'hero-meta' },
+        h('div', { class: 'hero-bar' }, bar),
+        txt,
+        checkinButton('btn tiny hero-checkin')));
     return sec;
+  }
+
+  /* 一天的收尾：把原来的封面大图放到最后，当作读完的句号 */
+  function renderClosing() {
+    const fig = artFigure(pickArt('hero', state.date), '今日封面', `${state.date}|hero`);
+    if (!fig) return null;
+    fig.classList.add('closing-art');
+    return h('div', { class: 'closing' }, fig,
+      h('div', { class: 'closing-txt' }, '今天到这里 · 明天见'));
   }
 
   function sectionCard(s) {
@@ -506,6 +526,23 @@
     return { card, body, btn };
   }
 
+  /* 打卡：原来只在页脚（第 30 屏）出现，现在首屏也放一个 */
+  function toggleCheckin() {
+    if (meta.checkin[state.date]) delete meta.checkin[state.date];
+    else meta.checkin[state.date] = 1;
+    Store.set('dl.meta', meta);
+    renderFooter(state.day);
+    refreshProgress();
+  }
+
+  function checkinButton(cls) {
+    const on = !!meta.checkin[state.date];
+    const b = h('button', { class: cls + (on ? ' is-on' : ''), type: 'button' },
+      on ? '✓ 已打卡' : '今日打卡');
+    b.addEventListener('click', toggleCheckin);
+    return b;
+  }
+
   /* ---- 01 语文 ---- */
   function renderChinese(c) {
     const { card, body } = sectionCard(SECTIONS[0]);
@@ -518,28 +555,37 @@
 
     body.append(h('div', { class: 'prose' }, c.body.map((p) => h('p', null, p))));
 
+    /* 讲解、好词、好句这些是「二次阅读」的材料，读完正文才需要，收进抽屉 */
+    const extras = [];
     if (c.explain?.length) {
-      body.append(block('逐句讲解',
+      extras.push(block('逐句讲解',
         c.explain.map((x) => h('div', { class: 'item' },
           h('div', { class: 'item-q' }, x.line),
           h('div', { class: 'item-a', html: x.note })))));
     }
 
     if (c.words?.length) {
-      body.append(block('好词', c.words.map((w) => h('div', { class: 'item' },
+      extras.push(block('好词', c.words.map((w) => h('div', { class: 'item' },
         h('div', { class: 'item-q' }, h('span', { class: 'tag-word' }, w.w), w.meaning),
         h('div', { class: 'item-a' }, w.use)))));
     }
 
     if (c.expressions?.length) {
-      body.append(block('好句 · 值得抄下来',
+      extras.push(block('好句 · 值得抄下来',
         c.expressions.map((e) => h('div', { class: 'item' },
           h('div', { class: 'item-q' }, '“' + e.s + '”'),
           h('div', { class: 'item-a' }, h('b', null, '妙在：'), e.why)))));
     }
 
+    if (extras.length) {
+      const n = (c.explain?.length || 0) + (c.words?.length || 0) + (c.expressions?.length || 0);
+      body.append(fold(`cn-extras-${state.date}`, '精读批注 · 讲解 / 好词 / 好句', `${n} 条`, ...extras));
+    }
+
+    /* 手法与仿写是「动手写」的任务，单独一个抽屉 */
+    const craft = [];
     if (c.techniques?.length) {
-      body.append(block('写作手法',
+      craft.push(block('写作手法',
         c.techniques.map((t) => h('div', { class: 'item' },
           h('div', { class: 'item-q' }, h('span', { class: 'tag-word' }, t.name)),
           h('div', { class: 'item-a' }, t.desc),
@@ -547,12 +593,16 @@
     }
 
     if (c.imitation) {
-      body.append(block('仿写任务',
+      craft.push(block('仿写任务',
         h('div', { class: 'callout' },
           h('div', null, h('b', null, '任务：'), c.imitation.prompt),
           c.imitation.steps?.length ? h('ul', { class: 'note-list', style: 'margin-top:10px' },
             c.imitation.steps.map((s) => h('li', null, s))) : null),
         textareaFor(`chinese-${c.title}`, '在这里写你的仿写，自动保存到本机…')));
+    }
+
+    if (craft.length) {
+      body.append(fold(`cn-craft-${state.date}`, '写法与仿写 · 动手写一段', c.imitation ? '有任务' : '', ...craft));
     }
 
     return card;
@@ -570,19 +620,26 @@
 
     body.append(h('div', { class: 'poem-body' }, p.body.map((line) => h('p', null, line))));
 
+    /* 先给读的人一个「背」的入口，注释译文赏析收在下面 */
+    if (p.recite) {
+      body.append(h('div', { class: 'callout teal recite-hint' }, h('b', null, '怎么背：'), p.recite));
+    }
+
+    const refs = [];
+    if (p.translation) refs.push(block('译文', h('div', { class: 'prose' }, h('p', null, p.translation))));
+
     if (p.notes?.length) {
-      body.append(block('注释', h('ul', { class: 'note-list' },
+      refs.push(block('注释', h('ul', { class: 'note-list' },
         p.notes.map((n) => h('li', null, h('b', null, n.line + '：'), n.note)))));
     }
 
-    if (p.translation) body.append(block('译文', h('div', { class: 'prose', style: 'font-size:16px' }, h('p', null, p.translation))));
-
     if (p.appreciation?.length) {
-      body.append(block('赏析', p.appreciation.map((t) => h('p', { class: 'item-a', style: 'margin:0 0 10px' }, t))));
+      refs.push(block('赏析', p.appreciation.map((t) => h('p', { class: 'item-a', style: 'margin:0 0 10px' }, t))));
     }
 
-    if (p.recite) {
-      body.append(block('背诵提示', h('div', { class: 'callout teal' }, h('b', null, '怎么背：'), p.recite)));
+    if (refs.length) {
+      const n = (p.notes?.length || 0) + (p.appreciation?.length || 0);
+      body.append(fold(`poem-refs-${state.date}`, '译文 · 注释 · 赏析', n ? `${n + 1} 条` : '', ...refs));
     }
 
     return card;
@@ -622,53 +679,66 @@
       transBtn.textContent = on ? '隐藏译文' : '显示译文';
     });
 
-    if (e.vocab?.length) {
-      body.append(block('重点词汇 · 点击卡片自测',
-        h('div', { class: 'vocab-grid' }, e.vocab.map((v) => vocabCard(v)))));
+    /* 读完先做题，其余材料收进抽屉。
+       这一段原来把 10 个子模块一路铺开，单张卡片就有 14 屏。 */
+    if (e.questions?.length) {
+      body.append(block('阅读理解', e.questions.map((q, i) => quizCard(q, i, 'english'))));
     }
 
+    const words = [];
+    if (e.vocab?.length) {
+      words.push(block('重点词汇 · 点击卡片自测',
+        h('div', { class: 'vocab-grid' }, e.vocab.map((v) => vocabCard(v)))));
+    }
     if (e.collocations?.length) {
-      body.append(block('地道搭配 · 背下来就能用',
+      words.push(block('地道搭配 · 背下来就能用',
         e.collocations.map((x) => h('div', { class: 'item' },
           h('div', { class: 'item-q' },
             h('span', { class: 'tag-word' }, x.phrase || x.p),
             h('span', null, ' ' + (x.cn || ''))),
           x.ex ? h('div', { class: 'item-a', style: 'font-family:var(--ff-en)' }, x.ex) : null))));
     }
+    if (words.length) {
+      const n = (e.vocab?.length || 0) + (e.collocations?.length || 0);
+      body.append(fold(`en-words-${state.date}`, '词汇与搭配', `${n} 个`, ...words));
+    }
 
+    const pats = [];
     if (e.phrases?.length) {
-      body.append(block('短语搭配', e.phrases.map((x) => h('div', { class: 'item' },
+      pats.push(block('短语搭配', e.phrases.map((x) => h('div', { class: 'item' },
         h('div', { class: 'item-q' }, h('span', { class: 'tag-word' }, x.p), x.cn),
         x.ex ? h('div', { class: 'item-a', style: 'font-family:var(--ff-en)' }, x.ex) : null))));
     }
-
     if (e.patterns?.length) {
-      body.append(block('句式', e.patterns.map((x) => h('div', { class: 'item' },
+      pats.push(block('句式', e.patterns.map((x) => h('div', { class: 'item' },
         h('div', { class: 'item-q', style: 'font-family:var(--ff-en)' }, '“' + x.s + '”'),
         h('div', { class: 'item-a' }, x.cn),
         x.note ? h('div', { class: 'item-a' }, h('b', null, '用法：'), x.note) : null))));
     }
-
     if (e.grammar?.length) {
-      body.append(block('语法点', e.grammar.map((g) => h('div', { class: 'item' },
+      pats.push(block('语法点', e.grammar.map((g) => h('div', { class: 'item' },
         h('div', { class: 'item-q' }, h('span', { class: 'tag-word' }, g.point)),
         h('div', { class: 'item-a' }, g.explain),
         g.example ? h('div', { class: 'item-a', style: 'font-family:var(--ff-en)' }, g.example) : null))));
     }
+    if (pats.length) {
+      const n = (e.phrases?.length || 0) + (e.patterns?.length || 0) + (e.grammar?.length || 0);
+      body.append(fold(`en-pats-${state.date}`, '句式与语法', `${n} 条`, ...pats));
+    }
 
-    if (e.summary) body.append(block('中文摘要', h('div', { class: 'callout' }, e.summary)));
-
-    if (e.questions?.length) {
-      body.append(block('阅读理解', e.questions.map((q, i) => quizCard(q, i, 'english'))));
+    if (e.summary) {
+      body.append(fold(`en-summary-${state.date}`, '中文摘要', '',
+        block('中文摘要', h('div', { class: 'callout' }, e.summary))));
     }
 
     if (e.output) {
-      body.append(block('输出任务',
-        h('div', { class: 'callout gold' },
-          h('div', null, h('b', null, '任务：'), e.output.prompt),
-          e.output.tasks?.length ? h('ul', { class: 'note-list', style: 'margin-top:10px' },
-            e.output.tasks.map((t) => h('li', null, t))) : null),
-        textareaFor(`english-output-${e.title}`, '用今天学的词和句式写在这里…')));
+      body.append(fold(`en-output-${state.date}`, '输出任务 · 用今天的词写一段', '',
+        block('输出任务',
+          h('div', { class: 'callout gold' },
+            h('div', null, h('b', null, '任务：'), e.output.prompt),
+            e.output.tasks?.length ? h('ul', { class: 'note-list', style: 'margin-top:10px' },
+              e.output.tasks.map((t) => h('li', null, t))) : null),
+          textareaFor(`english-output-${e.title}`, '用今天学的词和句式写在这里…'))));
     }
 
     return card;
@@ -943,6 +1013,30 @@
     return h('div', { class: 'block' }, h('div', { class: 'block-title' }, title), ...kids);
   }
 
+  /* ---------------- 可折叠抽屉 ----------------
+     一天的内容原本铺开要滚 30 屏，读者在第 2 屏就决定要不要继续了。
+     把「讲解 / 词汇 / 赏析 / 输出」这类二次阅读的材料收进抽屉，
+     正文和练习留在外面 —— 内容一个不删，页面短三分之二。
+     抽屉的开合状态记在本机，明天保持你习惯的样子。 */
+  const foldState = Store.get('dl.folds', {});
+
+  function fold(id, title, count, ...kids) {
+    const det = h('details', { class: 'fold', 'data-fold': id });
+    if (foldState[id]) det.setAttribute('open', '');
+    det.append(
+      h('summary', { class: 'fold-sum' },
+        h('span', { class: 'fold-title' }, title),
+        count ? h('span', { class: 'fold-count' }, String(count)) : null,
+        h('span', { class: 'fold-chev', 'aria-hidden': 'true' }, '›')),
+      h('div', { class: 'fold-body' }, ...kids));
+    det.addEventListener('toggle', () => {
+      if (det.open) foldState[id] = 1;
+      else delete foldState[id];
+      Store.set('dl.folds', foldState);
+    });
+    return det;
+  }
+
   function quizCard(q, i, key) {
     const quizKey = `${key}-${i}`;
     const store = answers[state.date] || (answers[state.date] = {});
@@ -1034,9 +1128,16 @@
     const n = doneCount(state.date);
     const total = activeSections().length;
     const txt = $('#progText');
-    if (txt) txt.textContent = `${n} / ${total} 已完成`;
+    if (txt) txt.textContent = `${n} / ${total}`;
     const bar = document.querySelector('.hero-bar > i');
     if (bar) bar.style.width = `${(n / total) * 100}%`;
+    /* 首屏那个打卡按钮要跟着变，不然点完没反馈 */
+    const heroBtn = document.querySelector('.hero-checkin');
+    if (heroBtn) {
+      const on = !!meta.checkin[state.date];
+      heroBtn.classList.toggle('is-on', on);
+      heroBtn.textContent = on ? '✓ 已打卡' : '今日打卡';
+    }
     SECTIONS.forEach((s) => {
       const p = progress[state.date] || {};
       const tab = document.querySelector(`.tab[data-id="${s.id}"]`);
@@ -1458,14 +1559,8 @@ ${days.map(exportDayHtml).join('\n')}
     const checked = !!meta.checkin[state.date];
     const streak = calcStreak();
 
-    const btn = h('button', { class: 'btn' + (checked ? ' ghost' : '') });
+    const btn = checkinButton('btn');
     btn.textContent = checked ? '✓ 今日已打卡' : '今日打卡';
-    btn.addEventListener('click', () => {
-      if (meta.checkin[state.date]) delete meta.checkin[state.date];
-      else meta.checkin[state.date] = 1;
-      Store.set('dl.meta', meta);
-      renderFooter(day);
-    });
 
     f.append(h('div', { class: 'checkin' },
       h('div', { class: 'checkin-txt' },
