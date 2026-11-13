@@ -21,6 +21,9 @@
   };
 
   const state = { dates: [], date: null, day: null, active: 'chinese' };
+  /* 「5 分钟版」：一天的量太大时给一个合法出口 —— 每块只留开头，
+     想读完再切回完整版。比逼人做完更能留住人。 */
+  let liteMode = !!Store.get('dl.lite', false);
   const progress = Store.get('dl.progress', {});   // { date: { chinese: 1, ... } }
   const notes    = Store.get('dl.notes', {});      // { date: { key: text } }
   const answers  = Store.get('dl.answers', {});    // { date: { key: optionIndex } }
@@ -399,13 +402,16 @@
     const d = state.day;
     const main = $('#main');
     main.innerHTML = '';
+    main.classList.toggle('lite', liteMode);
 
     main.append(renderHero(d));
-    main.append(renderChinese(d.chinese));
+    const resume = renderResume();
+    if (resume) main.append(resume);
+    main.append(renderChinese(d.chinese, liteMode));
     main.append(renderPoem(d.poem));
-    main.append(renderEnglish(d.english));
-    main.append(renderListening(d.listening));
-    main.append(renderChecklist(d.checklist));
+    main.append(renderEnglish(d.english, liteMode));
+    main.append(renderListening(d.listening, liteMode));
+    main.append(renderChecklist(d.checklist, liteMode));
     const closing = renderClosing();
     if (closing) main.append(closing);
 
@@ -414,6 +420,27 @@
     renderFooter(d);
     observeSections();
     refreshProgress();
+    watchReadingPos();
+  }
+
+  /* 切「5 分钟 / 完整」：重渲染后回到开篇，不然定位会错乱 */
+  function setLite(on) {
+    liteMode = !!on;
+    Store.set('dl.lite', liteMode);
+    render();
+    window.scrollTo(0, 0);
+  }
+
+  /* 段落只给开头时的「继续读」：切回完整版并滚到这块 */
+  function moreLink(text, secId) {
+    const b = h('button', { class: 'more-link', type: 'button' }, text);
+    b.addEventListener('click', () => {
+      setLite(false);
+      setTimeout(() => {
+        document.getElementById(`sec-${secId}`)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }, 60);
+    });
+    return b;
   }
 
   /* ---- 00 每日一句 ---- */
@@ -485,8 +512,16 @@
     const isEn = q && q.text && !/[\u4e00-\u9fa5]/.test(q.text);
     const by = q && q.author ? (q.source ? `${q.author}《${q.source}》` : q.author) : '';
 
+    const liteBtn = h('button', {
+      class: 'lite-chip' + (liteMode ? ' is-lite' : ''), type: 'button',
+      title: liteMode ? '切回完整版，每块都读全文' : '只看每块开头，5 分钟读完',
+    }, liteMode ? '5 分钟版' : '完整版');
+    liteBtn.addEventListener('click', () => setLite(!liteMode));
+
     const sec = h('section', { class: 'hero' },
-      h('div', { class: 'hero-date' }, `${d.date} · ${d.weekday || WEEK[parseDate(d.date).getDay()]}`),
+      h('div', { class: 'hero-top' },
+        h('div', { class: 'hero-date' }, `${d.date} · ${d.weekday || WEEK[parseDate(d.date).getDay()]}`),
+        liteBtn),
       h('h1', { class: 'hero-title' }, d.theme || '今日一学'),
       q && q.text
         ? h('div', { class: 'hero-quote' },
@@ -500,13 +535,99 @@
     return sec;
   }
 
-  /* 一天的收尾：把原来的封面大图放到最后，当作读完的句号 */
+  /* ---------------- 续读 ----------------
+     三十屏的内容，中途离开下次从顶部重来，进入成本太高。
+     记住上次停在哪，回来给一条「接着读」。 */
+  const readPos = Store.get('dl.readPos', {});
+
+  function watchReadingPos() {
+    if (watchReadingPos._on) return;
+    watchReadingPos._on = true;
+    let t = 0;
+    window.addEventListener('scroll', () => {
+      if (t) return;
+      t = setTimeout(() => {
+        t = 0;
+        if (!state.date) return;
+        const active = document.querySelector('.tab.active');
+        const y = Math.round(window.scrollY);
+        if (y < 600) return;                       // 还在开篇，不值得记
+        readPos[state.date] = { sec: active?.dataset.id || '', y, ts: Date.now() };
+        Store.set('dl.readPos', readPos);
+      }, 600);
+    }, { passive: true });
+  }
+
+  function renderResume() {
+    const p = readPos[state.date];
+    if (!p || !p.y || p.y < 1200) return null;
+    if (Date.now() - (p.ts || 0) > 7 * 24 * 3600e3) return null;   // 一周前的就别提了
+    const sec = SECTIONS.find((s) => s.id === p.sec);
+    const bar = h('div', { class: 'resume' },
+      h('span', { class: 'resume-txt' }, `上次读到${sec ? '「' + sec.name + '」' : '这里'}`));
+    const go = h('button', { class: 'resume-go', type: 'button' }, '接着读');
+    go.addEventListener('click', () => {
+      window.scrollTo({ top: p.y, behavior: 'smooth' });
+      bar.remove();
+    });
+    const x = h('button', { class: 'resume-x', type: 'button', 'aria-label': '不用了' }, '×');
+    x.addEventListener('click', () => bar.remove());
+    bar.append(go, x);
+    return bar;
+  }
+
+  /* 一天的收尾：先把封面大图放到最后当句号，再给一句「今天完成了什么」。
+     原来读完 4 个板块什么都不发生，没有任何"做完了"的确认。 */
   function renderClosing() {
     const fig = artFigure(pickArt('hero', state.date), '今日封面', `${state.date}|hero`);
-    if (!fig) return null;
-    fig.classList.add('closing-art');
-    return h('div', { class: 'closing' }, fig,
-      h('div', { class: 'closing-txt' }, '今天到这里 · 明天见'));
+    if (fig) fig.classList.add('closing-art');
+    const box = h('div', { class: 'closing' },
+      h('div', { class: 'closing-sum', id: 'closingSum' }),
+      fig || null,
+      nextDayLine());
+    updateClosingSummary();
+    return box;
+  }
+
+  function updateClosingSummary() {
+    const el = document.getElementById('closingSum');
+    if (!el) return;
+    el.innerHTML = '';
+    const n = doneCount(state.date);
+    const total = activeSections().length;
+    const done = n >= total;
+    const days = Object.keys(progress).filter((k) => doneCount(k) > 0).length;
+
+    el.append(
+      h('div', { class: 'closing-big' }, done ? '今天四个板块都读完了' : `还差 ${total - n} 个板块`),
+      h('div', { class: 'closing-sub' },
+        done
+          ? `连续打卡 ${calcStreak()} 天 · 一共读完 ${days} 天`
+          : '读完点一下「标记完成」，进度存在这台设备上'));
+  }
+
+  function themeOf(date) {
+    return ((window.LEARN_INDEX || []).find((x) => x.date === date) || {}).theme || '';
+  }
+
+  /* 明日预告：内容要早上 6 点才生成，所以没有明天就把时间说清楚，不编内容 */
+  function nextDayLine() {
+    const i = state.dates.indexOf(state.date);
+    const newer = i > 0 ? state.dates[i - 1] : null;
+    if (newer) {
+      const label = `下一天 · ${newer.slice(5).replace('-', '/')} ${themeOf(newer)}`;
+      const a = h('a', { class: 'next-day', href: `?d=${newer}` }, label);
+      a.addEventListener('click', (ev) => {
+        if (ev.metaKey || ev.ctrlKey || ev.shiftKey || ev.button !== 0) return;
+        ev.preventDefault();
+        switchDay(newer);
+      });
+      return a;
+    }
+    const t = parseDate(state.date);
+    t.setDate(t.getDate() + 1);
+    return h('div', { class: 'next-day is-dim' },
+      `明天 ${t.getMonth() + 1} 月 ${t.getDate()} 日 ${WEEK[t.getDay()]} · 早上 6:00 更新`);
   }
 
   function sectionCard(s) {
@@ -544,7 +665,7 @@
   }
 
   /* ---- 01 语文 ---- */
-  function renderChinese(c) {
+  function renderChinese(c, lite) {
     const { card, body } = sectionCard(SECTIONS[0]);
     body.append(
       h('h2', null, c.title),
@@ -553,7 +674,11 @@
     const fig = artFigure(c.image, c.imageCaption, state.date + '|c');
     if (fig) body.append(fig);
 
-    body.append(h('div', { class: 'prose' }, c.body.map((p) => h('p', null, p))));
+    const paras = lite ? c.body.slice(0, 2) : c.body;
+    body.append(h('div', { class: 'prose' }, paras.map((p) => h('p', null, p))));
+    if (lite && c.body.length > 2) {
+      body.append(moreLink(`继续读全文（还有 ${c.body.length - 2} 段）`, 'chinese'));
+    }
 
     /* 讲解、好词、好句这些是「二次阅读」的材料，读完正文才需要，收进抽屉 */
     const extras = [];
@@ -646,7 +771,7 @@
   }
 
   /* ---- 03 英文 ---- */
-  function renderEnglish(e) {
+  function renderEnglish(e, lite) {
     const { card, body } = sectionCard(SECTIONS[2]);
 
     const readBtn = h('button', { class: 'btn small ghost' }, '▶ 朗读全文');
@@ -666,11 +791,14 @@
         h('span', { class: 'pill' }, e.level || 'CET-6'),
         h('span', { class: 'pill' }, `${e.words || ''} words`),
         readBtn, transBtn),
-      h('div', { class: 'en-prose' }, (e.body || []).map((p, i) => {
+      h('div', { class: 'en-prose' }, (lite ? (e.body || []).slice(0, 2) : (e.body || [])).map((p, i) => {
         const para = h('div', { class: 'en-para' }, h('p', null, p));
         if (hasTrans && trans[i]) para.append(h('div', { class: 'trans' }, trans[i]));
         return para;
       })));
+    if (lite && (e.body || []).length > 2) {
+      body.append(moreLink(`继续读全文（还有 ${e.body.length - 2} 段）`, 'english'));
+    }
 
     transBtn.addEventListener('click', (ev) => {
       ev.stopPropagation();
@@ -682,7 +810,13 @@
     /* 读完先做题，其余材料收进抽屉。
        这一段原来把 10 个子模块一路铺开，单张卡片就有 14 屏。 */
     if (e.questions?.length) {
-      body.append(block('阅读理解', e.questions.map((q, i) => quizCard(q, i, 'english'))));
+      const qs = lite ? e.questions.slice(0, 2) : e.questions;
+      const quiz = block('阅读理解', qs.map((q, i) => quizCard(q, i, 'english')));
+      if (lite) {
+        body.append(quiz);
+      } else {
+        body.append(fold(`en-quiz-${state.date}`, '阅读理解 · 做错的自动进错题本', `${e.questions.length} 题`, quiz));
+      }
     }
 
     const words = [];
@@ -758,9 +892,10 @@
   }
 
   /* ---- 04 听力（自创短文 + 浏览器美音朗读） ---- */
-  function renderListening(l) {
+  function renderListening(l, lite) {
     const { card, body } = sectionCard(SECTIONS[3]);
-    const lines = (Array.isArray(l.lines) ? l.lines : []).filter((x) => x && x.en);
+    const allLines = (Array.isArray(l.lines) ? l.lines : []).filter((x) => x && x.en);
+    const lines = lite ? allLines.slice(0, 5) : allLines;
     const meta = [l.level || '标准美音', l.words ? l.words + ' words' : '', l.topic || '']
       .filter(Boolean).join(' · ');
 
@@ -768,7 +903,7 @@
       h('h2', null, l.title || '今日听力'),
       meta ? h('div', { class: 'byline' }, meta) : null);
 
-    if (!lines.length) {
+    if (!allLines.length) {
       body.append(h('div', { class: 'callout' }, l.note || '今天这段听力暂时没有文本。'));
       return card;
     }
@@ -793,6 +928,9 @@
         voiceSel,
         h('span', { class: 'listen-lab dim' }, '听着生硬就换一个 ⭐')),
       h('div', { class: 'listen-lines' }, nodes),
+      lite && allLines.length > 5
+        ? moreLink(`继续读完整（还有 ${allLines.length - 5} 句）`, 'listening')
+        : null,
       l.note ? h('div', { class: 'listen-note' }, l.note) : null,
       block('怎么听（四步）', h('ol', { class: 'note-list' },
         h('li', null, '先不看文本，点播放听两遍，抓大意：谁、发生了什么、态度是什么。'),
@@ -1138,6 +1276,7 @@
       heroBtn.classList.toggle('is-on', on);
       heroBtn.textContent = on ? '✓ 已打卡' : '今日打卡';
     }
+    updateClosingSummary();
     SECTIONS.forEach((s) => {
       const p = progress[state.date] || {};
       const tab = document.querySelector(`.tab[data-id="${s.id}"]`);
