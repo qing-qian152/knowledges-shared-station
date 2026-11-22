@@ -1,4 +1,4 @@
-/* 2026-10-26 · 周一 —— 由 scripts/generate.mjs 生成 */
+/* 2026-10-26 · 周一 —— 内容工具：scripts/daytool.py */
 window.LEARN_DAY = {
   "theme": "时间是怎么被偷走的",
   "quote": {

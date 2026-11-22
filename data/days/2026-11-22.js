@@ -1,4 +1,4 @@
-/* 2026-11-22 · 周日 —— 由 scripts/generate.mjs 生成 */
+/* 2026-11-22 · 周日 —— 内容工具：scripts/daytool.py */
 window.LEARN_DAY = {
   "theme": "临水而居，向水而思",
   "quote": {

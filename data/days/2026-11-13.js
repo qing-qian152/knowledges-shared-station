@@ -1,4 +1,4 @@
-/* 2026-11-13 · 周五 —— 由 scripts/generate.mjs 生成 */
+/* 2026-11-13 · 周五 —— 内容工具：scripts/daytool.py */
 window.LEARN_DAY = {
   "theme": "山城清风，登高望远",
   "quote": {

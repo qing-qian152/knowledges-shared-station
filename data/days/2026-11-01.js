@@ -1,4 +1,4 @@
-/* 2026-11-01 · 周日 —— 由 scripts/generate.mjs 生成 */
+/* 2026-11-01 · 周日 —— 内容工具：scripts/daytool.py */
 window.LEARN_DAY = {
   "theme": "安静是一种被低估的力量",
   "quote": {

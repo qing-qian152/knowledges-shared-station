@@ -1,4 +1,4 @@
-/* 2026-10-31 · 周六 —— 由 scripts/generate.mjs 生成 */
+/* 2026-10-31 · 周六 —— 内容工具：scripts/daytool.py */
 window.LEARN_DAY = {
   "theme": "给自己留一条退路，心才不慌",
   "quote": {

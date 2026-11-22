@@ -1,4 +1,4 @@
-/* 2026-11-09 · 周一 —— 由 scripts/generate.mjs 生成 */
+/* 2026-11-09 · 周一 —— 内容工具：scripts/daytool.py */
 window.LEARN_DAY = {
   "theme": "看见别人的难处，是心软的起点",
   "quote": {

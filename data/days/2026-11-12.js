@@ -1,4 +1,4 @@
-/* 2026-11-12 · 周四 —— 由 scripts/generate.mjs 生成 */
+/* 2026-11-12 · 周四 —— 内容工具：scripts/daytool.py */
 window.LEARN_DAY = {
   "theme": "那些没说出口的话",
   "quote": {

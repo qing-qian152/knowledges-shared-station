@@ -121,8 +121,7 @@ ok('index.html 兜底链接与索引一致', JSON.stringify(archived) === JSON.s
 
 /* ---------- 7. 文档里不再引用已删除的脚本 ---------- */
 
-const docs = ['README.md', 'AGENTS.md', 'LICENSE', '.github/workflows/daily.yml']
-  .filter(exists);
+const docs = ['README.md', 'AGENTS.md', 'LICENSE'].filter(exists);
 const stale = [];
 for (const f of docs) {
   const t = read(f);
@@ -130,6 +129,45 @@ for (const f of docs) {
   if (/(^|[\s`(])serve\.mjs/.test(t)) stale.push(`${f} 仍提到已移动的 serve.mjs`);
 }
 ok('文档没有指向已删除/已移动的脚本', !stale.length, stale.join('; '));
+
+/* ---------- 8. 已移除的「调 API 自动生成」链路不能复活 ---------- */
+
+// 2026-11-22 删掉了 generate.mjs + topics.json + daily.yml + 相关 Secret。
+// 这条断言是护栏：以后谁再把手动的接口生成加回来，CI 立刻红。
+const TEXT_EXT = /\.(md|js|mjs|py|yml|yaml|html|css|json|txt)$/;
+const SKIP_DIR = /^(\.git|parts|__pycache__|node_modules)$/;
+const FORBID = [
+  [/\bgenerate\.mjs\b/, 'generate.mjs'],
+  [/\btopics\.json\b/, 'topics.json'],
+  [/\bdaily\.yml\b/, 'daily.yml'],
+  [/DEEPSEEK/i, 'DEEPSEEK'],
+  [/\bAPI_KEY\b/, 'API_KEY'],
+];
+
+function walk(dir, out = []) {
+  for (const e of fs.readdirSync(path.join(ROOT, dir), { withFileTypes: true })) {
+    if (SKIP_DIR.test(e.name)) continue;
+    const rel = dir ? `${dir}/${e.name}` : e.name;
+    if (e.isDirectory()) {
+      if (rel === 'assets/fonts') continue;
+      walk(rel, out);
+    } else if (TEXT_EXT.test(e.name)) {
+      out.push(rel);
+    }
+  }
+  return out;
+}
+
+const revived = [];
+for (const rel of walk('')) {
+  if (rel === 'scripts/check-structure.mjs') continue;   // 护栏自己当然写着这些名字
+  const text = read(rel);
+  for (const [re, label] of FORBID) {
+    if (re.test(text)) revived.push(`${rel} 出现 ${label}`);
+  }
+}
+ok('没有残留「调 API 自动生成」的痕迹', !revived.length,
+  revived.slice(0, 5).join('; ') + (revived.length > 5 ? ` 等 ${revived.length} 处` : ''));
 
 /* ---------- 输出 ---------- */
 

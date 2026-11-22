@@ -1,4 +1,4 @@
-/* 2026-10-27 · 周二 —— 由 scripts/generate.mjs 生成 */
+/* 2026-10-27 · 周二 —— 内容工具：scripts/daytool.py */
 window.LEARN_DAY = {
   "theme": "在无人处，听见自己",
   "quote": {

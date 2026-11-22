@@ -77,14 +77,12 @@ python scripts/daytool.py publish --date 2026-11-23   # 重建索引 / sitemap /
 
 写作细节、字数、禁止事项见 [AGENTS.md](AGENTS.md) 与 [docs/内容规范.md](docs/内容规范.md)。
 
-旧的 API 生成路径仍然保留（要 Node + 模型 Key）：
+日常产出由每天 06:30 的定时任务按同一套流程执行，机制见 [docs/部署.md](docs/部署.md#每天-0630-的自动发布)。
 
-```bash
-API_KEY=sk-xxxx node scripts/generate.mjs --date 2026-11-23
-python scripts/daytool.py site        # 重建 sitemap / robots / 往期兜底链接
-```
-
-`generate.mjs` 支持 `--mock`（占位内容）、`--topic N`、`--force`，接口默认 `https://api.deepseek.com/v1`。
+> **这个仓库已经没有任何「调模型 API 自动生成内容」的代码了。**
+> 早期（2026-10-26 至 11-15）走的是「GitHub Actions 定时调 API 生成 → 提交」的路子，
+> 2026-11-22 整条链路连同脚本、主题池、workflow 与相关 Secret 一并移除，
+> 现在内容只由 agent 按 `AGENTS.md` 写、由 `daytool.py` 校验发布。
 
 ### 提交前跑一遍
 

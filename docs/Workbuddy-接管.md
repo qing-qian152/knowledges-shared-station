@@ -6,18 +6,22 @@
 
 ## 一、为什么要换
 
-原来每天由 GitHub Actions 在 UTC 22:00（北京次日 06:00）调 DeepSeek 生成。
+原来每天由 GitHub Actions 在 UTC 22:00（北京次日 06:00）调模型接口生成。
 2026-11-16 到 11-21 连续 6 天失败，日志里的原因很直接：
 
 ```
-✗ API 402: {"error":{"message":"Insufficient Balance","type":"insufficient_balance_error"}}
+✗ API 402: insufficient_balance_error
 ```
 
 **账户余额不足**。也就是说，只要额度用完，站点就会静默断更——而断更时页面看起来
-一切正常，只是没有新的一天。这正是本次把更新交给 Workbuddy 的原因：
-Workbuddy 自己写内容，不花 API 的钱，也不依赖那个余额。
+一切正常，只是没有新的一天。这正是把更新交给 Workbuddy 的原因：
+Workbuddy 自己写内容，不走接口，也不依赖任何余额。
 
-> 顺带说明：11-22 那天恢复了，所以现在线上是 22 期，中间缺 11-16 至 11-21 共 6 天。
+> 历史说明：11-22 那天人工恢复了，11-16 至 11-21 这 6 天后来也补齐了
+> （见 git 提交 `82737e6`…`9946b7a`）。线上现在是连续 28 期。
+
+2026-11-22 起，**整条 API 生成链路已被删除**：脚本、主题池、workflow、相关 Secret 全部移除，
+现在只有「agent 按 `AGENTS.md` 写 + `daytool.py` 校验发布」这一条路。
 
 ---
 
@@ -130,6 +134,10 @@ python scripts/daytool.py publish --date 2026-11-16
 
 ## 八、想退回去
 
-`.github/workflows/daily.yml` 里把 `schedule:` 那两行取消注释、恢复 cron 即可，
-再在仓库 Settings → Secrets 里确保 `API_KEY` 有效、DeepSeek 有余额。
-两条流程生成的文件格式完全一样，可以随时来回切。
+**没有可退回的旧流程了。** 2026-11-22 那次整理把「定时调模型接口生成」的整条链路删掉了
+（脚本、主题池、workflow、Secret 都不在仓库里），这是有意的：那条路会把内容质量锁在接口返回上，
+也绕过 `AGENTS.md` 里的写作硬规则。
+
+如果确实要再引入自动生成，请当作一次新功能来做，并且至少满足三条：
+产出的内容必须能过 `python scripts/daytool.py check --all`；必须保留 `chinese.origin` 的语义；
+必须在 `verify.yml` 里加一条断言，防止它绕过校验直接写 `data/days/`。

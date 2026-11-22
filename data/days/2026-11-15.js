@@ -1,4 +1,4 @@
-/* 2026-11-15 · 周日 —— 由 scripts/generate.mjs 生成 */
+/* 2026-11-15 · 周日 —— 内容工具：scripts/daytool.py */
 window.LEARN_DAY = {
   "theme": "慢工里的时间刻度",
   "quote": {

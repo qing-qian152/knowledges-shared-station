@@ -100,21 +100,24 @@ data/days/YYYY-MM-DD.js 每天一期内容（window.LEARN_DAY）
 data/days/index.js      日期索引（window.LEARN_INDEX），由 daytool 维护，别手改
 parts/YYYY-MM-DD/       分段写作的中间稿，不入库
 scripts/daytool.py      生成/校验/发布/重建站点（Python，唯一一份实现）
-scripts/generate.mjs    旧的 Node 生成器（调 DeepSeek API，作兜底）
 scripts/check-structure.mjs  结构体检：各处清单是否还对得上
 scripts/check-themes.mjs     外观体检：主题变量是否齐全
 scripts/dev-server.mjs       本地静态预览（node scripts/dev-server.mjs）
 docs/                   架构 / 内容规范 / 部署 / 接管手册
 time-ledger/            同仓库的另一个项目（时迹 · 时间账本），与本站无关
-.github/workflows/      verify.yml 每次 push 校验；daily.yml 定时生成（已停用）
+.github/workflows/      verify.yml：每次 push 校验，不写文件
 ```
 
 更细的目录说明与设计取舍见 [docs/架构.md](docs/架构.md)。
 
-## 两种更新方式
+## 只有一种更新方式
 
-- **agent 自己写（推荐）**：就是本文档上面的流程，质量可控、不花钱、不依赖 API 额度。
-- **调 API 生成（兜底）**：`API_KEY=... node scripts/generate.mjs --date 2026-11-23`
-  然后用 `python scripts/daytool.py site` 重建站点产物（sitemap / robots / 往期链接，
-  现在只有 Python 这一份实现）。
-  2026-11-16 至 11-21 就是因为 DeepSeek 余额不足连续失败 6 天，所以不要把定时任务只押在它身上。
+内容由 agent 按本文档的流程写，`daytool.py` 校验并发布。
+
+**没有 API 兜底路径。** 早期（2026-10-26 至 11-15）曾用「GitHub Actions 定时调模型 API 生成」的办法，
+2026-11-22 已把那条链路整体删除（脚本、主题池、workflow、相关 Secret）。原因有两条：
+一是它把内容质量锁在接口返回上，11-16 至 11-21 就因上游余额不足连续失败六天、站点断更；
+二是它绕过了 `AGENTS.md` 里那些中文写作的硬规则（原创署名、公版标注、篇幅下限）。
+
+所以：**不要试图恢复「定时调 API 生成」**。选题靠「避开最近 5 期」+ 季节与一条连续的主题线来判断，
+规则写在 [docs/内容规范.md](docs/内容规范.md#选题)。

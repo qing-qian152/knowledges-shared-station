@@ -1,4 +1,4 @@
-/* 2026-11-11 · 周三 —— 由 scripts/generate.mjs 生成 */
+/* 2026-11-11 · 周三 —— 内容工具：scripts/daytool.py */
 window.LEARN_DAY = {
   "theme": "爆竹声里，年味渐浓",
   "quote": {

@@ -280,11 +280,11 @@
       await loadScript('data/days/index.js');
       state.dates = (window.LEARN_INDEX || []).map((x) => x.date).sort().reverse();
     } catch (e) {
-      $('#loading').textContent = '还没有任何内容：先运行 node scripts/generate.mjs 生成第一天。';
+      $('#loading').textContent = '还没有任何内容：先运行 python scripts/daytool.py new 写第一天。';
       return;
     }
     if (!state.dates.length) {
-      $('#loading').textContent = '还没有任何内容：先运行 node scripts/generate.mjs 生成第一天。';
+      $('#loading').textContent = '还没有任何内容：先运行 python scripts/daytool.py new 写第一天。';
       return;
     }
 

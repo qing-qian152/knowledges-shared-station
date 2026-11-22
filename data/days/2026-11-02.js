@@ -1,4 +1,4 @@
-/* 2026-11-02 · 周一 —— 由 scripts/generate.mjs 生成 */
+/* 2026-11-02 · 周一 —— 内容工具：scripts/daytool.py */
 window.LEARN_DAY = {
   "theme": "把一件事做到笨拙",
   "quote": {

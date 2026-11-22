@@ -1,4 +1,4 @@
-/* 2026-11-10 · 周二 —— 由 scripts/generate.mjs 生成 */
+/* 2026-11-10 · 周二 —— 内容工具：scripts/daytool.py */
 window.LEARN_DAY = {
   "theme": "身体先知道答案",
   "quote": {

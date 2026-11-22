@@ -1,4 +1,4 @@
-/* 2026-11-05 · 周四 —— 由 scripts/generate.mjs 生成 */
+/* 2026-11-05 · 周四 —— 内容工具：scripts/daytool.py */
 window.LEARN_DAY = {
   "theme": "告别要练习，思念要安放",
   "quote": {

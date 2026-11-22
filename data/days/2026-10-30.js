@@ -1,4 +1,4 @@
-/* 2026-10-30 · 周五 —— 由 scripts/generate.mjs 生成 */
+/* 2026-10-30 · 周五 —— 内容工具：scripts/daytool.py */
 window.LEARN_DAY = {
   "theme": "秋日有清欢，秩序自心生",
   "quote": {

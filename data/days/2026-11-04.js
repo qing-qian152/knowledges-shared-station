@@ -1,4 +1,4 @@
-/* 2026-11-04 · 周三 —— 由 scripts/generate.mjs 生成 */
+/* 2026-11-04 · 周三 —— 内容工具：scripts/daytool.py */
 window.LEARN_DAY = {
   "theme": "名字是归处，也是远行的起点",
   "quote": {

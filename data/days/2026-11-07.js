@@ -1,4 +1,4 @@
-/* 2026-11-07 · 周六 —— 由 scripts/generate.mjs 生成 */
+/* 2026-11-07 · 周六 —— 内容工具：scripts/daytool.py */
 window.LEARN_DAY = {
   "theme": "把知识讲给外行听",
   "quote": {

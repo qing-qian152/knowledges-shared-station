@@ -1,4 +1,4 @@
-/* 2026-11-03 · 周二 —— 由 scripts/generate.mjs 生成 */
+/* 2026-11-03 · 周二 —— 内容工具：scripts/daytool.py */
 window.LEARN_DAY = {
   "theme": "远处的风景与近处的路",
   "quote": {

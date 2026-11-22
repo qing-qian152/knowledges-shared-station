@@ -1,4 +1,4 @@
-/* 2026-11-06 · 周五 —— 由 scripts/generate.mjs 生成 */
+/* 2026-11-06 · 周五 —— 内容工具：scripts/daytool.py */
 window.LEARN_DAY = {
   "theme": "雨声里，把心放慢一点",
   "quote": {

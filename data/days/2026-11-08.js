@@ -1,4 +1,4 @@
-/* 2026-11-08 · 周日 —— 由 scripts/generate.mjs 生成 */
+/* 2026-11-08 · 周日 —— 内容工具：scripts/daytool.py */
 window.LEARN_DAY = {
   "theme": "重复的日常，藏着无声的变化",
   "quote": {

@@ -1,4 +1,4 @@
-/* 2026-11-14 · 周六 —— 由 scripts/generate.mjs 生成 */
+/* 2026-11-14 · 周六 —— 内容工具：scripts/daytool.py */
 window.LEARN_DAY = {
   "theme": "寒风吹彻，依然向前",
   "quote": {

@@ -1,4 +1,4 @@
-/* 2026-10-28 · 周三 —— 由 scripts/generate.mjs 生成 */
+/* 2026-10-28 · 周三 —— 内容工具：scripts/daytool.py */
 window.LEARN_DAY = {
   "theme": "一封信，抵得万金",
   "quote": {
