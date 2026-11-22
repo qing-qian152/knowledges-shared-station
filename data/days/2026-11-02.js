@@ -9,6 +9,7 @@ window.LEARN_DAY = {
   "chinese": {
     "title": "差不多先生传",
     "author": "胡适",
+    "origin": "public",
     "tag": "现代散文 · 讽刺",
     "readingTime": "约 7 分钟",
     "image": "lamp",

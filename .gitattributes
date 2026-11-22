@@ -1,0 +1,33 @@
+# 统一换行与文本识别。
+# 这个仓库同时被 Windows（本地写作）和 ubuntu-latest（Actions）使用，
+# 不锁 eol 的话 .py / .mjs 会时而被 CRLF 污染，diff 里全是整文件改动。
+
+* text=auto eol=lf
+
+# 明确标记为文本的源码
+*.py    text eol=lf
+*.mjs   text eol=lf
+*.js    text eol=lf
+*.css   text eol=lf
+*.html  text eol=lf
+*.json  text eol=lf
+*.md    text eol=lf
+*.yml   text eol=lf
+*.xml   text eol=lf
+*.txt   text eol=lf
+
+# 二进制：不要让 git 尝试做文本 diff / 换行转换
+*.woff2 binary
+*.png   binary
+*.jpg   binary
+*.webp  binary
+*.ico   binary
+
+# 生成物：sitemap / robots / index.html 的归档区由脚本写入，
+# 在 GitHub 上折叠掉，评审时不用一屏一屏翻
+sitemap.xml     linguist-generated=true
+robots.txt      linguist-generated=true
+data/days/index.js linguist-generated=true
+
+# 内容数据按语言统计会淹掉代码统计，单独标成数据
+data/days/*.js  linguist-documentation

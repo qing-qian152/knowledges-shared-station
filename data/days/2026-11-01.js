@@ -9,6 +9,7 @@ window.LEARN_DAY = {
   "chinese": {
     "title": "济南的冬天",
     "author": "老舍",
+    "origin": "public",
     "tag": "现代散文 · 写景",
     "readingTime": "约 6 分钟",
     "image": "snow-peak",

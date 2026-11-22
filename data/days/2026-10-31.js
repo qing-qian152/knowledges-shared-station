@@ -9,6 +9,7 @@ window.LEARN_DAY = {
   "chinese": {
     "title": "秋夜",
     "author": "鲁迅",
+    "origin": "public",
     "tag": "现代散文 · 写景抒怀",
     "readingTime": "约 8 分钟",
     "image": "autumn-river",

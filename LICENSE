@@ -5,8 +5,11 @@ Copyright (c) 2026 Daily Learn contributors
 This project uses two licenses, split by what a file is:
 
 1. Code — MIT
-   Applies to: assets/app.js, assets/style.css, index.html,
+   Applies to: index.html, sw.js, assets/ (except assets/fonts/), time-ledger/,
    scripts/, .github/
+
+   Fonts under assets/fonts/ are third-party subsets released under their own
+   licenses (SIL OFL 1.1 / Arphic Public License) — see the section below.
 
    Permission is hereby granted, free of charge, to any person obtaining a copy
    of this software and associated documentation files (the "Software"), to deal
@@ -27,7 +30,7 @@ This project uses two licenses, split by what a file is:
    SOFTWARE.
 
 2. Content — CC BY 4.0
-   Applies to: data/, topics.json, and the reading materials inside data/
+   Applies to: data/, topics.json, docs/, and the reading materials inside data/
 
    You are free to share (copy and redistribute in any medium or format) and
    adapt (remix, transform, build upon) the content for any purpose, even
@@ -36,8 +39,11 @@ This project uses two licenses, split by what a file is:
 
    Full license text: https://creativecommons.org/licenses/by/4.0/legalcode
 
-Note on third-party material: reading passages in data/ are either public domain
-works (authors deceased before 1949, or pre-modern classical texts) or original
-texts generated for this project. Listening sections only link to external pages
-and do not include their audio or transcripts. External pages remain under their
-own terms.
+Note on third-party material: reading passages in data/ are either public-domain
+works (writers who died more than 50 years ago, e.g. 朱自清 / 鲁迅 / 郁达夫 /
+老舍 / 胡适, marked with chinese.origin = "public") or original texts written for
+this project. Ancient poems are public domain. Listening transcripts are original
+and are read aloud by the browser's built-in speech synthesis; no third-party
+audio is used or redistributed. Self-hosted CJK font subsets in assets/fonts/
+remain under SIL OFL 1.1 (思源宋体 / 霞鹜文楷) or the Arphic Public License
+(文鼎 PL 楷 / 朱雀仿宋).

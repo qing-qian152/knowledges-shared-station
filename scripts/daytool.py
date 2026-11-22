@@ -41,10 +41,13 @@ WEEK = ['周一', '周二', '周三', '周四', '周五', '周六', '周日']
 SECTIONS = ('chinese', 'poem', 'english', 'listening')
 MODULES = 4
 
-# 只能从 assets/art.js 里挑，写错会退成素纸
+# 只能从 assets/art.js 的 SCENES 里挑，写错会退成素纸。
+# 这份列表必须与 assets/art.js 的键保持同步 —— 由 scripts/check-structure.mjs 交叉校验，
+# 漂移了 CI 会红，不要再手工对照。
 ART = ['lotus-moon', 'autumn-mountain', 'bamboo', 'snow-peak', 'snow-boat',
        'spring-river', 'rain-window', 'dunes', 'border', 'pastoral', 'tower',
-       'plum', 'autumn-river', 'pine-valley', 'lamp', 'paper']
+       'plum', 'autumn-river', 'pine-valley', 'lamp', 'paper',
+       'desk', 'bloom']
 
 # 语文必须原创署名「本站原创」：给原创散文署真名家名 = 伪造
 FAMOUS = ['朱自清', '鲁迅', '郁达夫', '老舍', '傅雷', '胡适', '徐志摩', '梁实秋',
@@ -236,21 +239,40 @@ def validate(day: dict, date: str, fix: bool) -> Report:
     # --- 语文 ---
     cn = day['chinese']
     cn_len = chars(''.join(str(x) for x in (cn.get('body') or [])))
-    # 目标 1300-1700 字；低于 1000 视为「没写完整」，直接拦下；1000-1300 只警告，
-    # 免得为凑字数把好文章改坏（站点上已发布的最长一篇是 1177 字）。
-    if cn_len < 1000:
-        r.err('语文正文仅 %d 字，要求 1300-1700 字（读者要读尽兴）' % cn_len)
+    # origin 决定「署名」和「篇幅」两件事怎么判：
+    #   "public"   = 逐字复制公版原文（作者去世 50 年以上），允许署真名，篇幅按原文走
+    #   "original" / 缺省 = 本站原创，必须署「本站原创」，篇幅有硬下限
+    # 以前只按署名黑名单判断，把《匆匆》《秋夜》这类真正的公版名篇也当成了伪造。
+    origin = str(cn.get('origin') or '').strip()
+    if origin and origin not in ('public', 'original'):
+        r.err('chinese.origin 只能是 "public" 或 "original"（现在是「%s」）' % origin)
+        origin = ''
+
+    if origin == 'public':
+        if cn_len < 600:
+            r.err('语文公版原文仅 %d 字，多半是被截断了（原文应整篇照录）' % cn_len)
+        elif cn_len < 1200:
+            r.warn('语文公版原文 %d 字，比站点常规篇幅短，确认是否为整篇' % cn_len)
+    elif cn_len < 1000:
+        r.err('语文正文仅 %d 字，至少要 1000 字（目标 1300-1700，读者要读尽兴）' % cn_len)
     elif cn_len < 1300:
         r.warn('语文正文 %d 字，偏短，建议补到 1300 字以上' % cn_len)
     elif cn_len > 1900:
         r.warn('语文正文 %d 字，偏长，建议压到 1700 以内' % cn_len)
     if not 7 <= len(cn.get('body') or []) <= 9:
         r.warn('语文 %d 段，建议 7-9 段' % len(cn.get('body') or []))
+
     author = str(cn.get('author') or '').strip()
     if author in FAMOUS:
-        r.err('语文署名「%s」：原创文字署名家名属伪造，必须改为「本站原创」' % author)
+        if origin != 'public':
+            r.err('语文署名「%s」但 chinese.origin 没标 "public"：'
+                  '原创文字署名家属伪造，改成「本站原创」或标明是公版原文' % author)
     elif author != '本站原创':
-        r.warn('语文 author 是「%s」，除逐字复制公版原文外都应写「本站原创」' % author)
+        if origin == 'public':
+            r.warn('语文标了 origin="public" 但署名「%s」不是公认名家，确认没标错' % author)
+        else:
+            r.warn('语文 author 是「%s」，除逐字复制公版原文（origin="public"）外都应写「本站原创」'
+                   % author)
     for key, lo, hi, name in [('explain', 4, 5, '讲解'), ('words', 6, 8, '好词'),
                               ('expressions', 3, 4, '好句'), ('techniques', 4, 5, '手法')]:
         n = len(cn.get(key) or [])
@@ -483,6 +505,39 @@ def cmd_check(date: str, fix: bool) -> int:
     return code
 
 
+def cmd_check_all() -> int:
+    """遍历所有已发布日期做只读校验。CI 用这个，避免坏数据悄悄进来。
+
+    --all 一律不加 --fix：CI 只负责报错，不替人改内容。
+    """
+    dates = all_dates()
+    if not dates:
+        print('✗ data/days 里没有任何内容')
+        return 1
+    bad = []
+    total_err = 0
+    for d in dates:
+        try:
+            day = load_day_file(day_path(d))
+        except Exception as e:
+            print('✗ %s 读不动：%s' % (d, e))
+            bad.append(d)
+            total_err += 1
+            continue
+        r = validate(day, d, fix=False)
+        errs = len(r.errors)
+        if errs:
+            print('✗ %s  %d 处问题' % (d, errs))
+            for m in r.errors:
+                print('    - %s' % m)
+            bad.append(d)
+            total_err += errs
+    ok = len(dates) - len(bad)
+    print('\n共 %d 天：%d 天通过，%d 天有问题（%d 处错误）'
+          % (len(dates), ok, len(bad), total_err))
+    return 1 if bad else 0
+
+
 def update_index() -> int:
     entries = []
     for d in all_dates():
@@ -505,7 +560,10 @@ def esc(s) -> str:
 
 
 def refresh_site() -> None:
-    """等价于 scripts/build-seo.mjs：sitemap.xml + robots.txt + index.html 兜底链接"""
+    """重建站点级产物：sitemap.xml + robots.txt + index.html 的往期兜底链接
+
+    这是全仓库唯一一份实现（旧的 scripts/build-seo.mjs 已删除）。
+    """
     entries = []
     for d in reversed(all_dates()):
         try:
@@ -616,8 +674,14 @@ def cmd_publish(date: str | None, use_git: bool) -> int:
 
 
 def main() -> int:
-    ap = argparse.ArgumentParser(description='每日一学内容工具')
+    ap = argparse.ArgumentParser(
+        description='每日一学内容工具',
+        epilog='site 子命令不需要 --date，只重建站点级产物（sitemap / robots / 往期兜底链接）。')
     sub = ap.add_subparsers(dest='cmd', required=True)
+
+    # 只改站点产物、不碰内容的命令：不需要日期
+    sub.add_parser('site', help='重建 sitemap.xml / robots.txt / index.html 往期兜底链接')
+
     for name in ('new', 'build', 'check', 'publish'):
         p = sub.add_parser(name)
         p.add_argument('--date', default=None)
@@ -625,9 +689,21 @@ def main() -> int:
             p.add_argument('--force', action='store_true')
         if name == 'check':
             p.add_argument('--fix', action='store_true')
+            p.add_argument('--all', action='store_true', dest='all_days',
+                           help='校验全部已发布日期（只读，不加 --fix），CI 用')
         if name == 'publish':
             p.add_argument('--git', action='store_true')
     a = ap.parse_args()
+
+    # site 先分流：它跟"哪一天"无关
+    if a.cmd == 'site':
+        update_index()
+        refresh_site()
+        return 0
+
+    if a.cmd == 'check' and getattr(a, 'all_days', False):
+        return cmd_check_all()
+
     date = a.date or today()
     if not re.fullmatch(r'\d{4}-\d{2}-\d{2}', date):
         print('✗ 日期格式应为 YYYY-MM-DD')

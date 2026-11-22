@@ -58,7 +58,7 @@ jobs:
           node scripts/generate.mjs "${ARGS[@]}"
 
       - name: Rebuild sitemap / robots / 往期兜底链接
-        run: node scripts/build-seo.mjs
+        run: python3 scripts/daytool.py site
 
       - name: Commit
         run: |

@@ -9,6 +9,7 @@ window.LEARN_DAY = {
   "chinese": {
     "title": "故都的秋",
     "author": "郁达夫",
+    "origin": "public",
     "tag": "现代散文 · 写景抒情",
     "readingTime": "约 8 分钟",
     "image": "autumn-river",

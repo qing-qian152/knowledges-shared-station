@@ -9,6 +9,7 @@ window.LEARN_DAY = {
   "chinese": {
     "title": "匆匆",
     "author": "朱自清",
+    "origin": "public",
     "tag": "现代散文 · 时间",
     "readingTime": "约 6 分钟",
     "image": "rain-window",

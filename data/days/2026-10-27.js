@@ -9,6 +9,7 @@ window.LEARN_DAY = {
   "chinese": {
     "title": "荷塘月色",
     "author": "朱自清",
+    "origin": "public",
     "tag": "现代散文 · 写景抒情",
     "readingTime": "约 8 分钟",
     "image": "lotus-moon",
