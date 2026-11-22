@@ -293,8 +293,11 @@ def validate(day: dict, date: str, fix: bool) -> Report:
         if fix:
             en['words'] = words
             r.fix('english.words 补为实际 %d 词' % words)
-    if abs(int(en.get('words') or 0) - words) > 60 and en.get('words'):
-        if fix:
+    if en.get('words') and abs(int(en['words']) - words) > 60:
+        # 正文只有几十个词时说明这一板块还没写，改数字没意义，只提醒
+        if words < 100:
+            r.warn('english.words 标 %s，但正文只有约 %d 词，这一板块大概是没写完' % (en['words'], words))
+        elif fix:
             r.fix('english.words %s → %d（按实际统计）' % (en['words'], words))
             en['words'] = words
         else:
