@@ -1,9 +1,12 @@
 name: Daily content
 
 on:
-  schedule:
-    # 22:00 UTC = 北京时间次日 06:00
-    - cron: "0 22 * * *"
+  # 每日更新已交给 Workbuddy（见 docs/Workbuddy-接管.md）。
+  # 定时生成默认停用：它在北京时间 06:00 跑，会先把当天生成出来，
+  # 让接手的一方误以为"已存在"而跳过。要退回旧流程就取消下面两行注释。
+  # schedule:
+  #   # 22:00 UTC = 北京时间次日 06:00
+  #   - cron: "0 22 * * *"
   workflow_dispatch:
     inputs:
       date:

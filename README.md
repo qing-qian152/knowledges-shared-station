@@ -38,7 +38,26 @@
 - **学习记录可搬家**：「⤓ 导出我的记录 / ⤒ 导入记录」把笔记、错题本、打卡、进度打包成一份 JSON，换设备或清缓存前先导出，之后导回来即可。
 - **分享**：「↗ 分享今天」优先走系统分享面板（手机直接发微信/短信），桌面降级为复制带日期的链接。
 - **SEO**：每天一个 `?d=` 地址，`sitemap.xml` + `robots.txt` + 页脚往期链接都是真链接，标题与描述按当天内容动态更新，另带 JSON-LD 结构化数据。
-- **自动更新**：GitHub Actions 每天定时生成 → 自动提交 → 静态站点自动重新发布。
+- **每天更新**：内容每天生成并提交到仓库，静态站点自动重新发布。目前由 Workbuddy 按仓库里的 `AGENTS.md` 写作，GitHub Actions 的定时生成已停用（只留手动兜底）。
+
+---
+
+## 每天的内容是怎么来的
+
+一期内容 = 四个板块的 JSON，合成一个 `data/days/YYYY-MM-DD.js`。写作和发布都有工具管：
+
+```bash
+python scripts/daytool.py new     --date 2026-11-23   # 建骨架 + 当日写作规格
+python scripts/daytool.py build   --date 2026-11-23   # 合并分段稿 + 结构校验
+python scripts/daytool.py publish --date 2026-11-23   # 重建索引 / sitemap / 往期链接
+```
+
+只用 Python 标准库，**不需要 Node，不需要 API Key**。校验会拦下伪造署名、译文段数不符、
+选择题答案越界、听力缺译文、插图名不在白名单等情况。
+
+- 交给 agent 每天更新：看 [`AGENTS.md`](AGENTS.md)（写作规则与命令）
+- 人工接手 / 换人接管的操作手册：[`docs/Workbuddy-接管.md`](docs/Workbuddy-接管.md)
+- 旧的 API 生成方式仍在：`API_KEY=... node scripts/generate.mjs --date ...`
 
 ---
 

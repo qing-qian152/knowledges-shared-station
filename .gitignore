@@ -1,0 +1,10 @@
+# 分段写作的中间稿：每天一个目录，内容是生成过程的草稿，不必入库
+parts/
+
+# Python
+__pycache__/
+*.pyc
+
+# 系统文件
+.DS_Store
+Thumbs.db
