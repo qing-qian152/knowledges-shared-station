@@ -21,6 +21,7 @@ import os
 import re
 import subprocess
 import sys
+import time
 
 # Windows 控制台默认 GBK，遇到 ▸ ✓ 会直接崩；这里强制 UTF-8 且永不因编码失败
 for _s in (sys.stdout, sys.stderr):
@@ -625,6 +626,36 @@ def refresh_site() -> None:
           % (len(entries) + 1, len(entries)))
 
 
+def git_push(tries: int = 3) -> bool:
+    """推送到 origin/main。直连、沙箱代理、git 自身配置三条路径轮流试。
+
+    每天自动发布时网络状况不可控，单次失败就放弃会直接导致站点断更，
+    所以宁可多重试几遍——反正失败时内容已经在本地提交好了，下次还能补推。
+    """
+    candidates = [
+        ['-c', 'http.proxy=', '-c', 'https.proxy='],                    # 直连
+        ['-c', 'http.proxy=http://127.0.0.1:51984',
+         '-c', 'https.proxy=http://127.0.0.1:51984'],                   # 本机网关
+        [],                                                             # 交给 git 配置 / 环境变量
+    ]
+    last = ''
+    for rnd in range(tries):
+        for extra in candidates:
+            cmd = ['git', '-C', ROOT] + extra + ['push', 'origin', 'HEAD:main']
+            r = subprocess.run(cmd, capture_output=True, text=True,
+                               encoding='utf-8', errors='replace')
+            if r.returncode == 0:
+                return True
+            last = (r.stderr or r.stdout).strip()[-400:]
+            time.sleep(2)
+        if rnd + 1 < tries:
+            print('  第 %d 轮推送没成功，5 秒后再试' % (rnd + 1))
+            time.sleep(5)
+    print('✗ git push 失败（%d 轮 × %d 条路径）：\n%s' % (tries, len(candidates), last))
+    print('  内容已经提交在本地，下次 publish 会把积压的提交一起推上去。')
+    return False
+
+
 def cmd_publish(date: str | None, use_git: bool) -> int:
     if date and os.path.exists(day_path(date)):
         day = load_day_file(day_path(date))
@@ -653,7 +684,7 @@ def cmd_publish(date: str | None, use_git: bool) -> int:
         print('用 GitHub 连接器把这几个文件传上去，Pages 约 1 分钟后重建。')
         return 0
 
-    base = ['git', '-C', ROOT, '-c', 'http.proxy=', '-c', 'https.proxy=']
+    base = ['git', '-C', ROOT]
     run = lambda a: subprocess.run(base + a, capture_output=True, text=True,
                                    encoding='utf-8', errors='replace')
     if run(['add', '-A']).returncode:
@@ -664,10 +695,8 @@ def cmd_publish(date: str | None, use_git: bool) -> int:
     if c.returncode and 'nothing to commit' not in (c.stdout + c.stderr):
         print('✗ git commit 失败：\n' + (c.stderr or c.stdout)[-500:])
         return 1
-    p = run(['push', 'origin', 'HEAD:main'])
-    if p.returncode:
-        print('✗ git push 失败：\n' + (p.stderr or p.stdout)[-800:])
-        print('\n改用 GitHub 连接器上传上面列的文件即可，内容已经生成好了。')
+
+    if not git_push():
         return 1
     print('✓ 已推送到 origin/main，Pages 约 1 分钟后重建')
     return 0
