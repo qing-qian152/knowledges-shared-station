@@ -66,21 +66,44 @@ ok('索引与文件一一对应', JSON.stringify(dayFiles) === JSON.stringify(in
 const dupes = indexed.filter((d, i) => i && d === indexed[i - 1]);
 ok('索引里没有重复日期', !dupes.length, dupes.join(','));
 
+/* ---------- 2.5 队列：待发布的内容 ---------- */
+
+const QUEUE_DIR = 'data/queue';
+const queued = fs.existsSync(path.join(ROOT, QUEUE_DIR))
+  ? fs.readdirSync(path.join(ROOT, QUEUE_DIR))
+    .filter((f) => /^\d{4}-\d{2}-\d{2}\.js$/.test(f))
+    .map((f) => f.replace(/\.js$/, ''))
+    .sort()
+  : [];
+
+const both = queued.filter((d) => dayFiles.includes(d));
+ok('队列与已发布内容不重复', !both.length, both.join(','));
+
+// 队列里已经过期的，多半是云端发布任务没跑（或者刚补写、还没到下一次 cron）
+// 站点按北京时间算「今天」，别用 UTC：凌晨 0–8 点会差一天，把刚预写的队列误报成过期
+const today = new Date(Date.now() + 8 * 3600 * 1000).toISOString().slice(0, 10);
+const overdue = queued.filter((d) => d < today);
+if (overdue.length) {
+  console.log(`注意  队列里有 ${overdue.length} 期已经过期还没发：${overdue.join(', ')}（看 daily-publish.yml 有没有跑）`);
+}
+
 /* ---------- 3. 每个文件的 date / weekday 自洽 ---------- */
 
 const badDate = [];
 const badWeekday = [];
-for (const d of dayFiles) {
-  const src = read(`data/days/${d}.js`);
-  // 内容文件是 JSON（键带引号），索引是手写 JS（键不带引号），两种都认
-  const m = /^\s*"?date"?\s*:\s*"(\d{4}-\d{2}-\d{2})"/m.exec(src);
-  if (!m || m[1] !== d) badDate.push(`${d} → ${m ? m[1] : '缺失'}`);
-  const w = /^\s*"?weekday"?\s*:\s*"([^"]*)"/m.exec(src);
-  const expect = WEEK[new Date(`${d}T00:00:00`).getDay()];
-  if (w && w[1] !== expect) badWeekday.push(`${d} 写的是 ${w[1]}，应为 ${expect}`);
+for (const [dir, list] of [['data/days', dayFiles], [QUEUE_DIR, queued]]) {
+  for (const d of list) {
+    const src = read(`${dir}/${d}.js`);
+    // 内容文件是 JSON（键带引号），索引是手写 JS（键不带引号），两种都认
+    const m = /^\s*"?date"?\s*:\s*"(\d{4}-\d{2}-\d{2})"/m.exec(src);
+    if (!m || m[1] !== d) badDate.push(`${dir}/${d} → ${m ? m[1] : '缺失'}`);
+    const w = /^\s*"?weekday"?\s*:\s*"([^"]*)"/m.exec(src);
+    const expect = WEEK[new Date(`${d}T00:00:00`).getDay()];
+    if (w && w[1] !== expect) badWeekday.push(`${dir}/${d} 写的是 ${w[1]}，应为 ${expect}`);
+  }
 }
-ok('文件名与内部 date 一致', !badDate.length, badDate.join('; '));
-ok('weekday 与真实星期一致', !badWeekday.length, badWeekday.join('; '));
+ok('文件名与内部 date 一致（含队列）', !badDate.length, badDate.join('; '));
+ok('weekday 与真实星期一致（含队列）', !badWeekday.length, badWeekday.join('; '));
 
 /* ---------- 4. sw.js 预缓存清单 ---------- */
 
@@ -176,6 +199,7 @@ for (const c of checks) {
   console.log(`${c.ok ? 'PASS' : 'FAIL'}  ${c.name}${c.extra ? '  [' + c.extra + ']' : ''}`);
 }
 const failed = checks.filter((c) => !c.ok);
-console.log(`\n内容 ${dayFiles.length} 天 · 插图场景 ${scenes.length} 个（白名单 ${whitelist.length} 个）`);
+console.log(`\n内容 ${dayFiles.length} 天 · 队列 ${queued.length} 期 · `
+  + `插图场景 ${scenes.length} 个（白名单 ${whitelist.length} 个）`);
 console.log(failed.length ? `✗ ${failed.length}/${checks.length} 项失败` : `✓ 全部 ${checks.length} 项通过`);
 process.exit(failed.length ? 1 : 0);

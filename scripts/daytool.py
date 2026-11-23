@@ -33,6 +33,7 @@ for _s in (sys.stdout, sys.stderr):
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 DAYS = os.path.join(ROOT, 'data', 'days')
 INDEX = os.path.join(DAYS, 'index.js')
+QUEUE = os.path.join(ROOT, 'data', 'queue')
 PARTS = os.path.join(ROOT, 'parts')
 HTML = os.path.join(ROOT, 'index.html')
 SITE = 'https://qing-qian152.github.io/knowledges-shared-station'
@@ -140,8 +141,17 @@ def weekday_of(s: str) -> str:
     return WEEK[dt.date(y, m, d).weekday()]
 
 
-def day_path(date: str) -> str:
-    return os.path.join(DAYS, date + '.js')
+def day_path(date: str, queue: bool = False) -> str:
+    return os.path.join(QUEUE if queue else DAYS, date + '.js')
+
+
+def find_day(date: str) -> str:
+    """已发布的优先，其次队列里的。返回路径（可能不存在）。"""
+    p = day_path(date)
+    if os.path.exists(p):
+        return p
+    q = day_path(date, queue=True)
+    return q if os.path.exists(q) else p
 
 
 def load_day_file(path: str) -> dict:
@@ -150,10 +160,13 @@ def load_day_file(path: str) -> dict:
     return json.loads(text[i:j + 1])
 
 
-def save_day_file(date: str, day: dict) -> None:
+def save_day_file(date: str, day: dict, queue: bool = False) -> None:
     body = json.dumps(day, ensure_ascii=False, indent=2)
-    header = '/* %s · %s —— 由 Workbuddy 每日生成（scripts/daytool.py） */\n' % (date, day['weekday'])
-    with open(day_path(date), 'w', encoding='utf-8', newline='\n') as f:
+    note = '待发布' if queue else '由 Workbuddy 每日生成'
+    header = '/* %s · %s —— %s（scripts/daytool.py） */\n' % (date, day['weekday'], note)
+    target = day_path(date, queue=queue)
+    os.makedirs(os.path.dirname(target), exist_ok=True)
+    with open(target, 'w', encoding='utf-8', newline='\n') as f:
         f.write(header + 'window.LEARN_DAY = ' + body + ';\n')
 
 
@@ -161,6 +174,12 @@ def all_dates() -> list[str]:
     if not os.path.isdir(DAYS):
         return []
     return sorted(f[:10] for f in os.listdir(DAYS) if re.fullmatch(r'\d{4}-\d{2}-\d{2}\.js', f))
+
+
+def queue_dates() -> list[str]:
+    if not os.path.isdir(QUEUE):
+        return []
+    return sorted(f[:10] for f in os.listdir(QUEUE) if re.fullmatch(r'\d{4}-\d{2}-\d{2}\.js', f))
 
 
 def chars(s) -> int:
@@ -424,7 +443,7 @@ def validate(day: dict, date: str, fix: bool) -> Report:
 
 # ---------------------------------------------------------------- 子命令
 
-def cmd_new(date: str) -> int:
+def cmd_new(date: str, queue: bool = False) -> int:
     d = os.path.join(PARTS, date)
     os.makedirs(d, exist_ok=True)
     path = os.path.join(d, '_SPEC.md')
@@ -433,17 +452,22 @@ def cmd_new(date: str) -> int:
     print('✓ 已建 %s' % d)
     print('  规格：%s' % path)
     print('  接着按板块写：theme.json / chinese.json / poem.json / english.json / listening.json')
-    print('  写完运行：python scripts/daytool.py build --date %s' % date)
+    print('  写完运行：python scripts/daytool.py build --date %s%s'
+          % (date, ' --queue' if queue else ''))
+    if queue:
+        print('  （--queue：写进 data/queue，等到期由 GitHub Actions 自动发布）')
     return 0
 
 
-def cmd_build(date: str, force: bool) -> int:
+def cmd_build(date: str, force: bool, queue: bool = False) -> int:
     src = os.path.join(PARTS, date)
     if not os.path.isdir(src):
-        print('✗ 找不到 %s，先运行：python scripts/daytool.py new --date %s' % (src, date))
+        print('✗ 找不到 %s，先运行：python scripts/daytool.py new --date %s%s'
+              % (src, date, ' --queue' if queue else ''))
         return 1
-    if os.path.exists(day_path(date)) and not force:
-        print('✋ %s 已存在。要覆盖请加 --force' % day_path(date))
+    target = day_path(date, queue=queue)
+    if os.path.exists(target) and not force:
+        print('✋ %s 已存在。要覆盖请加 --force' % target)
         return 1
 
     day: dict = {}
@@ -477,65 +501,135 @@ def cmd_build(date: str, force: bool) -> int:
         return 1
 
     os.makedirs(DAYS, exist_ok=True)
-    save_day_file(date, day)
-    n = update_index()
-    print('✓ 已写入 data/days/%s.js，索引 %d 条' % (date, n))
+    save_day_file(date, day, queue=queue)
+    if queue:
+        print('✓ 已写入 data/queue/%s.js（队列里，还没发布）' % date)
+        print('  到期那天由 GitHub Actions 自动搬进 data/days，无需开机')
+    else:
+        n = update_index()
+        print('✓ 已写入 data/days/%s.js，索引 %d 条' % (date, n))
     cn = chars(''.join(day['chinese']['body']))
     print('  语文 %d 字 · 英文 %d 词 · 听力 %d 句 · 阅读题 %d 道'
           % (cn, sum(len(p.split()) for p in day['english']['body']),
              len(day['listening']['lines']), len(day['english']['questions'])))
-    print('  下一步：python scripts/daytool.py publish --date %s' % date)
+    if queue:
+        print('  队列现有 %d 期' % len(queue_dates()))
+    else:
+        print('  下一步：python scripts/daytool.py publish --date %s' % date)
     return 0
 
 
 def cmd_check(date: str, fix: bool) -> int:
-    p = day_path(date)
+    p = find_day(date)
     if not os.path.exists(p):
-        print('✗ 没有 %s' % p)
+        print('✗ 没有 %s（data/days 与 data/queue 里都没有）' % date)
         return 1
+    in_queue = os.path.dirname(p) == QUEUE
     day = load_day_file(p)
-    print('▸ 校验 %s' % p)
+    print('▸ 校验 %s%s' % (p, '（队列）' if in_queue else ''))
     r = validate(day, date, fix=fix)
     code = r.dump()
     if fix and (r.fixes or day.get('date') != date):
         day['date'] = date
         day['weekday'] = weekday_of(date)
-        save_day_file(date, day)
-        update_index()
+        save_day_file(date, day, queue=in_queue)
+        if not in_queue:
+            update_index()
         print('  ✓ 已回写')
     return code
 
 
+def cmd_promote(up_to: str | None, dry: bool) -> int:
+    """把队列里到期的那天搬进 data/days，重建索引与站点产物。
+
+    云端每天只做这一件事：不调模型、不生成内容，只把提前写好的那天放出去。
+    所以本地电脑不开机，站点也不会断更。
+
+    退出码：0 正常（含"还没到时间"）；1 出错；2 队列空了（workflow 据此开 issue）
+    """
+    cutoff = up_to or today()
+    queued = queue_dates()
+    if not queued:
+        print('⚠ 队列是空的：data/queue 里没有待发布的内容')
+        print('  在本地跑一次批量预写（见 docs/内容规范.md#批量预写）把它补上')
+        return 2
+
+    due = [d for d in queued if d <= cutoff]
+    if not due:
+        print('▸ 队列 %d 期，最近一期 %s 还没到时间（今天 %s），不动'
+              % (len(queued), queued[0], cutoff))
+        return 0
+
+    released = []
+    for d in due:
+        src = day_path(d, queue=True)
+        try:
+            day = load_day_file(src)
+        except Exception as e:
+            print('✗ %s 读不动，留在队列：%s' % (d, e))
+            continue
+        r = validate(day, d, fix=False)
+        if r.dump():
+            print('✗ %s 没过校验，留在队列（不发布半成品）' % d)
+            continue
+        if dry:
+            print('· [dry-run] 会发布 %s' % d)
+            released.append(d)
+            continue
+        os.replace(src, day_path(d))
+        released.append(d)
+        print('✓ 发布 %s' % d)
+
+    if dry or not released:
+        return 0
+
+    update_index()
+    refresh_site()
+    left = queue_dates()
+    print('\n✓ 本次发布 %d 期，队列剩余 %d 期%s'
+          % (len(released), len(left),
+             ('：' + '、'.join(left)) if left else '（已空，尽快预写）'))
+    return 0
+
+
 def cmd_check_all() -> int:
-    """遍历所有已发布日期做只读校验。CI 用这个，避免坏数据悄悄进来。
+    """只读校验：已发布内容 + 队列里的待发布内容。CI 用它提前拦住坏数据。
 
     --all 一律不加 --fix：CI 只负责报错，不替人改内容。
+    队列也要一起查 —— 否则预写时的字数不足 / 译文段数不符要等到发布当天
+    才被 promote 拦下，那天站点就没内容了。
     """
-    dates = all_dates()
-    if not dates:
+    published = all_dates()
+    if not published:
         print('✗ data/days 里没有任何内容')
         return 1
+
+    # (日期, 路径, 标注)。队列与已发布同日时以已发布为准（重复由结构体检拦）。
+    targets = [(d, day_path(d), '') for d in published]
+    targets += [(d, day_path(d, queue=True), '（队列）') for d in queue_dates()
+                if d not in published]
+
     bad = []
     total_err = 0
-    for d in dates:
+    for d, path, tag in targets:
         try:
-            day = load_day_file(day_path(d))
+            day = load_day_file(path)
         except Exception as e:
-            print('✗ %s 读不动：%s' % (d, e))
+            print('✗ %s%s 读不动：%s' % (d, tag, e))
             bad.append(d)
             total_err += 1
             continue
         r = validate(day, d, fix=False)
         errs = len(r.errors)
         if errs:
-            print('✗ %s  %d 处问题' % (d, errs))
+            print('✗ %s%s  %d 处问题' % (d, tag, errs))
             for m in r.errors:
                 print('    - %s' % m)
             bad.append(d)
             total_err += errs
-    ok = len(dates) - len(bad)
-    print('\n共 %d 天：%d 天通过，%d 天有问题（%d 处错误）'
-          % (len(dates), ok, len(bad), total_err))
+    ok = len(targets) - len(bad)
+    print('\n共 %d 期（含 %d 期待发布）：%d 期通过，%d 期有问题（%d 处错误）'
+          % (len(targets), len(targets) - len(published), ok, len(bad), total_err))
     return 1 if bad else 0
 
 
@@ -711,9 +805,16 @@ def main() -> int:
     # 只改站点产物、不碰内容的命令：不需要日期
     sub.add_parser('site', help='重建 sitemap.xml / robots.txt / index.html 往期兜底链接')
 
+    p = sub.add_parser('promote', help='把 data/queue 里到期的一天搬进 data/days（云端每天跑这个）')
+    p.add_argument('--date', default=None, help='把它当成今天（默认取 Asia/Shanghai 的今天）')
+    p.add_argument('--dry-run', action='store_true', dest='dry', help='只说会发布什么，不动文件')
+
     for name in ('new', 'build', 'check', 'publish'):
         p = sub.add_parser(name)
         p.add_argument('--date', default=None)
+        if name in ('new', 'build'):
+            p.add_argument('--queue', action='store_true',
+                           help='写进 data/queue（待发布），而不是直接发布')
         if name == 'build':
             p.add_argument('--force', action='store_true')
         if name == 'check':
@@ -724,11 +825,17 @@ def main() -> int:
             p.add_argument('--git', action='store_true')
     a = ap.parse_args()
 
-    # site 先分流：它跟"哪一天"无关
+    # site / promote 先分流：它们跟"写哪一天"无关
     if a.cmd == 'site':
         update_index()
         refresh_site()
         return 0
+
+    if a.cmd == 'promote':
+        if a.date and not re.fullmatch(r'\d{4}-\d{2}-\d{2}', a.date):
+            print('✗ 日期格式应为 YYYY-MM-DD')
+            return 1
+        return cmd_promote(a.date, a.dry)
 
     if a.cmd == 'check' and getattr(a, 'all_days', False):
         return cmd_check_all()
@@ -738,9 +845,9 @@ def main() -> int:
         print('✗ 日期格式应为 YYYY-MM-DD')
         return 1
     if a.cmd == 'new':
-        return cmd_new(date)
+        return cmd_new(date, getattr(a, 'queue', False))
     if a.cmd == 'build':
-        return cmd_build(date, a.force)
+        return cmd_build(date, a.force, getattr(a, 'queue', False))
     if a.cmd == 'check':
         return cmd_check(date, a.fix)
     return cmd_publish(a.date, a.git)

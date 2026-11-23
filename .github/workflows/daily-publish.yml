@@ -1,0 +1,107 @@
+name: Daily publish (queue)
+
+# 云端每天只做一件事：把 data/queue 里到期的那一天搬进 data/days。
+# 不调模型、不生成内容、不需要任何 API Key —— 所以它不依赖任何额度，
+# 也不依赖谁的电脑开着。跑在 GitHub 的机器上。
+#
+# 内容从哪来：本地（WorkBuddy）提前批量预写，见 docs/内容规范.md 的「批量预写」。
+
+on:
+  schedule:
+    # 16:10 UTC = 北京时间次日 00:10，站点当天一开始就有内容
+    - cron: "10 16 * * *"
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: "只检查会发布哪几期，不提交"
+        type: boolean
+        default: false
+
+permissions:
+  contents: write
+  issues: write
+
+concurrency:
+  group: daily-publish
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    env:
+      TZ: Asia/Shanghai
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: 把到期的队列内容发布出去
+        id: promote
+        env:
+          DRY: ${{ inputs.dry_run && '1' || '' }}
+        # 退出码：0 正常；2 队列空了（要提醒）；其余是出错
+        run: |
+          set +e
+          if [ -n "$DRY" ]; then ARGS="--dry-run"; else ARGS=""; fi
+          python scripts/daytool.py promote $ARGS
+          code=$?
+          set -e
+          echo "code=$code" >> "$GITHUB_OUTPUT"
+          exit 0
+
+      - name: 提交并推送
+        if: steps.promote.outputs.code == '0'
+        run: |
+          set -e
+          git config user.name  "daily-learn-bot"
+          git config user.email "daily-learn-bot@users.noreply.github.com"
+          git add data sitemap.xml robots.txt index.html
+          if git diff --cached --quiet; then
+            echo "今天没有要发布的内容（队列未到期或已空），跳过提交"
+            exit 0
+          fi
+          git commit -m "content: $(date +%F)（队列自动发布）"
+          for i in 1 2 3; do
+            if git pull --rebase --autostash origin main && git push; then
+              echo "✓ 已推送，Pages 约 1 分钟后重建"
+              exit 0
+            fi
+            echo "第 $i 次推送失败，5 秒后重试"
+            sleep 5
+          done
+          echo "✗ 三次推送均失败"
+          exit 1
+
+      - name: 队列空了就开一条 issue
+        if: steps.promote.outputs.code == '2'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -e
+          open=$(gh issue list --state open --search '内容队列已空 in:title' --json number --jq 'length')
+          if [ "$open" -gt 0 ]; then
+            echo "已有未关闭的提醒，不重复开"
+            exit 0
+          fi
+          gh issue create \
+            --title "内容队列已空，站点即将停更" \
+            --body "$(printf '%s\n' \
+              '`data/queue/` 里已经没有待发布的内容了。' \
+              '' \
+              '云端发布任务本身没问题，缺的是内容。补法：' \
+              '' \
+              '```bash' \
+              'python scripts/daytool.py new   --date <某天> --queue' \
+              'python scripts/daytool.py build --date <某天> --queue' \
+              'git add data/queue && git commit -m "content: 预写 <某天>…" && git push' \
+              '```' \
+              '' \
+              '或者直接跟 WorkBuddy 说一句「把这周的队列补上」。补齐后请关掉这条 issue。')"
+
+      - name: 其他错误
+        if: steps.promote.outputs.code != '0' && steps.promote.outputs.code != '2'
+        run: |
+          echo "::error::daytool.py promote 返回 ${{ steps.promote.outputs.code }}，看上一步日志"
+          exit 1
