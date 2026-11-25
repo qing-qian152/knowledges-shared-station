@@ -29,5 +29,6 @@ window.LEARN_INDEX = [
   { date: "2026-11-21", weekday: "周六", theme: "把一天空出来", modules: 4 },
   { date: "2026-11-22", weekday: "周日", theme: "临水而居，向水而思", modules: 4 },
   { date: "2026-11-23", weekday: "周一", theme: "雪还没落，先把炉子生起来", modules: 4 },
-  { date: "2026-11-24", weekday: "周二", theme: "水落下去，河床露出来", modules: 4 }
+  { date: "2026-11-24", weekday: "周二", theme: "水落下去，河床露出来", modules: 4 },
+  { date: "2026-11-25", weekday: "周三", theme: "雪落下来，把世界收小一圈", modules: 4 }
 ];
