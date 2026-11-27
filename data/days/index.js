@@ -31,5 +31,6 @@ window.LEARN_INDEX = [
   { date: "2026-11-23", weekday: "周一", theme: "雪还没落，先把炉子生起来", modules: 4 },
   { date: "2026-11-24", weekday: "周二", theme: "水落下去，河床露出来", modules: 4 },
   { date: "2026-11-25", weekday: "周三", theme: "雪落下来，把世界收小一圈", modules: 4 },
-  { date: "2026-11-26", weekday: "周四", theme: "雪停了，屋檐开始滴水", modules: 4 }
+  { date: "2026-11-26", weekday: "周四", theme: "雪停了，屋檐开始滴水", modules: 4 },
+  { date: "2026-11-27", weekday: "周五", theme: "雪化成泥，脚印才留得住", modules: 4 }
 ];
